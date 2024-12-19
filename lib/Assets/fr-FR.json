@@ -1,0 +1,18 @@
+{
+    "login_title": "Connexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "email_required": "L'email est requis",
+    "password_required": "Le mot de passe est requis",
+    "login_button": "Se connecter",
+    "register_prompt": "Vous n'avez pas de compte? S'inscrire",
+    "forgot_password": "Mot de passe oublié?",
+    "register_title": "Enregistrer votre compte",
+    "create_account": "Créer un compte",
+    "username": "Nom d'utilisateur",
+    "username_required": "Nom d'utilisateur requis",
+    "registered_successfully": "Enregistré avec succès",
+    "register": "S'inscrire",
+    "already_have_account": "Vous avez déjà un compte? Se connecter",
+    "google_sign_up": "S'inscrire avec Google"
+}

@@ -1,0 +1,18 @@
+{
+    "login_title": "Anmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "email_required": "E-Mail wird benötigt",
+    "password_required": "Passwort wird benötigt",
+    "login_button": "Einloggen",
+    "register_prompt": "Haben Sie noch kein Konto? Registrieren",
+    "forgot_password": "Passwort vergessen?",
+    "register_title": "Registrieren Sie Ihr Konto",
+    "create_account": "Konto erstellen",
+    "username": "Benutzername",
+    "username_required": "Benutzername wird benötigt",
+    "registered_successfully": "Erfolgreich registriert",
+    "register": "Registrieren",
+    "already_have_account": "Haben Sie bereits ein Konto? Einloggen",
+    "google_sign_up": "Mit Google anmelden"
+}

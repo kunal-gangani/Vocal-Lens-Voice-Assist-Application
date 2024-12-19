@@ -1,0 +1,18 @@
+{
+    "login_title": "Iniciar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "email_required": "Se requiere correo electrónico",
+    "password_required": "Se requiere contraseña",
+    "login_button": "Iniciar sesión",
+    "register_prompt": "¿No tienes una cuenta? Regístrate",
+    "forgot_password": "¿Olvidaste la contraseña?",
+    "register_title": "Registra tu cuenta",
+    "create_account": "Crear una cuenta",
+    "username": "Nombre de usuario",
+    "username_required": "Se requiere nombre de usuario",
+    "registered_successfully": "Registrado con éxito",
+    "register": "Registrarse",
+    "already_have_account": "¿Ya tienes una cuenta? Iniciar sesión",
+    "google_sign_up": "Regístrate con Google"
+}

@@ -1,0 +1,18 @@
+{
+    "login_title": "लॉगिन",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "email_required": "ईमेल आवश्यक है",
+    "password_required": "पासवर्ड आवश्यक है",
+    "login_button": "लॉगिन करें",
+    "register_prompt": "खाता नहीं है? पंजीकरण करें",
+    "forgot_password": "पासवर्ड भूल गए?",
+    "register_title": "अपना खाता पंजीकरण करें",
+    "create_account": "खाता बनाएं",
+    "username": "उपयोगकर्ता नाम",
+    "username_required": "उपयोगकर्ता नाम आवश्यक है",
+    "registered_successfully": "सफलतापूर्वक पंजीकृत",
+    "register": "पंजीकरण करें",
+    "already_have_account": "पहले से खाता है? लॉगिन करें",
+    "google_sign_up": "गूगल से साइन अप करें"
+}

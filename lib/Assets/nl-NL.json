@@ -1,0 +1,18 @@
+{
+    "login_title": "Inloggen",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "email_required": "E-mail is vereist",
+    "password_required": "Wachtwoord is vereist",
+    "login_button": "Inloggen",
+    "register_prompt": "Heeft u nog geen account? Registreer",
+    "forgot_password": "Wachtwoord vergeten?",
+    "register_title": "Registreer uw account",
+    "create_account": "Account aanmaken",
+    "username": "Gebruikersnaam",
+    "username_required": "Gebruikersnaam is vereist",
+    "registered_successfully": "Succesvol geregistreerd",
+    "register": "Registreren",
+    "already_have_account": "Heeft u al een account? Inloggen",
+    "google_sign_up": "Meld je aan met Google"
+}
