@@ -2,6 +2,7 @@ import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(const Duration(seconds: 3), () {
       Flexify.goRemove(
-        const LoginPage(),
+        const HomePage(),
         animation: FlexifyRouteAnimations.blur,
         duration: Durations.medium1,
       );

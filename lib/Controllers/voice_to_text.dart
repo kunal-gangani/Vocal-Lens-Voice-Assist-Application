@@ -6,7 +6,6 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
-import 'package:vocal_lens/Views/DetailedResponsePage/detailed_response_pages.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 
@@ -102,14 +101,6 @@ class VoiceToTextController extends ChangeNotifier {
   void openChatSection() {
     Flexify.go(
       const ChatSectionPage(),
-      animation: FlexifyRouteAnimations.blur,
-      animationDuration: Durations.medium1,
-    );
-  }
-
-  void openResponsesInZoom() {
-    Flexify.go(
-      const DetailedResponsePages(),
       animation: FlexifyRouteAnimations.blur,
       animationDuration: Durations.medium1,
     );

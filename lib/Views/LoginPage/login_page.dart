@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
       final username = _usernameController.text;
       final password = _passwordController.text;
 
-      if (username == "admin" && password == "password123") {
+      if (username == "admin" && password == "123") {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -130,7 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          tr("login"),
+                          tr(
+                            "login_title",
+                          ),
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -231,14 +233,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Flexify.go(
+                            Flexify.goRemove(
                               const RegistrationPage(),
                               animation: FlexifyRouteAnimations.blur,
-                              animationDuration: Durations.medium1,
+                              duration: Durations.medium1,
                             );
                           },
                           child: Text(
-                            tr("dont_have_account"),
+                            tr(
+                              "register_prompt",
+                            ),
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.teal.shade800,
