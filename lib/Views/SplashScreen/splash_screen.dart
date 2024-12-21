@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
-import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

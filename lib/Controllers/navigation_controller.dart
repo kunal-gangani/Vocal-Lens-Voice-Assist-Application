@@ -9,4 +9,12 @@ class NavigationController extends ChangeNotifier {
     _selectedIndex = index;
     notifyListeners();
   }
+
+  void changePageView({
+    required int index,
+    required int val,
+  }) {
+    index = val;
+    notifyListeners();
+  }
 }

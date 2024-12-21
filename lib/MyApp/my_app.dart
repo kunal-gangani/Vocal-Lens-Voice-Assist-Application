@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
+import 'package:vocal_lens/Controllers/youtube_controller.dart';
 import 'package:vocal_lens/Views/SplashScreen/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => NavigationController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => YoutubeController(),
         ),
       ],
       child: ScreenUtilInit(
