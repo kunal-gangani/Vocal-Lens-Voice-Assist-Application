@@ -1,3 +1,4 @@
+import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -7,26 +8,42 @@ class PastResponsesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text("Past Responses"),
+        leading: IconButton(
+          onPressed: () {
+            Flexify.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+          ),
+        ),
+        foregroundColor: Colors.white,
+        title: const Text(
+          "Past Responses",
+        ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: 10, // Replace with the dynamic count based on actual data
+          itemCount: 10,
           itemBuilder: (context, index) {
             return Slidable(
-              actionPane: const SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              secondaryActions: [
-                IconSlideAction(
-                  caption: 'Delete',
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () {},
-                ),
-              ],
+              key: ValueKey(index),
+              startActionPane: ActionPane(
+                motion: const DrawerMotion(),
+                extentRatio: 0.25,
+                children: [
+                  SlidableAction(
+                    onPressed: (context) {},
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,
+                    label: 'Delete',
+                  ),
+                ],
+              ),
               child: Card(
                 elevation: 8,
                 color: Colors.blueGrey.shade800,
@@ -51,22 +68,26 @@ class PastResponsesPage extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 4),
+                      const SizedBox(
+                        height: 4,
+                      ),
                       const Text(
                         "Response content or details go here. This could be a description of the response.",
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         "Date: ${DateTime.now().toString().split(' ')[0]}",
                         style: const TextStyle(
-                            color: Colors.white70, fontSize: 12),
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
-                  onTap: () {
-                    // Implement tap functionality (e.g., open a detailed view)
-                  },
+                  onTap: () {},
                 ),
               ),
             );

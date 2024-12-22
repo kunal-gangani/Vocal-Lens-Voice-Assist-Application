@@ -13,7 +13,7 @@ Widget floatingButton() {
             boxShadow: value.isListening
                 ? [
                     BoxShadow(
-                      color: Colors.greenAccent.withOpacity(0.6),
+                      color: Colors.blueGrey.shade600,
                       blurRadius: 15,
                       spreadRadius: 5,
                     ),
@@ -22,7 +22,7 @@ Widget floatingButton() {
           ),
           child: FloatingActionButton(
             onPressed: null,
-            backgroundColor: Colors.greenAccent,
+            backgroundColor: Colors.blueGrey.shade600,
             child: Icon(
               value.isListening ? Icons.mic_off : Icons.mic,
               color: Colors.white,

@@ -1,4 +1,5 @@
 # This file controls Flutter-level build steps. It should not be edited.
+cmake_policy(SET CMP0153 NEW) # Added to resolve the CMP0153 warning
 cmake_minimum_required(VERSION 3.14)
 
 set(EPHEMERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ephemeral")
@@ -84,9 +85,7 @@ target_include_directories(flutter_wrapper_app PUBLIC
 add_dependencies(flutter_wrapper_app flutter_assemble)
 
 # === Flutter tool backend ===
-# _phony_ is a non-existent file to force this command to run every time,
-# since currently there's no way to get a full input/output list from the
-# flutter tool.
+# Use execute_process instead of exec_program for tool backend.
 set(PHONY_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/_phony_")
 set_source_files_properties("${PHONY_OUTPUT}" PROPERTIES SYMBOLIC TRUE)
 add_custom_command(
@@ -94,10 +93,12 @@ add_custom_command(
     ${CPP_WRAPPER_SOURCES_CORE} ${CPP_WRAPPER_SOURCES_PLUGIN}
     ${CPP_WRAPPER_SOURCES_APP}
     ${PHONY_OUTPUT}
-  COMMAND ${CMAKE_COMMAND} -E env
-    ${FLUTTER_TOOL_ENVIRONMENT}
-    "${FLUTTER_ROOT}/packages/flutter_tools/bin/tool_backend.bat"
-      ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
+  COMMAND execute_process(
+    COMMAND ${CMAKE_COMMAND} -E env
+      ${FLUTTER_TOOL_ENVIRONMENT}
+      "${FLUTTER_ROOT}/packages/flutter_tools/bin/tool_backend.bat"
+        ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
+  )
   VERBATIM
 )
 add_custom_target(flutter_assemble DEPENDS

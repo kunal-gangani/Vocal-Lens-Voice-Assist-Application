@@ -14,7 +14,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use the NavigationController to manage the index
     return Consumer<NavigationController>(
       builder: (context, navigationController, _) {
         PageController pageController = PageController(

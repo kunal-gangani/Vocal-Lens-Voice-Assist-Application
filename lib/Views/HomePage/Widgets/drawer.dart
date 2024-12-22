@@ -61,7 +61,7 @@ Widget customDrawer() {
                 color: Colors.white,
               ),
             ),
-            onTap: () {},
+            onTap: value.openUserSettings,
           ),
         ],
       ),

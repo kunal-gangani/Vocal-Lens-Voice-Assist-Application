@@ -1,31 +1,25 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vocal_lens/Views/UserChat/user_chat.dart';
 
-class ChatSectionPage extends StatelessWidget {
-  const ChatSectionPage({super.key});
+class UserSettingsPage extends StatelessWidget {
+  const UserSettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        foregroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
             Flexify.back();
           },
           icon: const Icon(
-            Icons.arrow_back_ios_new,
+            Icons.arrow_back_ios_new_outlined,
           ),
         ),
-        foregroundColor: Colors.white,
         title: const Text(
-          "Chat Section",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+          "User Settings",
         ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
@@ -33,7 +27,7 @@ class ChatSectionPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            // User List Section
+            // Profile Settings Section
             Card(
               elevation: 5,
               color: Colors.blueGrey.shade800,
@@ -45,7 +39,7 @@ class ChatSectionPage extends StatelessWidget {
                 leading: const CircleAvatar(
                   radius: 30,
                   backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
+                    'https://t3.ftcdn.net/jpg/08/85/74/06/240_F_885740668_abO65GvCfjpbwKjsL3Zx37Pgxg2CCMi2.jpg',
                   ),
                 ),
                 title: const Text(
@@ -56,25 +50,18 @@ class ChatSectionPage extends StatelessWidget {
                   ),
                 ),
                 subtitle: const Text(
-                  'Hey, how are you?',
+                  'Tap to change profile picture',
                   style: TextStyle(
                     color: Colors.white70,
                   ),
                 ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
-                ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
+                onTap: () {},
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(
+              height: 16,
+            ),
+            // Notifications Section
             Card(
               elevation: 5,
               color: Colors.blueGrey.shade800,
@@ -83,39 +70,30 @@ class ChatSectionPage extends StatelessWidget {
               ),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
-                  ),
-                ),
                 title: const Text(
-                  'Jane Smith',
+                  'Notifications',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: const Text(
-                  'Let\'s meet up tomorrow!',
+                  'Enable or disable app notifications',
                   style: TextStyle(
                     color: Colors.white70,
                   ),
                 ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
+                trailing: Switch(
+                  value: true,
+                  onChanged: (bool value) {},
+                  activeColor: Colors.blueGrey.shade900,
                 ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(
+              height: 16,
+            ),
+            // Dark Mode Section
             Card(
               elevation: 5,
               color: Colors.blueGrey.shade800,
@@ -124,36 +102,52 @@ class ChatSectionPage extends StatelessWidget {
               ),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
-                  ),
-                ),
                 title: const Text(
-                  'Alex Johnson',
+                  'Dark Mode',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: const Text(
-                  'Got your message!',
+                  'Enable or disable dark theme',
                   style: TextStyle(
                     color: Colors.white70,
                   ),
                 ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
+                trailing: Switch(
+                  value: false,
+                  onChanged: (bool value) {},
+                  activeColor: Colors.blueGrey.shade900,
                 ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            // Language Settings Section
+            Card(
+              elevation: 5,
+              color: Colors.blueGrey.shade800,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.all(16.0),
+                title: const Text(
+                  'Language',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: const Text(
+                  'Change app language',
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                onTap: () {},
               ),
             ),
           ],
