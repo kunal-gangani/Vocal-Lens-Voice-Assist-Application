@@ -16,8 +16,8 @@ class VoiceToTextController extends ChangeNotifier {
   bool isListening = false;
   bool isLoading = false;
   String text = "Press the mic to start speaking...";
-  final List<String> history = [];
-  final TextEditingController searchFieldController = TextEditingController();
+  List<String> history = [];
+  TextEditingController searchFieldController = TextEditingController();
   List<Map<String, dynamic>> responses = [];
   bool isLoadingQuery = false;
   bool isButtonEnabled = false;
@@ -45,7 +45,6 @@ class VoiceToTextController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Stop listening
   void stopListening() {
     isListening = false;
     isLoading = false;
@@ -54,21 +53,24 @@ class VoiceToTextController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Convert text to speech
   void speakText() async {
     await flutterTts.speak(text);
   }
 
-  // Search on Google
   void searchOnGoogle() {
     final url = 'https://www.google.com/search?q=${Uri.encodeComponent(text)}';
     launchUrl(Uri.parse(url));
   }
 
-  // Clear the text
   void clearText() {
     text = "Press the mic to start speaking...";
     notifyListeners();
+  }
+
+  // Method to delete a response from history
+  void deleteHistory(int index) {
+    history.removeAt(index);
+    notifyListeners(); // Notify listeners to update the UI
   }
 
   void searchYourQuery() async {
@@ -76,10 +78,16 @@ class VoiceToTextController extends ChangeNotifier {
 
     String apiKey = "AIzaSyCzaJagaearxYYdwfRe8G_oEmcNKc3gB-Q";
 
-    final model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+    final model = GenerativeModel(
+      model: 'gemini-pro',
+      apiKey: apiKey,
+    );
 
     final prompt = searchFieldController.text;
     final content = [Content.text(prompt)];
+
+    // Save the search query in history
+    history.add(prompt);
 
     isLoading = true;
 
@@ -97,6 +105,8 @@ class VoiceToTextController extends ChangeNotifier {
 
       searchFieldController.clear();
     }
+
+    notifyListeners();
   }
 
   void openChatSection() {
