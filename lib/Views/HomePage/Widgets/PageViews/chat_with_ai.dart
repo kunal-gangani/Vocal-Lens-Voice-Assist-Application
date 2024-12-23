@@ -15,7 +15,19 @@ Widget chatWithAIPage() {
     ),
     child: Column(
       children: [
-       
+        // Header section indicating chat with AI
+        const Padding(
+          padding: EdgeInsets.only(bottom: 10.0),
+          child: Text(
+            "Chat with AI",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
         Expanded(
           child: ListView.builder(
             itemCount: 10,

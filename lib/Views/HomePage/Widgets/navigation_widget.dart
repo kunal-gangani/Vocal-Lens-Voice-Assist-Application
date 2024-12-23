@@ -34,6 +34,7 @@ Widget navigationBar() {
         ),
       ],
       backgroundColor: Colors.grey.shade800,
+      indicatorColor: Colors.grey,
     );
   });
 }
