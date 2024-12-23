@@ -18,12 +18,6 @@ PreferredSizeWidget appBar({required BuildContext context}) {
     backgroundColor: Colors.black,
     actions: [
       IconButton(
-        icon: const FaIcon(FontAwesomeIcons.commentDots),
-        onPressed: Provider.of<VoiceToTextController>(context, listen: false)
-            .openChatSection,
-        color: Colors.white,
-      ),
-      IconButton(
         icon: const Icon(
           Icons.refresh,
         ),
@@ -31,6 +25,12 @@ PreferredSizeWidget appBar({required BuildContext context}) {
           Provider.of<PositionController>(context, listen: false)
               .resetPosition(context);
         },
+        color: Colors.white,
+      ),
+      IconButton(
+        icon: const FaIcon(FontAwesomeIcons.commentDots),
+        onPressed: Provider.of<VoiceToTextController>(context, listen: false)
+            .openChatSection,
         color: Colors.white,
       ),
     ],

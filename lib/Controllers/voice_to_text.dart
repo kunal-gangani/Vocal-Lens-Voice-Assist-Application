@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
@@ -32,6 +31,18 @@ class VoiceToTextController extends ChangeNotifier {
     });
   }
 
+  // Method to toggle the listening state
+  void toggleListening() {
+    isListening = !isListening;
+    notifyListeners();
+
+    if (isListening) {
+      startListening();
+    } else {
+      stopListening();
+    }
+  }
+
   void startListening() async {
     bool available = await speechToText.initialize();
     if (available) {
@@ -40,37 +51,25 @@ class VoiceToTextController extends ChangeNotifier {
 
       speechToText.listen(onResult: (result) {
         text = result.recognizedWords;
+        notifyListeners(); // Notify listeners to update the UI
       });
+    } else {
+      text = "Speech recognition is not available.";
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void stopListening() {
     isListening = false;
     isLoading = false;
     speechToText.stop();
-
-    notifyListeners();
-  }
-
-  void speakText() async {
-    await flutterTts.speak(text);
-  }
-
-  void searchOnGoogle() {
-    final url = 'https://www.google.com/search?q=${Uri.encodeComponent(text)}';
-    launchUrl(Uri.parse(url));
-  }
-
-  void clearText() {
-    text = "Press the mic to start speaking...";
-    notifyListeners();
+    notifyListeners(); // Notify listeners to update the UI
   }
 
   // Method to delete a response from history
   void deleteHistory(int index) {
     history.removeAt(index);
-    notifyListeners(); // Notify listeners to update the UI
+    notifyListeners();
   }
 
   void searchYourQuery() async {

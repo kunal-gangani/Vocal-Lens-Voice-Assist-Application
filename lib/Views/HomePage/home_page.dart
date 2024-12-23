@@ -16,9 +16,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NavigationController>(
       builder: (context, navigationController, _) {
-        PageController pageController = PageController(
-          initialPage: navigationController.selectedIndex,
-        );
+       
 
         return Scaffold(
           backgroundColor: Colors.black,
@@ -27,7 +25,7 @@ class HomePage extends StatelessWidget {
           appBar: appBar(context: context),
           drawer: customDrawer(),
           body: PageView(
-            controller: pageController,
+            controller: navigationController.pageController,
             onPageChanged: (index) {
               navigationController.changeItem(index);
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class NavigationController extends ChangeNotifier {
   int _selectedIndex = 0;
+  PageController pageController = PageController();
 
   int get selectedIndex => _selectedIndex;
 
@@ -12,9 +13,14 @@ class NavigationController extends ChangeNotifier {
 
   void changePageView({
     required int index,
-    required int val,
   }) {
-    index = val;
+    pageController.animateToPage(
+      index,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+      curve: Curves.easeInOut,
+    );
     notifyListeners();
   }
 }

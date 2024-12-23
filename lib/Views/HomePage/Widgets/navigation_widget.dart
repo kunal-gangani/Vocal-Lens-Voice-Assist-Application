@@ -3,38 +3,51 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
-import 'package:vocal_lens/Views/HomePage/Widgets/navigation_destination.dart';
 
 Widget navigationBar() {
   return Consumer<NavigationController>(builder: (context, value, _) {
-    return NavigationBar(
-      selectedIndex: value.selectedIndex,
-      onDestinationSelected: value.changeItem,
-      destinations: [
-        navigationDestination(
-          label: "Home",
-          icon: const Icon(
-            CupertinoIcons.square_favorites,
-            color: Colors.blueAccent,
+    return NavigationBarTheme(
+      data: NavigationBarThemeData(
+        labelTextStyle: WidgetStateProperty.all(
+          const TextStyle(
+            fontSize: 12.0,
+            color: Colors.white,
           ),
         ),
-        navigationDestination(
-          label: "Youtube",
-          icon: const FaIcon(
-            FontAwesomeIcons.youtube,
-            color: Colors.red,
+      ),
+      child: NavigationBar(
+        selectedIndex: value.selectedIndex,
+        onDestinationSelected: (index) {
+          value.changeItem(index);
+          value.changePageView(index: index);
+        },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        destinations: const [
+          NavigationDestination(
+            label: "Home",
+            icon: Icon(
+              CupertinoIcons.square_favorites,
+              color: Colors.blueAccent,
+            ),
           ),
-        ),
-        navigationDestination(
-          label: "AI Chat",
-          icon: const Icon(
-            Icons.memory,
-            color: Colors.orange,
+          NavigationDestination(
+            label: "Youtube",
+            icon: FaIcon(
+              FontAwesomeIcons.youtube,
+              color: Colors.red,
+            ),
           ),
-        ),
-      ],
-      backgroundColor: Colors.grey.shade800,
-      indicatorColor: Colors.grey,
+          NavigationDestination(
+            label: "AI Chat",
+            icon: Icon(
+              Icons.memory,
+              color: Colors.orange,
+            ),
+          ),
+        ],
+        backgroundColor: Colors.grey.shade800,
+        indicatorColor: Colors.grey,
+      ),
     );
   });
 }
