@@ -8,14 +8,18 @@ Widget navigationBar() {
   return Consumer<NavigationController>(builder: (context, value, _) {
     return NavigationBarTheme(
       data: NavigationBarThemeData(
-        labelTextStyle: WidgetStateProperty.all(
-          const TextStyle(
+        labelTextStyle: const WidgetStatePropertyAll(
+          TextStyle(
             fontSize: 12.0,
             color: Colors.white,
           ),
         ),
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0), 
+        ),
       ),
       child: NavigationBar(
+        elevation: 3,
         selectedIndex: value.selectedIndex,
         onDestinationSelected: (index) {
           value.changeItem(index);
@@ -46,7 +50,7 @@ Widget navigationBar() {
           ),
         ],
         backgroundColor: Colors.grey.shade800,
-        indicatorColor: Colors.grey,
+        indicatorColor: Colors.grey.shade100,
       ),
     );
   });

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/position_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
@@ -28,7 +29,16 @@ class MyApp extends StatelessWidget {
           create: (context) => YoutubeController(),
         ),
         ChangeNotifierProvider(
-          create: (context) => PositionController(),
+          create: (context) {
+            final controller = PositionController();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              controller.initializePosition(context);
+            });
+            return controller;
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChatWithAiController(),
         ),
       ],
       child: ScreenUtilInit(

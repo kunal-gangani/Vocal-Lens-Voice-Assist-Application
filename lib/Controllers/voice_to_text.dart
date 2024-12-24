@@ -51,7 +51,7 @@ class VoiceToTextController extends ChangeNotifier {
 
       speechToText.listen(onResult: (result) {
         text = result.recognizedWords;
-        notifyListeners(); // Notify listeners to update the UI
+        notifyListeners();
       });
     } else {
       text = "Speech recognition is not available.";
@@ -63,7 +63,7 @@ class VoiceToTextController extends ChangeNotifier {
     isListening = false;
     isLoading = false;
     speechToText.stop();
-    notifyListeners(); // Notify listeners to update the UI
+    notifyListeners();
   }
 
   // Method to delete a response from history

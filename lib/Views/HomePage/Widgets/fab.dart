@@ -14,8 +14,8 @@ Widget floatingButton() {
             top: positionController.position.dy,
             child: GestureDetector(
               onPanUpdate: (details) {
-                // Allow FAB to drag
-                positionController.updatePosition(details.localPosition);
+                positionController.updatePosition(
+                    details.localPosition, context);
               },
               child: Draggable(
                 feedback: GlowContainer(
@@ -56,7 +56,7 @@ Widget floatingButton() {
                 ),
                 childWhenDragging: Container(),
                 onDragEnd: (details) {
-                  positionController.updatePosition(details.offset);
+                  positionController.updatePosition(details.offset, context);
                 },
                 child: GlowContainer(
                   shape: BoxShape.circle,
