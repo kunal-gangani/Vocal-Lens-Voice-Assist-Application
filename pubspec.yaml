@@ -25,6 +25,8 @@ dependencies:
   flutter_slidable: ^3.1.2
   flutter_glow: ^0.3.2
   timeline_tile: ^2.0.0
+  flutter_spinkit:
+
 
 dev_dependencies:
   flutter_test:

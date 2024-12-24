@@ -16,11 +16,10 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NavigationController>(
       builder: (context, navigationController, _) {
-       
-
         return Scaffold(
           backgroundColor: Colors.black,
-          floatingActionButton: floatingButton(),
+          floatingActionButton:
+              navigationController.selectedIndex != 2 ? floatingButton() : null,
           bottomNavigationBar: navigationBar(),
           appBar: appBar(context: context),
           drawer: customDrawer(),

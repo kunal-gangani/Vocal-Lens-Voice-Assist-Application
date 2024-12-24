@@ -1,11 +1,13 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+// import 'package:text_to_speech/text_to_speech.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/DetailedResponsePage/detailed_response_pages.dart';
 
 Widget homePageView() {
+  // final textToSpeech = TextToSpeech();
+
   return Container(
     padding: const EdgeInsets.symmetric(
       horizontal: 20.0,
@@ -78,12 +80,16 @@ Widget homePageView() {
                         Expanded(
                           child: TextFormField(
                             controller: value.searchFieldController,
-                            style: const TextStyle(color: Colors.white),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.grey.shade900,
                               hintText: "Type your query here",
-                              hintStyle: const TextStyle(color: Colors.white54),
+                              hintStyle: const TextStyle(
+                                color: Colors.white54,
+                              ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                                 borderSide: BorderSide.none,
@@ -102,7 +108,9 @@ Widget homePageView() {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
+                        const SizedBox(
+                          width: 10,
+                        ),
                         ElevatedButton(
                           onPressed: value.isButtonEnabled
                               ? value.searchYourQuery
@@ -116,6 +124,9 @@ Widget homePageView() {
                           ),
                           child: const Text(
                             "Search",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ],
@@ -154,6 +165,18 @@ Widget homePageView() {
                           ),
                           IconButton(
                             onPressed: () {
+                              if (value.responses.isNotEmpty) {
+                                // textToSpeech
+                                //     .speak(value.responses[0]['answer']);
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.volume_up,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
                               Flexify.go(
                                 DetailedResponsePages(
                                   question: value.responses[0]['question'],
@@ -170,9 +193,7 @@ Widget homePageView() {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       Flexible(
                         child: ListView.builder(
                           shrinkWrap: true,
@@ -193,7 +214,7 @@ Widget homePageView() {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Q. ${value.responses[index]['question']}",
+                                      "Que. ${value.responses[index]['question']}",
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -209,30 +230,6 @@ Widget homePageView() {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.white,
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          FontAwesomeIcons.expand,
-                                          size: 20,
-                                          color: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          Flexify.go(
-                                            DetailedResponsePages(
-                                              question: value.responses[index]
-                                                  ['question'],
-                                              answer: value.responses[index]
-                                                  ['answer'],
-                                            ),
-                                            animation:
-                                                FlexifyRouteAnimations.blur,
-                                            animationDuration:
-                                                Durations.medium1,
-                                          );
-                                        },
                                       ),
                                     ),
                                   ],

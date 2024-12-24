@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
 
 Widget chatWithAIPage() {
@@ -33,73 +32,134 @@ Widget chatWithAIPage() {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: chatController.getMessages.length,
-                  itemBuilder: (context, index) {
-                    // log("message : ${chatController.getMessages[index]}");
-                    final message = chatController.getMessages[index];
-                    // bool isUserMessage = message.containsKey('user');
-                    // log("IS USER MESSAGE : $isUserMessage");
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                child: chatController.getMessages.isEmpty
+                    ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(vertical: 5.0),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15.0,
-                                vertical: 10.0,
+                            Icon(
+                              Icons.chat_bubble_outline,
+                              size: 80,
+                              color: Colors.white24,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Start a conversation with Gemini-AI",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
                               ),
-                              decoration: const BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius:  BorderRadius.only(
-                                  topLeft: Radius.circular(15.0),
-                                  topRight: Radius.circular(15.0),
-                                  bottomLeft: Radius.circular(15.0),
-                                  bottomRight: Radius.circular(0),
-                                ),
-                              ),
-                              // alignment: Alignment.centerLeft,
-                              child: Text(
-                                message['question'] ?? '...',
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(vertical: 5.0),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15.0,
-                                  vertical: 10.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade800,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(15.0),
-                                    topRight: Radius.circular(15.0),
-                                    bottomLeft: Radius.zero,
-                                    bottomRight: Radius.circular(15.0),
+                      )
+                    : ListView.builder(
+                        itemCount: chatController.getMessages.length +
+                            (chatController.isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (chatController.isLoading &&
+                              index == chatController.getMessages.length) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0,
+                                    vertical: 10.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade800,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(15.0),
+                                      topRight: Radius.circular(15.0),
+                                      bottomLeft: Radius.zero,
+                                      bottomRight: Radius.circular(15.0),
+                                    ),
+                                  ),
+                                  child: const SpinKitThreeBounce(
+                                    color: Colors.white,
+                                    size: 20.0,
                                   ),
                                 ),
-                                // alignment: Alignment.centerLeft,
-                                child: Text(
-                                  message['answer'] ?? '...',
-                                  style: const TextStyle(color: Colors.white),
+                              ],
+                            );
+                          }
+
+                          final message = chatController.getMessages[index];
+                          return Column(
+                            children: [
+                              if (message.containsKey('question'))
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5.0),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0,
+                                        vertical: 10.0,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.blueAccent,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                          bottomLeft: Radius.circular(15.0),
+                                          bottomRight: Radius.zero,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        message['question'] ?? '...',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                              if (message.containsKey(
+                                'answer',
+                              ))
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5.0),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 15.0,
+                                          vertical: 10.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade800,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(15.0),
+                                            topRight: Radius.circular(15.0),
+                                            bottomLeft: Radius.zero,
+                                            bottomRight: Radius.circular(15.0),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          message['answer'] ?? '...',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          );
+                        },
+                      ),
               ),
               // Input Bar
               Card(
@@ -109,7 +169,9 @@ Widget chatWithAIPage() {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -117,10 +179,14 @@ Widget chatWithAIPage() {
                           controller: chatController.messageController,
                           decoration: const InputDecoration(
                             hintText: "Type your message...",
-                            hintStyle: TextStyle(color: Colors.white70),
+                            hintStyle: TextStyle(
+                              color: Colors.white70,
+                            ),
                             border: InputBorder.none,
                           ),
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       IconButton(
