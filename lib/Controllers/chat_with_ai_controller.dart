@@ -52,6 +52,7 @@ class ChatWithAiController extends ChangeNotifier {
 
   Future<void> searchQuery() async {
     String query = messageController.text.trim();
+    messageController.clear();
     if (query.isEmpty) return;
 
     history.add(query);

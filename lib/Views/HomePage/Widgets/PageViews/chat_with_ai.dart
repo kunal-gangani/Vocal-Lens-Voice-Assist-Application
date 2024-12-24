@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
@@ -34,43 +36,71 @@ Widget chatWithAIPage() {
                 child: ListView.builder(
                   itemCount: chatController.getMessages.length,
                   itemBuilder: (context, index) {
+                    // log("message : ${chatController.getMessages[index]}");
                     final message = chatController.getMessages[index];
-                    bool isUserMessage = message.containsKey('user');
-                    return Align(
-                      alignment: isUserMessage
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5.0),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15.0, vertical: 10.0),
-                        decoration: BoxDecoration(
-                          color: isUserMessage
-                              ? Colors.blueAccent
-                              : Colors.grey.shade800,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(15.0),
-                            topRight: const Radius.circular(15.0),
-                            bottomLeft: isUserMessage
-                                ? const Radius.circular(15.0)
-                                : Radius.zero,
-                            bottomRight: isUserMessage
-                                ? Radius.zero
-                                : const Radius.circular(15.0),
-                          ),
+                    // bool isUserMessage = message.containsKey('user');
+                    // log("IS USER MESSAGE : $isUserMessage");
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0,
+                                vertical: 10.0,
+                              ),
+                              decoration: const BoxDecoration(
+                                color: Colors.blueAccent,
+                                borderRadius:  BorderRadius.only(
+                                  topLeft: Radius.circular(15.0),
+                                  topRight: Radius.circular(15.0),
+                                  bottomLeft: Radius.circular(15.0),
+                                  bottomRight: Radius.circular(0),
+                                ),
+                              ),
+                              // alignment: Alignment.centerLeft,
+                              child: Text(
+                                message['question'] ?? '...',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          isUserMessage
-                              ? message['user']!
-                              : message['ai'] ?? '...',
-                          style: const TextStyle(color: Colors.white),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(vertical: 5.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15.0,
+                                  vertical: 10.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade800,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                    bottomLeft: Radius.zero,
+                                    bottomRight: Radius.circular(15.0),
+                                  ),
+                                ),
+                                // alignment: Alignment.centerLeft,
+                                child: Text(
+                                  message['answer'] ?? '...',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     );
                   },
                 ),
               ),
-
               // Input Bar
               Card(
                 elevation: 5,

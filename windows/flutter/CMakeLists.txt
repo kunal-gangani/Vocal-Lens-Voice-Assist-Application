@@ -98,6 +98,7 @@ add_custom_command(
       ${FLUTTER_TOOL_ENVIRONMENT}
       "${FLUTTER_ROOT}/packages/flutter_tools/bin/tool_backend.bat"
         ${FLUTTER_TARGET_PLATFORM} $<CONFIG>
+  VERBATIM
   )
   VERBATIM
 )
