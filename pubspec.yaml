@@ -15,17 +15,16 @@ dependencies:
   flexify: ^2.1.1
   flutter_screenutil: ^5.9.3
   speech_to_text: ^7.0.0
-  url_launcher: ^6.3.1
   http: ^1.2.2
   font_awesome_flutter: ^10.1.0
   google_generative_ai: ^0.4.6
-  porcupine_flutter: ^3.0.4
   easy_localization: ^3.0.0
   flutter_slidable: ^3.1.2
   flutter_glow: ^0.3.2
   timeline_tile: ^2.0.0
   flutter_spinkit:
   text_to_speech:
+  get_storage:
   # youtube_player_iframe: ^5.2.1
   # youtube_player_flutter: ^8.1.2
 
