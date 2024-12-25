@@ -26,6 +26,8 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_spinkit:
   text_to_speech:
+  # youtube_player_iframe: ^5.2.1
+  # youtube_player_flutter: ^8.1.2
 
 
 dev_dependencies:

@@ -152,7 +152,7 @@ Widget homePageView() {
                       Row(
                         children: [
                           const Text(
-                            "Responses",
+                            "Response",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -160,16 +160,31 @@ Widget homePageView() {
                             ),
                           ),
                           const SizedBox(
-                            width: 115,
+                            width: 68,
                           ),
                           IconButton(
                             onPressed: () {
                               if (value.responses.isNotEmpty) {
-                                value.readResponse(value: value);
+                                value.readOrPromptResponse();
+                              } else {
+                                value.readOrPromptResponse();
                               }
                             },
                             icon: const Icon(
                               Icons.volume_up,
+                              color: Colors.white,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              if (value.isSpeaking) {
+                                value.stopSpeaking();
+                              } else {
+                                value.resumeSpeaking();
+                              }
+                            },
+                            icon: Icon(
+                              value.isSpeaking ? Icons.stop : Icons.play_arrow,
                               color: Colors.white,
                             ),
                           ),

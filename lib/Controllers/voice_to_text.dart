@@ -13,6 +13,8 @@ class VoiceToTextController extends ChangeNotifier {
   late stt.SpeechToText speechToText;
   bool isListening = false;
   bool isLoading = false;
+  bool isSpeaking = false;
+  bool isPaused = false; // Track if speech is paused
   String text = "Press the mic to start speaking...";
   List<String> history = [];
   TextEditingController searchFieldController = TextEditingController();
@@ -20,6 +22,7 @@ class VoiceToTextController extends ChangeNotifier {
   bool isLoadingQuery = false;
   bool isButtonEnabled = false;
   final textToSpeech = TextToSpeech();
+  String? lastSpokenAnswer; // Store last spoken answer
 
   VoiceToTextController() {
     speechToText = stt.SpeechToText();
@@ -41,8 +44,52 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
-  void readResponse({required VoiceToTextController value}) {
-    textToSpeech.speak(value.responses[0]['answer']);
+  void readOrPromptResponse() async {
+    log("Checking responses and speaking status...");
+
+    if (responses.isNotEmpty) {
+      String answer = responses[0]['answer'];
+      log("Answer to speak: $answer");
+
+      if (!isSpeaking && !isPaused) {
+        isSpeaking = true;
+        lastSpokenAnswer = answer; // Track the last spoken answer
+        await textToSpeech.speak(answer);
+        log("Speaking the answer: $answer");
+      }
+    } else {
+      log("No response found, prompting user.");
+      if (!isSpeaking && !isPaused) {
+        isSpeaking = true;
+        lastSpokenAnswer =
+            "Please search for a question or request first."; // Save prompt message
+        await textToSpeech.speak(lastSpokenAnswer!);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  // Method to stop speech playback
+  void stopSpeaking() {
+    textToSpeech.stop();
+    isSpeaking = false;
+    isPaused = true; // Mark speech as paused
+    log("Speech stopped.");
+    notifyListeners();
+  }
+
+  // Method to resume speech playback
+  void resumeSpeaking() {
+    if (!isSpeaking && isPaused) {
+      isSpeaking = true;
+      isPaused = false;
+      if (lastSpokenAnswer != null) {
+        // Resume from the last spoken answer (this will re-speak it)
+        textToSpeech.speak(lastSpokenAnswer!);
+        log("Speech resumed.");
+      }
+    }
     notifyListeners();
   }
 
@@ -111,6 +158,7 @@ class VoiceToTextController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Navigation methods to open different pages
   void openChatSection() {
     Flexify.go(
       const ChatSectionPage(),

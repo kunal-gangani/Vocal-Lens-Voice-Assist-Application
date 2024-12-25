@@ -5,7 +5,10 @@ Widget youTubePageView() {
     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
     decoration: BoxDecoration(
       gradient: LinearGradient(
-        colors: [Colors.blueGrey.shade900, Colors.black],
+        colors: [
+          Colors.blueGrey.shade900,
+          Colors.black,
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
@@ -15,7 +18,7 @@ Widget youTubePageView() {
         children: [
           // Search Bar
           Card(
-            elevation: 2,
+            elevation: 8,
             color: Colors.blueGrey.shade800,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25),
@@ -26,25 +29,34 @@ Widget youTubePageView() {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
                       decoration: InputDecoration(
                         hintText: "Search videos",
-                        hintStyle: const TextStyle(color: Colors.white70),
+                        hintStyle: const TextStyle(
+                          color: Colors.white70,
+                        ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
                         fillColor: Colors.blueGrey.shade700,
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 15),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(
+                    width: 8,
+                  ),
                   IconButton(
-                    icon: const Icon(Icons.search, color: Colors.white),
-                    onPressed: () {
-                      // Add search functionality here
-                    },
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -54,20 +66,21 @@ Widget youTubePageView() {
 
           // YouTube Player Placeholder
           Card(
-            elevation: 2,
+            elevation: 6,
             color: Colors.blueGrey.shade800,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
             child: Container(
               padding: const EdgeInsets.all(10.0),
-              height: 160,
+              height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 image: const DecorationImage(
                   image: NetworkImage(
-                      'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA='),
+                    'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA=',
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -75,7 +88,7 @@ Widget youTubePageView() {
                 child: Icon(
                   Icons.play_circle_fill,
                   color: Colors.white,
-                  size: 55,
+                  size: 70,
                 ),
               ),
             ),
@@ -84,26 +97,27 @@ Widget youTubePageView() {
 
           // Search Results
           SizedBox(
-            height: 280,
+            height: 300,
             child: ListView.builder(
-              itemCount: 5, // Replace with the length of search results
+              itemCount: 5,
               itemBuilder: (context, index) {
                 return Card(
-                  elevation: 2,
+                  elevation: 6,
                   color: Colors.blueGrey.shade800,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
                     leading: Container(
-                      width: 50,
-                      height: 50,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         image: const DecorationImage(
                           image: NetworkImage(
-                              'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA='),
+                            'https://media.istockphoto.com/id/2149530993/photo/digital-human-head-concept-for-ai-metaverse-and-facial-recognition-technology.webp?a=1&b=1&s=612x612&w=0&k=20&c=nyP4c-s5cSZy1nv1K0xn1ynC-Xuc1sY4Y29ZQqcrztA=',
+                          ),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -111,15 +125,19 @@ Widget youTubePageView() {
                     title: Text(
                       "Video Title $index",
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w500),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     subtitle: const Text(
                       "Channel Name",
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
                     ),
-                    onTap: () {
-                      // Add playback functionality here
-                    },
+                    onTap: () {},
                   ),
                 );
               },

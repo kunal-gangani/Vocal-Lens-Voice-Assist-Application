@@ -15,129 +15,140 @@ class DetailedResponsePages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        actions: [
-          Consumer<VoiceToTextController>(builder: (context, value, _) {
-            return IconButton(
+    return Consumer<VoiceToTextController>(builder: (context, value, _) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          actions: [
+            IconButton(
               onPressed: () {
                 if (value.responses.isNotEmpty) {
-                  value.readResponse(
-                    value: value,
-                  );
+                  value.readOrPromptResponse();
                 }
               },
               icon: const Icon(
                 Icons.volume_up,
                 color: Colors.white,
               ),
-            );
-          }),
-        ],
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blueGrey.shade900,
-        leading: IconButton(
-          onPressed: () {
-            Flexify.back();
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: Colors.white,
+            ),
+            IconButton(
+              onPressed: () {
+                if (value.isSpeaking) {
+                  value.stopSpeaking();
+                } else {
+                  value.resumeSpeaking();
+                }
+              },
+              icon: Icon(
+                value.isSpeaking ? Icons.stop : Icons.play_arrow,
+                color: Colors.white,
+              ),
+            ),
+          ],
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.blueGrey.shade900,
+          leading: IconButton(
+            onPressed: () {
+              Flexify.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.white,
+            ),
+          ),
+          title: const Text(
+            "Response Details",
           ),
         ),
-        title: const Text(
-          "Response Details",
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 16.0,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Question Card
-              Card(
-                elevation: 12,
-                color: Colors.blueGrey.shade800,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                shadowColor: Colors.black,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Question:",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.cyan,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+            vertical: 16.0,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Question Card
+                Card(
+                  elevation: 12,
+                  color: Colors.blueGrey.shade800,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  shadowColor: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Question:",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.cyan,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        question,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                    ],
+                        Text(
+                          question,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              // Answer Section
-              Card(
-                elevation: 12,
-                color: Colors.blueGrey.shade800,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                const SizedBox(
+                  height: 24,
                 ),
-                shadowColor: Colors.black,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Answer:",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.cyan,
+                // Answer Section
+                Card(
+                  elevation: 12,
+                  color: Colors.blueGrey.shade800,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  shadowColor: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Answer:",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.cyan,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        answer,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                    ],
+                        Text(
+                          answer,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
