@@ -1,13 +1,10 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:text_to_speech/text_to_speech.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/DetailedResponsePage/detailed_response_pages.dart';
 
 Widget homePageView() {
-  // final textToSpeech = TextToSpeech();
-
   return Container(
     padding: const EdgeInsets.symmetric(
       horizontal: 20.0,
@@ -153,7 +150,6 @@ Widget homePageView() {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
                             "Responses",
@@ -163,11 +159,13 @@ Widget homePageView() {
                               color: Colors.white,
                             ),
                           ),
+                          const SizedBox(
+                            width: 115,
+                          ),
                           IconButton(
                             onPressed: () {
                               if (value.responses.isNotEmpty) {
-                                // textToSpeech
-                                //     .speak(value.responses[0]['answer']);
+                                value.readResponse(value: value);
                               }
                             },
                             icon: const Icon(
@@ -193,7 +191,9 @@ Widget homePageView() {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Flexible(
                         child: ListView.builder(
                           shrinkWrap: true,

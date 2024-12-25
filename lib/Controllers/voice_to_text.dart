@@ -3,15 +3,14 @@ import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
+import 'package:text_to_speech/text_to_speech.dart';
 
 class VoiceToTextController extends ChangeNotifier {
   late stt.SpeechToText speechToText;
-  late FlutterTts flutterTts;
   bool isListening = false;
   bool isLoading = false;
   String text = "Press the mic to start speaking...";
@@ -20,11 +19,10 @@ class VoiceToTextController extends ChangeNotifier {
   List<Map<String, dynamic>> responses = [];
   bool isLoadingQuery = false;
   bool isButtonEnabled = false;
+  final textToSpeech = TextToSpeech();
 
   VoiceToTextController() {
     speechToText = stt.SpeechToText();
-    flutterTts = FlutterTts();
-
     searchFieldController.addListener(() {
       isButtonEnabled = searchFieldController.text.isNotEmpty;
       notifyListeners();
@@ -41,6 +39,11 @@ class VoiceToTextController extends ChangeNotifier {
     } else {
       stopListening();
     }
+  }
+
+  void readResponse({required VoiceToTextController value}) {
+    textToSpeech.speak(value.responses[0]['answer']);
+    notifyListeners();
   }
 
   void startListening() async {

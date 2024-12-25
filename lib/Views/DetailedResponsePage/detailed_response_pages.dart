@@ -1,5 +1,7 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
 class DetailedResponsePages extends StatelessWidget {
   final String question;
@@ -16,6 +18,23 @@ class DetailedResponsePages extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        actions: [
+          Consumer<VoiceToTextController>(builder: (context, value, _) {
+            return IconButton(
+              onPressed: () {
+                if (value.responses.isNotEmpty) {
+                  value.readResponse(
+                    value: value,
+                  );
+                }
+              },
+              icon: const Icon(
+                Icons.volume_up,
+                color: Colors.white,
+              ),
+            );
+          }),
+        ],
         foregroundColor: Colors.white,
         backgroundColor: Colors.blueGrey.shade900,
         leading: IconButton(

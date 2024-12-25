@@ -15,7 +15,6 @@ dependencies:
   flexify: ^2.1.1
   flutter_screenutil: ^5.9.3
   speech_to_text: ^7.0.0
-  flutter_tts: ^4.2.0
   url_launcher: ^6.3.1
   http: ^1.2.2
   font_awesome_flutter: ^10.1.0
@@ -26,6 +25,7 @@ dependencies:
   flutter_glow: ^0.3.2
   timeline_tile: ^2.0.0
   flutter_spinkit:
+  text_to_speech:
 
 
 dev_dependencies:
