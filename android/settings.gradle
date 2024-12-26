@@ -7,6 +7,7 @@ pluginManagement {
         return flutterSdkPath
     }()
 
+    // Include the Flutter SDK path correctly
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
