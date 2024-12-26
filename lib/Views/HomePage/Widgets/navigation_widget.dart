@@ -15,7 +15,7 @@ Widget navigationBar() {
           ),
         ),
         indicatorShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0), 
+          borderRadius: BorderRadius.circular(16.0),
         ),
       ),
       child: NavigationBar(
@@ -39,6 +39,13 @@ Widget navigationBar() {
             icon: FaIcon(
               FontAwesomeIcons.youtube,
               color: Colors.red,
+            ),
+          ),
+          NavigationDestination(
+            label: "Explore",
+            icon: Icon(
+              Icons.group_add,
+              color: Colors.cyan,
             ),
           ),
           NavigationDestination(

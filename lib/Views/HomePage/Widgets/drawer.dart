@@ -39,6 +39,19 @@ Widget customDrawer() {
           ),
           ListTile(
             leading: const Icon(
+              Icons.group_add,
+              color: Colors.blue,
+            ),
+            title: const Text(
+              "Connection Requests",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onTap: value.openConnectionReuqestPage,
+          ),
+          ListTile(
+            leading: const Icon(
               Icons.star,
               color: Colors.purple,
             ),

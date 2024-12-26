@@ -6,6 +6,7 @@ import 'package:text_to_speech/text_to_speech.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flexify/flexify.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
+import 'package:vocal_lens/Views/ConnectionsRequestPage/connection_request_page.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
@@ -18,7 +19,7 @@ class VoiceToTextController extends ChangeNotifier {
   bool isPaused = false;
   String text = "Press the mic to start speaking...";
   List<String> history = [];
-  List<String> _favoritesList = []; // Store favorites here
+  List<String> _favoritesList = [];
   TextEditingController searchFieldController = TextEditingController();
   List<Map<String, dynamic>> responses = [];
   bool isLoadingQuery = false;
@@ -27,20 +28,18 @@ class VoiceToTextController extends ChangeNotifier {
   String? lastSpokenAnswer;
   final _storage = GetStorage();
   final String _historyKey = 'history';
-  final String _favoritesKey = 'favorites'; // Key to store favorites
+  final String _favoritesKey = 'favorites';
 
   List<String> get favoritesList => _favoritesList;
 
   VoiceToTextController() {
     speechToText = stt.SpeechToText();
 
-    // Load saved history from storage
     List<dynamic>? savedHistory = _storage.read<List<dynamic>>(_historyKey);
     if (savedHistory != null) {
       history = savedHistory.cast<String>();
     }
 
-    // Load saved favorites from storage
     List<dynamic>? savedFavorites = _storage.read<List<dynamic>>(_favoritesKey);
     if (savedFavorites != null) {
       _favoritesList = savedFavorites.cast<String>();
@@ -198,7 +197,6 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
-  // New method to clear all responses
   void clearAllResponses() {
     responses.clear();
     notifyListeners();
@@ -215,6 +213,14 @@ class VoiceToTextController extends ChangeNotifier {
   void openUserSettings() {
     Flexify.go(
       const UserSettingsPage(),
+      animation: FlexifyRouteAnimations.blur,
+      animationDuration: Durations.medium1,
+    );
+  }
+
+  void openConnectionReuqestPage() {
+    Flexify.go(
+      const ConnectionRequestPage(),
       animation: FlexifyRouteAnimations.blur,
       animationDuration: Durations.medium1,
     );
