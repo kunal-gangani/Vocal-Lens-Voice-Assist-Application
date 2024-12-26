@@ -21,21 +21,17 @@ class ChatWithAiController extends ChangeNotifier {
     String userMessage = messageController.text.trim();
     if (userMessage.isEmpty) return;
 
-    // Add user message to the list
     messages.add({'question': userMessage});
     messageController.clear();
 
-    // Mark as loading
     isLoading = true;
     notifyListeners();
 
     try {
-      // Call the AI API
       final response = await generativeModel.generateContent([
         Content.text(userMessage),
       ]);
 
-      // Check and add AI response
       if (response.text != null) {
         messages.add({'answer': response.text!});
       } else {
@@ -54,21 +50,17 @@ class ChatWithAiController extends ChangeNotifier {
     String query = messageController.text.trim();
     if (query.isEmpty) return;
 
-    // Add query to history
     history.add(query);
     messageController.clear();
 
-    // Mark as loading
     isLoading = true;
     notifyListeners();
 
     try {
-      // Call the AI API
       final response = await generativeModel.generateContent([
         Content.text(query),
       ]);
 
-      // Add AI response to messages
       if (response.text != null) {
         messages.add({'question': query, 'answer': response.text!});
       } else {

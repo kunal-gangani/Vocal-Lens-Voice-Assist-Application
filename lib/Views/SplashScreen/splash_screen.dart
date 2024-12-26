@@ -2,19 +2,14 @@ import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     Timer(const Duration(seconds: 3), () {
       Flexify.goRemove(
         const HomePage(),
@@ -22,10 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
         duration: Durations.medium1,
       );
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -35,37 +26,42 @@ class _SplashScreenState extends State<SplashScreen> {
               Color(0xFF203A43),
               Color(0xFF2C5364),
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.mic,
-                size: 100,
-                color: Colors.white,
-              ),
               SizedBox(
-                height: 20.h,
-              ),
-              Text(
-                'VocalLens',
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.5,
+                width: 150.w,
+                height: 150.h,
+                child: Lottie.asset(
+                  "lib/Views/SplashScreen/Assets/loader.json",
                 ),
               ),
               SizedBox(
                 height: 30.h,
               ),
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.white,
+              Text(
+                'VocalLens',
+                style: TextStyle(
+                  fontSize: 32.sp,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Text(
+                'Empowering Vision through AI',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withOpacity(0.8),
                 ),
               ),
             ],

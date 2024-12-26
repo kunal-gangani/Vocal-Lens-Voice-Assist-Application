@@ -25,6 +25,7 @@ dependencies:
   flutter_spinkit:
   text_to_speech:
   get_storage:
+  lottie:
   # youtube_player_iframe: ^5.2.1
   # youtube_player_flutter: ^8.1.2
 
@@ -38,3 +39,4 @@ flutter:
   uses-material-design: true
   assets:
     - lib/Assets/
+    - lib/Views/SplashScreen/Assets/loader.json

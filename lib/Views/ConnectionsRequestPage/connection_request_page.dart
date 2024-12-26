@@ -25,7 +25,9 @@ class ConnectionRequestPage extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.blueGrey.shade900,
-        title: const Text("Connection Requests"),
+        title: const Text(
+          "Connection Requests",
+        ),
       ),
       body: connectionRequests.isEmpty
           ? const Center(
@@ -66,7 +68,9 @@ class ConnectionRequestPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(
+                          width: 16,
+                        ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +83,9 @@ class ConnectionRequestPage extends StatelessWidget {
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(
+                                height: 4,
+                              ),
                               const Text(
                                 "Wants to connect with you",
                                 style: TextStyle(
@@ -90,15 +96,15 @@ class ConnectionRequestPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12), // Ensures proper space between buttons and text
+                        const SizedBox(
+                          width: 12,
+                        ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                              onPressed: () {
-                                // Accept request logic
-                              },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 shape: RoundedRectangleBorder(
@@ -117,11 +123,11 @@ class ConnectionRequestPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(
+                              height: 8,
+                            ),
                             ElevatedButton(
-                              onPressed: () {
-                                // Reject request logic
-                              },
+                              onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 shape: RoundedRectangleBorder(
