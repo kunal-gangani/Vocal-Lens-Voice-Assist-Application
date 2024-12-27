@@ -26,7 +26,6 @@ dependencies:
   text_to_speech:
   get_storage:
   lottie:
-  # youtube_player_iframe: ^5.2.1
   # youtube_player_flutter: ^8.1.2
 
 

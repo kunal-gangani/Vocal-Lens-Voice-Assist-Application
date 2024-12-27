@@ -1,39 +1,39 @@
 buildscript {
     repositories {
-        google()         // Google's Maven repository
-        mavenCentral()   // Maven Central repository (for dependencies like Kotlin)
+        google()         
+        mavenCentral()   
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0' // Updated to Android Gradle Plugin version 8.1.0
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"  // Kotlin Gradle Plugin (ensure compatibility with Gradle 8.x)
+        classpath 'com.android.tools.build:gradle:8.1.0' 
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"  
     }
 }
 
 allprojects {
     repositories {
-        google()       // Google's Maven repository
-        mavenCentral() // Maven Central repository
+        google()       
+        mavenCentral() 
     }
 }
 
-rootProject.buildDir = "../build"  // Set the root build directory
+rootProject.buildDir = "../build"  
 
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-    evaluationDependsOn(":app")  // Ensures evaluation of subprojects, specifically ':app'
+    evaluationDependsOn(":app")  
 
     tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"  // Set encoding for Java source files
-        sourceCompatibility = "17"  // Set Java source compatibility to Java 17
-        targetCompatibility = "17"  // Set Java target compatibility to Java 17
+        options.encoding = "UTF-8"  
+        sourceCompatibility = "17"  
+        targetCompatibility = "17"  
     }
 
     repositories {
-        google()       // Google's Maven repository
-        mavenCentral() // Maven Central repository for dependencies
+        google()       
+        mavenCentral() 
     }
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir // Clean the build directory when this task is executed
+    delete rootProject.buildDir 
 }
