@@ -62,9 +62,9 @@ Widget youTubePageView() {
               ),
             ),
           ),
-          const SizedBox(height: 12),
-
-          // YouTube Player Placeholder
+          const SizedBox(
+            height: 12,
+          ),
           Card(
             elevation: 6,
             color: Colors.blueGrey.shade800,

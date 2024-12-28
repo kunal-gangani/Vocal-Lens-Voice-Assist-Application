@@ -22,15 +22,21 @@ PreferredSizeWidget appBar({required BuildContext context}) {
           Icons.refresh,
         ),
         onPressed: () {
-          Provider.of<PositionController>(context, listen: false)
-              .resetPosition(context);
+          Provider.of<PositionController>(
+            context,
+            listen: false,
+          ).resetPosition(context);
         },
         color: Colors.white,
       ),
       IconButton(
-        icon: const FaIcon(FontAwesomeIcons.commentDots),
-        onPressed: Provider.of<VoiceToTextController>(context, listen: false)
-            .openChatSection,
+        icon: const FaIcon(
+          FontAwesomeIcons.commentDots,
+        ),
+        onPressed: Provider.of<VoiceToTextController>(
+          context,
+          listen: false,
+        ).openChatSection,
         color: Colors.white,
       ),
     ],

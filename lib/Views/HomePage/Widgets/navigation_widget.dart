@@ -42,14 +42,14 @@ Widget navigationBar() {
             ),
           ),
           NavigationDestination(
-            label: "Explore",
+            label: "Discover",
             icon: Icon(
               Icons.group_add,
               color: Colors.cyan,
             ),
           ),
           NavigationDestination(
-            label: "AI Chat",
+            label: "AI-Assist",
             icon: Icon(
               Icons.memory,
               color: Colors.orange,
@@ -57,7 +57,7 @@ Widget navigationBar() {
           ),
         ],
         backgroundColor: Colors.grey.shade800,
-        indicatorColor: Colors.grey.shade100,
+        indicatorColor: Colors.grey.shade500,
       ),
     );
   });
