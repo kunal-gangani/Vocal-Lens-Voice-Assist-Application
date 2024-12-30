@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:vocal_lens/Views/HomePage/home_page.dart';
+import 'package:vocal_lens/Views/ApplicationFeaturesPage/application_features_page.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -12,7 +12,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 3), () {
       Flexify.goRemove(
-        const HomePage(),
+        const ApplicationFeaturesPage(),
         animation: FlexifyRouteAnimations.blur,
         duration: Durations.medium1,
       );
@@ -61,7 +61,7 @@ class SplashScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(),
                 ),
               ),
             ],
