@@ -26,21 +26,21 @@ class VoiceToTextController extends ChangeNotifier {
   bool isButtonEnabled = false;
   final textToSpeech = TextToSpeech();
   String? lastSpokenAnswer;
-  final _storage = GetStorage();
-  final String _historyKey = 'history';
-  final String _favoritesKey = 'favorites';
+  final storage = GetStorage();
+  final String historyKey = 'history';
+  final String favoritesKey = 'favorites';
 
   List<String> get favoritesList => _favoritesList;
 
   VoiceToTextController() {
     speechToText = stt.SpeechToText();
 
-    List<dynamic>? savedHistory = _storage.read<List<dynamic>>(_historyKey);
+    List<dynamic>? savedHistory = storage.read<List<dynamic>>(historyKey);
     if (savedHistory != null) {
       history = savedHistory.cast<String>();
     }
 
-    List<dynamic>? savedFavorites = _storage.read<List<dynamic>>(_favoritesKey);
+    List<dynamic>? savedFavorites = storage.read<List<dynamic>>(favoritesKey);
     if (savedFavorites != null) {
       _favoritesList = savedFavorites.cast<String>();
     }
@@ -52,11 +52,11 @@ class VoiceToTextController extends ChangeNotifier {
   }
 
   void _saveHistory() {
-    _storage.write(_historyKey, history);
+    storage.write(historyKey, history);
   }
 
   void _saveFavorites() {
-    _storage.write(_favoritesKey, _favoritesList);
+    storage.write(favoritesKey, _favoritesList);
   }
 
   void toggleListening() {
@@ -72,8 +72,9 @@ class VoiceToTextController extends ChangeNotifier {
 
   void readOrPromptResponse() async {
     log("Checking responses and speaking status...");
+
     if (responses.isNotEmpty) {
-      String answer = responses[0]['answer'];
+      String answer = responses.last['answer'];
       log("Answer to speak: $answer");
 
       if (!isSpeaking && !isPaused) {
@@ -98,7 +99,7 @@ class VoiceToTextController extends ChangeNotifier {
     textToSpeech.stop();
     isSpeaking = false;
     isPaused = true;
-    log("Speech stopped.");
+    log("Speech stopped. isSpeaking: $isSpeaking, isPaused: $isPaused");
     notifyListeners();
   }
 
@@ -106,10 +107,8 @@ class VoiceToTextController extends ChangeNotifier {
     if (!isSpeaking && isPaused) {
       isSpeaking = true;
       isPaused = false;
-      if (lastSpokenAnswer != null) {
-        textToSpeech.speak(lastSpokenAnswer!);
-        log("Speech resumed.");
-      }
+      log("Resuming speech. isSpeaking: $isSpeaking, isPaused: $isPaused");
+      textToSpeech.speak(lastSpokenAnswer!);
     }
     notifyListeners();
   }
@@ -158,7 +157,9 @@ class VoiceToTextController extends ChangeNotifier {
   }
 
   Future<void> searchYourQuery() async {
+    log("Starting query search...");
     responses.clear();
+    log("Cleared previous responses: $responses");
 
     const String apiKey = "AIzaSyCzaJagaearxYYdwfRe8G_oEmcNKc3gB-Q";
 
@@ -187,6 +188,8 @@ class VoiceToTextController extends ChangeNotifier {
           "answer": response.text!,
         });
 
+        log("Added new response: $responses");
+        readOrPromptResponse();
         searchFieldController.clear();
       }
     } catch (e) {

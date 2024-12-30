@@ -40,3 +40,4 @@ flutter:
   assets:
     - lib/Assets/
     - lib/Views/SplashScreen/Assets/loader.json
+    - lib/Views/ApplicationFeaturesPage/Assets/
