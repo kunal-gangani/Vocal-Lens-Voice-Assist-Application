@@ -143,7 +143,7 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
-  void shareResponse(String response) {
+  void shareResponse({required String response}) {
     Share.share(response, subject: "Check out this response!");
   }
 
@@ -155,7 +155,7 @@ class VoiceToTextController extends ChangeNotifier {
     );
   }
 
-  void copyToClipboard(String text, {required BuildContext context}) {
+  void copyToClipboard({required String text, required BuildContext context}) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

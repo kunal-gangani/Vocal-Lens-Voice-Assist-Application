@@ -71,7 +71,6 @@ class PastResponsesPage extends StatelessWidget {
                         itemCount: value.history.length,
                         itemBuilder: (context, index) {
                           final query = value.history[index];
-
                           return Slidable(
                             key: ValueKey(index),
                             startActionPane: ActionPane(
@@ -124,85 +123,103 @@ class PastResponsesPage extends StatelessWidget {
                                 color: Colors.grey,
                                 thickness: 4,
                               ),
-                              endChild: Card(
-                                elevation: 12,
-                                shadowColor: Colors.black54,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Container(
-                                  padding: const EdgeInsets.all(18.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blueGrey.shade800,
+                              endChild: GestureDetector(
+                                onTap: () {},
+                                child: Card(
+                                  elevation: 12,
+                                  shadowColor: Colors.black54,
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 28,
-                                            backgroundColor:
-                                                Colors.blueGrey.shade600,
-                                            child: const Icon(
-                                              Icons.message,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              query,
-                                              style: const TextStyle(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(18.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueGrey.shade800,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 28,
+                                              backgroundColor:
+                                                  Colors.blueGrey.shade600,
+                                              child: const Icon(
+                                                Icons.message,
                                                 color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
                                               ),
                                             ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              if (value.favoritesList
-                                                  .contains(query)) {
-                                                value
-                                                    .removeFromFavorites(query);
-                                              } else {
-                                                value.addToFavorites(query);
-                                              }
-                                            },
-                                            icon: Icon(
-                                              value.favoritesList
-                                                      .contains(query)
-                                                  ? Icons.favorite
-                                                  : Icons.favorite_border,
-                                              color: value.favoritesList
-                                                      .contains(query)
-                                                  ? Colors.red
-                                                  : Colors.red.shade300,
+                                            const SizedBox(
+                                              width: 15,
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Text(
-                                          "Date: ${DateTime.now().toString().split(' ')[0]}",
-                                          style: const TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 14,
+                                            Expanded(
+                                              child: Text(
+                                                query,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                IconButton(
+                                                  onPressed: () {
+                                                    if (value.favoritesList
+                                                        .contains(query)) {
+                                                      value.removeFromFavorites(
+                                                          query);
+                                                    } else {
+                                                      value.addToFavorites(
+                                                          query);
+                                                    }
+                                                  },
+                                                  icon: Icon(
+                                                    value.favoritesList
+                                                            .contains(query)
+                                                        ? Icons.favorite
+                                                        : Icons.favorite_border,
+                                                    color: value.favoritesList
+                                                            .contains(query)
+                                                        ? Colors.red
+                                                        : Colors.red.shade300,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    value.shareResponse(
+                                                        response: query);
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.share,
+                                                    color: Colors.blue.shade300,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            "Date: ${DateTime.now().toString().split(' ')[0]}",
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

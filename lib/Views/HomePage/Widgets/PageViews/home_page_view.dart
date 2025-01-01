@@ -188,22 +188,27 @@ Widget homePageView() {
                               color: Colors.white,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              Flexify.go(
-                                DetailedResponsePages(
-                                  question: value.responses[0]['question'],
-                                  answer: value.responses[0]['answer'],
-                                ),
-                                animation: FlexifyRouteAnimations.blur,
-                                animationDuration: Durations.medium1,
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.open_in_full,
-                              color: Colors.white,
+                          Visibility(
+                            visible: value.responses.isNotEmpty &&
+                                value.responses[0]['answer'] != null &&
+                                value.responses[0]['answer'].isNotEmpty,
+                            child: IconButton(
+                              onPressed: () {
+                                Flexify.go(
+                                  DetailedResponsePages(
+                                    question: value.responses[0]['question'],
+                                    answer: value.responses[0]['answer'],
+                                  ),
+                                  animation: FlexifyRouteAnimations.blur,
+                                  animationDuration: Durations.medium1,
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.open_in_full,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                       const SizedBox(
