@@ -70,25 +70,37 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
+  void deleteAllHistory() {
+    history.clear();
+    _saveHistory();
+    notifyListeners();
+  }
+
   void readOrPromptResponse() async {
     log("Checking responses and speaking status...");
 
     if (responses.isNotEmpty) {
-      String answer = responses.last['answer'];
-      log("Answer to speak: $answer");
+      String currentAnswer = responses.last['answer'];
+      log("Answer to speak: $currentAnswer");
 
-      if (!isSpeaking && !isPaused) {
+      if (!isSpeaking) {
         isSpeaking = true;
-        lastSpokenAnswer = answer;
-        await textToSpeech.speak(answer);
-        log("Speaking the answer: $answer");
+        isPaused = false;
+        lastSpokenAnswer = currentAnswer;
+        log("Speaking the answer: $currentAnswer");
+        await textToSpeech.speak(currentAnswer).then((_) {
+          isSpeaking = false;
+        });
       }
     } else {
       log("No response found, prompting user.");
       if (!isSpeaking && !isPaused) {
         isSpeaking = true;
         lastSpokenAnswer = "Please search for a question or request first.";
-        await textToSpeech.speak(lastSpokenAnswer!);
+        log("Speaking default prompt: $lastSpokenAnswer");
+        await textToSpeech.speak(lastSpokenAnswer!).then((_) {
+          isSpeaking = false;
+        });
       }
     }
 

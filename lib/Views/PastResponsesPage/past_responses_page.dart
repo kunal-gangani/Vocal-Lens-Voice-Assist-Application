@@ -34,14 +34,13 @@ class PastResponsesPage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Flexify.goRemove(
-                const HomePage(),
-                animation: FlexifyRouteAnimations.blur,
-                duration: Durations.medium1,
-              );
+              Provider.of<VoiceToTextController>(
+                context,
+                listen: false,
+              ).deleteAllHistory();
             },
             child: const Text(
-              "Search More",
+              "Delete All",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
