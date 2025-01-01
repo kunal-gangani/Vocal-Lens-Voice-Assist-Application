@@ -76,7 +76,7 @@ class PastResponsesPage extends StatelessWidget {
                             key: ValueKey(index),
                             startActionPane: ActionPane(
                               motion: const DrawerMotion(),
-                              extentRatio: 0.25,
+                              extentRatio: 0.5,
                               children: [
                                 SlidableAction(
                                   onPressed: (context) {
@@ -86,6 +86,19 @@ class PastResponsesPage extends StatelessWidget {
                                   foregroundColor: Colors.white,
                                   icon: Icons.delete,
                                   label: 'Delete',
+                                ),
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    value.togglePin(query);
+                                  },
+                                  backgroundColor: Colors.blue.shade700,
+                                  foregroundColor: Colors.white,
+                                  icon: value.pinnedList.contains(query)
+                                      ? Icons.push_pin
+                                      : Icons.push_pin_outlined,
+                                  label: value.pinnedList.contains(query)
+                                      ? 'Unpin'
+                                      : 'Pin',
                                 ),
                               ],
                             ),

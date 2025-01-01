@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:text_to_speech/text_to_speech.dart';
@@ -10,6 +11,7 @@ import 'package:vocal_lens/Views/ConnectionsRequestPage/connection_request_page.
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
+import 'package:share_plus/share_plus.dart';
 
 class VoiceToTextController extends ChangeNotifier {
   late stt.SpeechToText speechToText;
@@ -29,6 +31,7 @@ class VoiceToTextController extends ChangeNotifier {
   final storage = GetStorage();
   final String historyKey = 'history';
   final String favoritesKey = 'favorites';
+  List<String> pinnedList = [];
 
   List<String> get favoritesList => _favoritesList;
 
@@ -140,6 +143,29 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
+  void shareResponse(String response) {
+    Share.share(response, subject: "Check out this response!");
+  }
+
+  void shareMultipleResponses(List<Map<String, dynamic>> responses) {
+    String allResponses = responses.map((r) => r['answer']).join('\n\n');
+    Share.share(
+      allResponses,
+      subject: "Check out these responses!",
+    );
+  }
+
+  void copyToClipboard(String text, {required BuildContext context}) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Copied to clipboard!",
+        ),
+      ),
+    );
+  }
+
   void handleVoiceCommand(String command) {
     if (command.contains("help")) {
       String helpMessage = "Here are the commands you can say: "
@@ -168,8 +194,27 @@ class VoiceToTextController extends ChangeNotifier {
     } else {
       log("Command not recognized: $command");
       textToSpeech.speak(
-          "Sorry, I didn't understand that command.Would you mind repeating it?");
+          "Sorry, I didn't understand that command Would you mind repeating it?");
     }
+  }
+
+  void togglePin(String query) {
+    if (pinnedList.contains(query)) {
+      pinnedList.remove(query);
+    } else {
+      pinnedList.add(query);
+    }
+    notifyListeners();
+  }
+
+  void lockResource(int index) {
+    responses[index]['isLocked'] = true;
+    notifyListeners();
+  }
+
+  void unlockResource(int index) {
+    responses[index]['isLocked'] = false;
+    notifyListeners();
   }
 
   void stopListening() {
