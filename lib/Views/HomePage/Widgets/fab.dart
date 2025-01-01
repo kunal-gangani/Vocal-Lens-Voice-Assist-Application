@@ -41,14 +41,13 @@ Widget floatingButton() {
                     ),
                     child: FloatingActionButton(
                       onPressed: () {
-                        // Start/Stop voice recording when pressed
                         voiceToTextController.toggleListening();
                       },
                       backgroundColor: Colors.blueGrey.shade600,
                       child: Icon(
                         voiceToTextController.isListening
-                            ? Icons.mic_off
-                            : Icons.mic,
+                            ? Icons.mic
+                            : Icons.mic_off,
                         color: Colors.white,
                       ),
                     ),

@@ -129,15 +129,46 @@ class VoiceToTextController extends ChangeNotifier {
     bool available = await speechToText.initialize();
     if (available) {
       isListening = true;
-      isLoading = true;
-
       speechToText.listen(onResult: (result) {
-        text = result.recognizedWords;
+        String recognizedText = result.recognizedWords.toLowerCase();
+        handleVoiceCommand(recognizedText);
         notifyListeners();
       });
     } else {
       text = "Speech recognition is not available.";
       notifyListeners();
+    }
+  }
+
+  void handleVoiceCommand(String command) {
+    if (command.contains("help")) {
+      String helpMessage = "Here are the commands you can say: "
+          "Open settings, show my favorites, show my history, start chat, delete all history. And many more";
+      textToSpeech.speak(helpMessage);
+    } else if (command.contains("open settings")) {
+      openUserSettings();
+      textToSpeech.speak("Opening settings.");
+    } else if (command.contains("show my favorites") ||
+        command.contains("show my favorite")) {
+      openFavoriteResponses();
+      textToSpeech.speak("Showing your favourites.");
+    } else if (command.contains("show my history")) {
+      openPastResponses();
+      textToSpeech.speak("Showing past history.");
+    } else if (command.contains("start chat")) {
+      openChatSection();
+      textToSpeech.speak("Opening chat section.");
+    } else if (command.contains("delete all history")) {
+      deleteAllHistory();
+      textToSpeech.speak("Deleting History.");
+    } else if (command.contains("stop speaking")) {
+      stopSpeaking();
+    } else if (command.contains("resume speaking")) {
+      resumeSpeaking();
+    } else {
+      log("Command not recognized: $command");
+      textToSpeech.speak(
+          "Sorry, I didn't understand that command.Would you mind repeating it?");
     }
   }
 
