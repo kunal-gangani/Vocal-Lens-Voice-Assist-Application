@@ -48,7 +48,7 @@ Widget customDrawer() {
                 color: Colors.white,
               ),
             ),
-            onTap: value.openConnectionReuqestPage,
+            onTap: value.openConnectionRequestPage,
           ),
           ListTile(
             leading: const Icon(
@@ -75,6 +75,19 @@ Widget customDrawer() {
               ),
             ),
             onTap: value.openUserSettings,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.help_outline,
+              color: Colors.lightBlue,
+            ),
+            title: const Text(
+              "How to Use",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onTap: value.openHowToUsePage,
           ),
         ],
       ),

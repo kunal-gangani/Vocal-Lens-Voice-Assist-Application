@@ -9,6 +9,7 @@ import 'package:flexify/flexify.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
 import 'package:vocal_lens/Views/ConnectionsRequestPage/connection_request_page.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
+import 'package:vocal_lens/Views/HowToUsePage/how_to_use_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
 import 'package:share_plus/share_plus.dart';
@@ -309,7 +310,7 @@ class VoiceToTextController extends ChangeNotifier {
     );
   }
 
-  void openConnectionReuqestPage() {
+  void openConnectionRequestPage() {
     Flexify.go(
       const ConnectionRequestPage(),
       animation: FlexifyRouteAnimations.blur,
@@ -328,6 +329,14 @@ class VoiceToTextController extends ChangeNotifier {
   void openFavoriteResponses() {
     Flexify.go(
       const FavouriteResponsesPage(),
+      animation: FlexifyRouteAnimations.blur,
+      animationDuration: Durations.medium1,
+    );
+  }
+
+  void openHowToUsePage() {
+    Flexify.go(
+       HowToUsePage(),
       animation: FlexifyRouteAnimations.blur,
       animationDuration: Durations.medium1,
     );

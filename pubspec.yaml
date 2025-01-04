@@ -28,7 +28,6 @@ dependencies:
   lottie:
   introduction_screen: ^3.1.14
   share_plus:
-  # youtube_player_flutter: ^8.1.2
 
 
 dev_dependencies:
