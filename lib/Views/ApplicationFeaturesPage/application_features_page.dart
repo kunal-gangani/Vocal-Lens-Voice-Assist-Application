@@ -103,12 +103,12 @@ class ApplicationFeaturesPage extends StatelessWidget {
             ),
             PageViewModel(
               image: Lottie.asset(
-                "lib/Views/ApplicationFeaturesPage/Assets/loader_2.json",
+                "lib/Views/ApplicationFeaturesPage/Assets/youtube_loader.json",
                 height: 200,
               ),
               titleWidget: const Center(
                 child: Text(
-                  "Chat with Friends",
+                  "Seamless Video Streaming",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -118,14 +118,14 @@ class ApplicationFeaturesPage extends StatelessWidget {
               bodyWidget: const Column(
                 children: [
                   Text(
-                    "Connect with friends who are also using",
+                    "Discover how to watch your favorite",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
                     ),
                   ),
                   Text(
-                    "VocalLens and start chatting!",
+                    "Youtube videos directly on VocalLens!",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,
