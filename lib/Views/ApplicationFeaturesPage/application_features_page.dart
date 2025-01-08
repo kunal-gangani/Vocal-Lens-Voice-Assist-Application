@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flexify/flexify.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
-import 'package:vocal_lens/Views/HomePage/home_page.dart';
+import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 
 class ApplicationFeaturesPage extends StatelessWidget {
   const ApplicationFeaturesPage({super.key});
 
   void _onIntroEnd(BuildContext context) {
     Flexify.goRemove(
-      const HomePage(),
+      const LoginPage(),
       animation: FlexifyRouteAnimations.blur,
       duration: Durations.medium1,
     );
@@ -291,7 +291,9 @@ class ApplicationFeaturesPage extends StatelessWidget {
                   ),
                   child: const Text(
                     "Get Started",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
