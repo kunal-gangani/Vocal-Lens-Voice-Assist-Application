@@ -1,5 +1,6 @@
 {
     "login_title": "Anmelden",
+    "welcome_back": "Willkommen zurück!",
     "email": "E-Mail",
     "password": "Passwort",
     "email_required": "E-Mail wird benötigt",
@@ -15,6 +16,8 @@
     "register": "Registrieren",
     "already_have_account": "Haben Sie bereits ein Konto? Einloggen",
     "google_sign_up": "Mit Google anmelden",
+    "google_sign_in_success": "Erfolgreich mit Google angemeldet",
+    "google_sign_in_failed": "Google-Anmeldung fehlgeschlagen",
     "logout": "Abmelden",
     "logout_confirm": "Möchten Sie sich wirklich abmelden?",
     "yes": "Ja",

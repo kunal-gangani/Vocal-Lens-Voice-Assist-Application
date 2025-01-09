@@ -1,5 +1,6 @@
 {
     "login_title": "Iniciar sesión",
+    "welcome_back": "¡Bienvenido de nuevo!",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "email_required": "Se requiere correo electrónico",
@@ -15,6 +16,8 @@
     "register": "Registrarse",
     "already_have_account": "¿Ya tienes una cuenta? Iniciar sesión",
     "google_sign_up": "Regístrate con Google",
+    "google_sign_in_success": "Inicio de sesión con Google exitoso",
+    "google_sign_in_failed": "Falló el inicio de sesión con Google",
     "logout": "Cerrar sesión",
     "logout_confirm": "¿Estás seguro de que quieres cerrar sesión?",
     "yes": "Sí",

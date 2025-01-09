@@ -1,6 +1,10 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 
 class RegistrationPage extends StatelessWidget {
@@ -12,6 +16,10 @@ class RegistrationPage extends StatelessWidget {
     final TextEditingController usernameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    final authController = Provider.of<AuthController>(
+      context,
+      listen: false,
+    );
 
     void changeLanguage(Locale locale) {
       context.setLocale(locale);
@@ -33,12 +41,14 @@ class RegistrationPage extends StatelessWidget {
             Icons.arrow_back_ios_new,
           ),
         ),
-        backgroundColor: Colors.teal.shade700,
+        backgroundColor: Colors.grey.shade900,
         title: Text(
           'register_title'.tr(),
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
         actions: [
-          // Language switcher dropdown
           DropdownButton<Locale>(
             icon: const Icon(
               Icons.language,
@@ -83,8 +93,8 @@ class RegistrationPage extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.teal.shade300,
-              Colors.teal.shade900,
+              Colors.black,
+              Colors.grey.shade800,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -95,9 +105,10 @@ class RegistrationPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Card(
-                elevation: 12,
+                color: Colors.grey.shade900,
+                elevation: 8,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -108,120 +119,128 @@ class RegistrationPage extends StatelessWidget {
                       children: [
                         Text(
                           'create_account'.tr(),
-                          style: TextStyle(
-                            fontSize: 28,
+                          style: const TextStyle(
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
-                            color: Colors.teal.shade800,
+                            color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        _buildTextFormField(
+                          context: context,
                           controller: usernameController,
-                          decoration: InputDecoration(
-                            labelText: 'username'.tr(),
-                            labelStyle: TextStyle(
-                              color: Colors.teal.shade700,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.person,
-                              color: Colors.teal,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'username_required'.tr();
-                            }
-                            return null;
-                          },
+                          label: 'username'.tr(),
+                          icon: Icons.person,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        _buildTextFormField(
+                          context: context,
                           controller: emailController,
-                          decoration: InputDecoration(
-                            labelText: 'email'.tr(),
-                            labelStyle: TextStyle(
-                              color: Colors.teal.shade700,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.email,
-                              color: Colors.teal,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'email_required'.tr();
-                            }
-                            return null;
-                          },
+                          label: 'email'.tr(),
+                          icon: Icons.email,
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        _buildTextFormField(
+                          context: context,
                           controller: passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'password'.tr(),
-                            labelStyle: TextStyle(
-                              color: Colors.teal.shade700,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.lock,
-                              color: Colors.teal,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                          ),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'password_required'.tr();
-                            }
-                            return null;
-                          },
+                          label: 'password'.tr(),
+                          icon: Icons.lock,
+                          isPassword: true,
                         ),
                         const SizedBox(
                           height: 24,
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'registered_successfully'.tr(),
-                                    ),
-                                  ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              try {
+                                await authController.signInWithEmail(
+                                  emailController.text,
+                                  passwordController.text,
+                                );
+                                Fluttertoast.showToast(
+                                  msg: 'registered_successfully'.tr(),
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.green,
+                                  textColor: Colors.white,
+                                );
+                                Flexify.goRemove(
+                                  const LoginPage(),
+                                  animation: FlexifyRouteAnimations.blur,
+                                  duration: Durations.medium1,
+                                );
+                              } catch (e) {
+                                Fluttertoast.showToast(
+                                  msg: 'registration_failed'.tr(),
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
                                 );
                               }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal.shade700,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Text(
-                              'register'.tr(),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 16,
                             ),
+                          ),
+                          child: Text(
+                            'register'.tr(),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              await authController.signInWithGoogle();
+                              Fluttertoast.showToast(
+                                msg: 'google_sign_in_success'.tr(),
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                              );
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                msg: 'google_sign_in_failed'.tr(),
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                            ),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.google,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(
@@ -237,31 +256,8 @@ class RegistrationPage extends StatelessWidget {
                           },
                           child: Text(
                             'already_have_account'.tr(),
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.teal.shade800,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.login,
-                          ),
-                          label: Text(
-                            'google_sign_up'.tr(),
                             style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
                             ),
                           ),
                         ),
@@ -274,6 +270,58 @@ class RegistrationPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextFormField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      style: const TextStyle(
+        color: Colors.white,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(
+          color: Colors.white70,
+        ),
+        prefixIcon: Icon(
+          icon,
+          color: Colors.white70,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Colors.white,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Colors.white70,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+          ),
+        ),
+        filled: true,
+        fillColor: Colors.grey.shade800.withOpacity(0.8),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '${label}_required'.tr();
+        }
+        return null;
+      },
     );
   }
 }

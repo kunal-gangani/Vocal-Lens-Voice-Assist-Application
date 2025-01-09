@@ -1,5 +1,6 @@
 {
   "login_title": "Login",
+  "welcome_back": "Welcome Back!",
   "email": "Email",
   "password": "Password",
   "email_required": "Email is required",
@@ -15,6 +16,8 @@
   "register": "Register",
   "already_have_account": "Already have an account? Login",
   "google_sign_up": "Sign Up with Google",
+  "google_sign_in_success": "Signed in successfully with Google",
+  "google_sign_in_failed": "Google sign-in failed",
   "logout": "Logout",
   "logout_confirm": "Are you sure you want to logout?",
   "yes": "Yes",

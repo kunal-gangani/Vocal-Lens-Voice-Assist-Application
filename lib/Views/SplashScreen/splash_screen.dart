@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:vocal_lens/Helper/firebase_helper.dart';
 import 'package:vocal_lens/Views/ApplicationFeaturesPage/application_features_page.dart';
+import 'package:vocal_lens/Views/HomePage/home_page.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -11,11 +13,17 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 3), () {
-      Flexify.goRemove(
-        const ApplicationFeaturesPage(),
-        animation: FlexifyRouteAnimations.blur,
-        duration: Durations.medium1,
-      );
+      AuthHelper().getCurrentUser() != null
+          ? Flexify.goRemove(
+              const HomePage(),
+              animation: FlexifyRouteAnimations.blur,
+              duration: Durations.medium1,
+            )
+          : Flexify.goRemove(
+              const ApplicationFeaturesPage(),
+              animation: FlexifyRouteAnimations.blur,
+              duration: Durations.medium1,
+            );
     });
     return Scaffold(
       body: Container(

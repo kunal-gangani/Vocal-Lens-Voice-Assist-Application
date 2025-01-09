@@ -1,5 +1,7 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/auth_controller.dart';
 
 class UserSettingsPage extends StatelessWidget {
   const UserSettingsPage({super.key});
@@ -23,136 +25,229 @@ class UserSettingsPage extends StatelessWidget {
         ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // Profile Settings Section
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://t3.ftcdn.net/jpg/08/85/74/06/240_F_885740668_abO65GvCfjpbwKjsL3Zx37Pgxg2CCMi2.jpg',
-                  ),
+      body: Consumer<AuthController>(builder: (context, authValue, _) {
+        final user = authValue.user;
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              Card(
+                elevation: 5,
+                color: Colors.blueGrey.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                title: const Text(
-                  'John Doe',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  leading: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(
+                      user?.photoURL ??
+                          'https://t3.ftcdn.net/jpg/08/85/74/06/240_F_885740668_abO65GvCfjpbwKjsL3Zx37Pgxg2CCMi2.jpg',
+                    ),
                   ),
-                ),
-                subtitle: const Text(
-                  'Tap to change profile picture',
-                  style: TextStyle(
-                    color: Colors.white70,
+                  title: Text(
+                    user?.displayName ?? 'John Doe',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                onTap: () {},
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            // Notifications Section
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                title: const Text(
-                  'Notifications',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                  subtitle: const Text(
+                    'Tap to change profile picture',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
                   ),
-                ),
-                subtitle: const Text(
-                  'Enable or disable app notifications',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                trailing: Switch(
-                  value: true,
-                  onChanged: (bool value) {},
-                  activeColor: Colors.blueGrey.shade900,
+                  onTap: () async {
+                    await authValue.updateProfilePicture();
+                  },
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            // Dark Mode Section
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+              const SizedBox(
+                height: 16,
               ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                title: const Text(
-                  'Dark Mode',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+              Card(
+                elevation: 5,
+                color: Colors.blueGrey.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  title: const Text(
+                    'Notifications',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Enable or disable app notifications',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  trailing: Switch(
+                    value: true,
+                    onChanged: (bool value) {},
+                    activeColor: Colors.blueGrey.shade900,
                   ),
                 ),
-                subtitle: const Text(
-                  'Enable or disable dark theme',
-                  style: TextStyle(
-                    color: Colors.white70,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Card(
+                elevation: 5,
+                color: Colors.blueGrey.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  title: const Text(
+                    'Dark Mode',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Enable or disable dark theme',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  trailing: Switch(
+                    value: false,
+                    onChanged: (bool value) {},
+                    activeColor: Colors.blueGrey.shade900,
                   ),
                 ),
-                trailing: Switch(
-                  value: false,
-                  onChanged: (bool value) {},
-                  activeColor: Colors.blueGrey.shade900,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Card(
+                elevation: 5,
+                color: Colors.blueGrey.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  title: const Text(
+                    'Language',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Change app language',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  onTap: () {},
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            // Language Settings Section
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+              const SizedBox(
+                height: 16,
               ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                title: const Text(
-                  'Language',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+              Card(
+                elevation: 5,
+                color: Colors.blueGrey.shade800,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16.0),
+                  title: const Text(
+                    'Log Out',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Log Out from your account',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  trailing: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Colors.blueGrey.shade800,
+                      ),
+                    ),
+                    onPressed: () async {
+                      bool? shouldSignOut = await showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.black,
+                            title: const Text(
+                              'Sign Out',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            content: const Text(
+                              'Are you sure you want to log out?',
+                              style: TextStyle(
+                                color: Colors.white70,
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop(false);
+                                },
+                              ),
+                              TextButton(
+                                child: const Text(
+                                  'I\'m Sure',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (shouldSignOut == true) {
+                        await authValue.signOut();
+                      }
+                    },
+                    child: const Icon(
+                      Icons.logout,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                subtitle: const Text(
-                  'Change app language',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                onTap: () {},
               ),
-            ),
-          ],
-        ),
-      ),
+              const SizedBox(
+                height: 16,
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
