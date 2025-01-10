@@ -7,6 +7,7 @@ import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/position_controller.dart';
+import 'package:vocal_lens/Controllers/user_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Controllers/youtube_controller.dart';
 import 'package:vocal_lens/Views/SplashScreen/splash_screen.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ChatWithAiController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserController(),
         ),
       ],
       child: ScreenUtilInit(

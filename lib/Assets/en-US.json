@@ -69,5 +69,6 @@
   "how_to_use_favorite": "Add to your favorites.",
   "how_to_use_settings_title": "Settings",
   "how_to_use_settings_description": "Manage app settings and preferences.",
-  "how_to_use_settings": "Adjust your settings."
+  "how_to_use_settings": "Adjust your settings.",
+  "registration_failed": "Registration failed"
 }

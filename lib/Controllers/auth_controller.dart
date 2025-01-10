@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vocal_lens/Helper/firebase_helper.dart';
+import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 
 class AuthController extends ChangeNotifier {
@@ -28,6 +29,11 @@ class AuthController extends ChangeNotifier {
   Future<void> signInWithGoogle() async {
     try {
       _user = await _authHelper.signInWithGoogle();
+      Flexify.goRemove(
+        const HomePage(),
+        animation: FlexifyRouteAnimations.blur,
+        duration: Durations.medium1,
+      );
       notifyListeners();
     } catch (e) {
       throw Exception("Error during Google sign-in: $e");

@@ -69,5 +69,6 @@
     "how_to_use_favorite": "Marcar como favorito",
     "how_to_use_settings_title": "Configuraciones",
     "how_to_use_settings_description": "Personaliza la configuración de la aplicación.",
-    "how_to_use_settings": "Cambiar configuraciones"
+    "how_to_use_settings": "Cambiar configuraciones",
+    "registration_failed": "Registro fallido"
 }

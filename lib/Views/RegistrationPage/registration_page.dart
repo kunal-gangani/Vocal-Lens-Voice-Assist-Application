@@ -314,7 +314,7 @@ class RegistrationPage extends StatelessWidget {
           ),
         ),
         filled: true,
-        fillColor: Colors.grey.shade800.withOpacity(0.8),
+        fillColor: Colors.grey.shade800,
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

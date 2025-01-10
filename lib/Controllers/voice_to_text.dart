@@ -336,7 +336,7 @@ class VoiceToTextController extends ChangeNotifier {
 
   void openHowToUsePage() {
     Flexify.go(
-       const HowToUsePage(),
+      const HowToUsePage(),
       animation: FlexifyRouteAnimations.blur,
       animationDuration: Durations.medium1,
     );
