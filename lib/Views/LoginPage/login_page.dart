@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
-    final authController = Provider.of<AuthController>(
+    AuthController authController = Provider.of<AuthController>(
       context,
       listen: false,
     );
@@ -236,7 +236,7 @@ class LoginPage extends StatelessWidget {
                             );
                           },
                           child: Text(
-                            'already_have_account'.tr(),
+                            'register_prompt'.tr(),
                             style: const TextStyle(
                               color: Colors.grey,
                             ),

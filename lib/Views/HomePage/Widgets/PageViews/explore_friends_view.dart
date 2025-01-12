@@ -41,8 +41,7 @@ Widget exploreFriendsPageView() {
                       color: Colors.white,
                     ),
                     onChanged: (query) {
-                      controller.filterUsers(
-                          query); // Filter users using the controller
+                      controller.filterUsers(query);
                     },
                     decoration: InputDecoration(
                       filled: true,

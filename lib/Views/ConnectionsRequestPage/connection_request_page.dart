@@ -1,23 +1,20 @@
-import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/user_controller.dart';
 
 class ConnectionRequestPage extends StatelessWidget {
   const ConnectionRequestPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> connectionRequests = [
-      "John Doe",
-      "Jane Smith",
-      "Michael Johnson",
-      "Emily Davis"
-    ];
+    final userController = Provider.of<UserController>(context);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Flexify.back();
+            Navigator.pop(context);
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,
@@ -29,8 +26,15 @@ class ConnectionRequestPage extends StatelessWidget {
           "Connection Requests",
         ),
       ),
-      body: connectionRequests.isEmpty
-          ? const Center(
+      body: FutureBuilder(
+        future: userController.fetchConnectionRequests(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (userController.receivedRequests.isEmpty) {
+            return const Center(
               child: Text(
                 "No connection requests available",
                 style: TextStyle(
@@ -38,11 +42,12 @@ class ConnectionRequestPage extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-            )
-          : ListView.builder(
-              itemCount: connectionRequests.length,
+            );
+          } else {
+            return ListView.builder(
+              itemCount: userController.receivedRequests.length,
               itemBuilder: (context, index) {
-                String user = connectionRequests[index];
+                String user = userController.receivedRequests[index]['sender'];
                 return Card(
                   color: Colors.blueGrey.shade800,
                   margin: const EdgeInsets.symmetric(
@@ -104,7 +109,30 @@ class ConnectionRequestPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                try {
+                                  await userController
+                                      .acceptConnectionRequest(user);
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        "Accepted connection request from $user",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.green,
+                                    textColor: Colors.white,
+                                    fontSize: 14.0,
+                                  );
+                                } catch (e) {
+                                  Fluttertoast.showToast(
+                                    msg: "Error accepting request: $e",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 14.0,
+                                  );
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 shape: RoundedRectangleBorder(
@@ -127,7 +155,30 @@ class ConnectionRequestPage extends StatelessWidget {
                               height: 8,
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                try {
+                                  await userController
+                                      .declineConnectionRequest(user);
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        "Declined connection request from $user",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 14.0,
+                                  );
+                                } catch (e) {
+                                  Fluttertoast.showToast(
+                                    msg: "Error declining request: $e",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 14.0,
+                                  );
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 shape: RoundedRectangleBorder(
@@ -153,7 +204,10 @@ class ConnectionRequestPage extends StatelessWidget {
                   ),
                 );
               },
-            ),
+            );
+          }
+        },
+      ),
       backgroundColor: Colors.black,
     );
   }

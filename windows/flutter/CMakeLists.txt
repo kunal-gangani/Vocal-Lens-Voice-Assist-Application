@@ -1,6 +1,6 @@
 # This file controls Flutter-level build steps. It should not be edited.
 cmake_policy(SET CMP0153 NEW) # Added to resolve the CMP0153 warning
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.5)
 
 set(EPHEMERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ephemeral")
 
