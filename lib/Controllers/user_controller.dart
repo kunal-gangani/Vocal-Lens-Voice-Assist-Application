@@ -10,7 +10,6 @@ class UserController extends ChangeNotifier {
   List<Map<String, dynamic>> receivedRequests = [];
   List<String> connections = [];
 
-  /// Fetch all users
   Future<void> fetchUsers() async {
     try {
       allUsers = await _authHelper.getAllUsers();
@@ -21,7 +20,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Send connection request to a user
   Future<void> sendConnectionRequest(String userName) async {
     try {
       await _authHelper.sendConnectionRequest(userName);
@@ -32,7 +30,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Check if a connection request has been sent to a user
   Future<bool> hasSentRequest(String userName) async {
     try {
       return await _authHelper.hasSentRequest(userName);
@@ -41,7 +38,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Fetch received connection requests
   Future<void> fetchConnectionRequests() async {
     try {
       final requests = await _authHelper.getConnectionRequests();
@@ -52,7 +48,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Accept a connection request
   Future<void> acceptConnectionRequest(String userName) async {
     try {
       await _authHelper.acceptConnectionByUserName(userName);
@@ -64,7 +59,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Decline a connection request
   Future<void> declineConnectionRequest(String userName) async {
     try {
       await _authHelper.rejectConnectionByUserName(userName);
@@ -75,7 +69,6 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  /// Filter users based on a query
   void filterUsers(String query) {
     filteredUsers = allUsers
         .where((user) => user.toLowerCase().contains(query.toLowerCase()))

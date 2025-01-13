@@ -1,20 +1,21 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vocal_lens/Views/UserChat/user_chat.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/user_controller.dart';
+import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
 class ChatSectionPage extends StatelessWidget {
   const ChatSectionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userController = Provider.of<UserController>(context);
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Flexify.back();
-          },
+          onPressed: () => Flexify.back(),
           icon: const Icon(
             Icons.arrow_back_ios_new,
           ),
@@ -31,132 +32,71 @@ class ChatSectionPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // User List Section
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
-                  ),
+        child: FutureBuilder(
+          future: userController.fetchUsers(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blueGrey,
                 ),
-                title: const Text(
-                  'John Doe',
+              );
+            } else if (snapshot.hasData &&
+                userController.filteredUsers.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No connections yet! Add some connections.",
                   style: TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-                subtitle: const Text(
-                  'Hey, how are you?',
-                  style: TextStyle(
-                    color: Colors.white70,
+              );
+            }
+            return ListView.builder(
+              itemCount: userController.filteredUsers.length,
+              itemBuilder: (context, index) {
+                final userName = userController.filteredUsers[index];
+                return Card(
+                  elevation: 5,
+                  color: Colors.blueGrey.shade800,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
-                ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16.0),
+                    leading: const CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(
+                        'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg',
+                      ),
+                    ),
+                    title: Text(
+                      userName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'Tap to chat',
+                      style: TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.chat,
+                      color: Colors.white,
+                    ),
+                    onTap: () {
+                      Provider.of<VoiceToTextController>(context)
+                          .openChatSection();
+                    },
                   ),
-                ),
-                title: const Text(
-                  'Jane Smith',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: const Text(
-                  'Let\'s meet up tomorrow!',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
-                ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 5,
-              color: Colors.blueGrey.shade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16.0),
-                leading: const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                    'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg?ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
-                  ),
-                ),
-                title: const Text(
-                  'Alex Johnson',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: const Text(
-                  'Got your message!',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                trailing: const Icon(
-                  FontAwesomeIcons.rocketchat,
-                  color: Colors.white,
-                ),
-                onTap: () {
-                  Flexify.go(
-                    const UserChatPage(),
-                    animation: FlexifyRouteAnimations.blur,
-                    animationDuration: Durations.medium1,
-                  );
-                },
-              ),
-            ),
-          ],
+                );
+              },
+            );
+          },
         ),
       ),
     );

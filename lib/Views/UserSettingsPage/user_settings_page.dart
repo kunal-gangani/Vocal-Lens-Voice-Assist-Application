@@ -2,6 +2,7 @@ import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
+import 'package:vocal_lens/Controllers/theme_controller.dart';
 
 class UserSettingsPage extends StatelessWidget {
   const UserSettingsPage({super.key});
@@ -104,26 +105,32 @@ class UserSettingsPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16.0),
-                  title: const Text(
-                    'Dark Mode',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: const Text(
-                    'Enable or disable dark theme',
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
-                  ),
-                  trailing: Switch(
-                    value: false,
-                    onChanged: (bool value) {},
-                    activeColor: Colors.blueGrey.shade900,
-                  ),
+                child: Consumer<ThemeController>(
+                  builder: (context, themeController, value) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.all(16.0),
+                      title: const Text(
+                        'Dark Mode',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        'Enable or disable dark theme',
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+                      trailing: Switch(
+                        value: themeController.isDarkMode,
+                        onChanged: (bool value) {
+                          themeController.toggleTheme();
+                        },
+                        activeColor: Colors.blueGrey.shade200,
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(

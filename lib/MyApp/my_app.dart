@@ -7,6 +7,7 @@ import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/position_controller.dart';
+import 'package:vocal_lens/Controllers/theme_controller.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Controllers/youtube_controller.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => VoiceToTextController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ThemeController(),
         ),
         ChangeNotifierProvider(
           create: (context) => AuthController(),
@@ -50,22 +54,28 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ScreenUtilInit(
-        designSize: Size(
-          size.width,
-          size.height,
-        ),
+        designSize: Size(size.width, size.height),
         minTextAdapt: true,
         builder: (context, _) {
-          return Flexify(
-            designWidth: size.width,
-            designHeight: size.height,
-            app: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              locale: context.locale,
-              supportedLocales: context.supportedLocales,
-              localizationsDelegates: context.localizationDelegates,
-              home: const SplashScreen(),
-            ),
+          return Consumer<ThemeController>(
+            builder: (context, themeController, _) {
+              return Flexify(
+                designWidth: size.width,
+                designHeight: size.height,
+                app: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  locale: context.locale,
+                  supportedLocales: context.supportedLocales,
+                  localizationsDelegates: context.localizationDelegates,
+                  theme: ThemeData.light(),
+                  darkTheme: ThemeData.dark(),
+                  themeMode: themeController.isDarkMode
+                      ? ThemeMode.dark
+                      : ThemeMode.light,
+                  home: const SplashScreen(),
+                ),
+              );
+            },
           );
         },
       ),
