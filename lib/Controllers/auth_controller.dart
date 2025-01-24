@@ -100,10 +100,8 @@ class AuthController extends ChangeNotifier {
       log("Uploading file: ${file.path}");
       final ref = _storage.ref().child('user_profiles/${_user!.uid}.jpg');
 
-      // Upload the file
       final uploadTask = await ref.putFile(file);
 
-      // Get the download URL
       final String photoURL = await uploadTask.ref.getDownloadURL();
 
       await _user!.updatePhotoURL(photoURL);
