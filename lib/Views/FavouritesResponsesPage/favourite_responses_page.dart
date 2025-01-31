@@ -57,7 +57,8 @@ class FavouriteResponsesPage extends StatelessWidget {
                       children: [
                         SlidableAction(
                           onPressed: (context) {
-                            voiceToTextController.deleteHistory(index);
+                            voiceToTextController
+                                .deleteHistory(index.toString());
                           },
                           backgroundColor: Colors.red.shade700,
                           foregroundColor: Colors.white,
@@ -72,7 +73,7 @@ class FavouriteResponsesPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      shadowColor: Colors.black.withOpacity(0.5),
+                      shadowColor: Colors.black87,
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16.0),
                         leading: const Icon(

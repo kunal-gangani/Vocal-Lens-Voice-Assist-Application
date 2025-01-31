@@ -79,7 +79,7 @@ class PastResponsesPage extends StatelessWidget {
                               children: [
                                 SlidableAction(
                                   onPressed: (context) {
-                                    value.deleteHistory(index);
+                                    value.deleteHistory(index.toString());
                                   },
                                   backgroundColor: Colors.red.shade700,
                                   foregroundColor: Colors.white,

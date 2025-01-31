@@ -52,6 +52,19 @@ Widget customDrawer() {
           ),
           ListTile(
             leading: const Icon(
+              Icons.mic,
+              color: Colors.red,
+            ),
+            title: const Text(
+              "Voice Models",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onTap: value.openVoiceModelPage,
+          ),
+          ListTile(
+            leading: const Icon(
               Icons.star,
               color: Colors.purple,
             ),

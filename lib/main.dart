@@ -7,6 +7,7 @@ import 'package:vocal_lens/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Future.delayed(const Duration(milliseconds: 500));
   await GetStorage.init();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(

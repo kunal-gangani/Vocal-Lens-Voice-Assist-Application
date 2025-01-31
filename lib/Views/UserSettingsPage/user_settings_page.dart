@@ -44,7 +44,7 @@ class UserSettingsPage extends StatelessWidget {
                     radius: 30,
                     backgroundImage: NetworkImage(
                       user?.photoURL ??
-                          'https://t3.ftcdn.net/jpg/08/85/74/06/240_F_885740668_abO65GvCfjpbwKjsL3Zx37Pgxg2CCMi2.jpg',
+                          'https://img.freepik.com/premium-photo/pink-create-account-screen-icon-isolated-blue-background-minimalism-concept-3d-illustration-3d-render_549897-72.jpg?uid=R120576166&ga=GA1.1.132821578.1730041723&semt=ais_hybrid',
                     ),
                   ),
                   title: Text(
@@ -54,9 +54,9 @@ class UserSettingsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: const Text(
-                    'Tap to change profile picture',
-                    style: TextStyle(
+                  subtitle: Text(
+                    user?.email ?? 'johndoe@gmail.com',
+                    style: const TextStyle(
                       color: Colors.white70,
                     ),
                   ),
