@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.sizeOf(context);
-
+    double height = MediaQuery.sizeOf(context).height;
+    double width = MediaQuery.sizeOf(context).width;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -54,14 +54,14 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: ScreenUtilInit(
-        designSize: Size(size.width, size.height),
+        designSize: Size(width, height),
         minTextAdapt: true,
         builder: (context, _) {
           return Consumer<ThemeController>(
             builder: (context, themeController, _) {
               return Flexify(
-                designWidth: size.width,
-                designHeight: size.height,
+                designWidth: width,
+                designHeight: height,
                 app: MaterialApp(
                   debugShowCheckedModeBanner: false,
                   locale: context.locale,

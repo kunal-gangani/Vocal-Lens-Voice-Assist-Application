@@ -1,5 +1,6 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
@@ -19,27 +20,30 @@ class FavouriteResponsesPage extends StatelessWidget {
           onPressed: () {
             Flexify.back();
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
-            size: 24,
+            size: 24.sp,
           ),
         ),
         foregroundColor: Colors.white,
-        title: const Text(
+        title: Text(
           "Favourite Responses",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: voiceToTextController.favoritesList.isEmpty
-            ? const Center(
+            ? Center(
                 child: Text(
                   "No favorites yet!",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                   ),
                 ),
               )
@@ -76,24 +80,24 @@ class FavouriteResponsesPage extends StatelessWidget {
                       shadowColor: Colors.black87,
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16.0),
-                        leading: const Icon(
+                        leading: Icon(
                           Icons.favorite,
                           color: Colors.redAccent,
-                          size: 40,
+                          size: 40.sp,
                         ),
                         title: Text(
                           "Favorite Response #${index + 1}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                            fontSize: 18.sp,
                           ),
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 4,
+                            SizedBox(
+                              height: 4.h,
                             ),
                             Text(
                               favoriteResponse,
@@ -101,14 +105,14 @@ class FavouriteResponsesPage extends StatelessWidget {
                                 color: Colors.white70,
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
+                            SizedBox(
+                              height: 8.h,
                             ),
                             Text(
                               "Date: ${DateTime.now().toString().split(' ')[0]}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 12,
+                                fontSize: 12.sp,
                               ),
                             ),
                           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
@@ -34,12 +35,12 @@ class ConnectionRequestPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           } else if (userController.receivedRequests.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
                 "No connection requests available",
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                 ),
               ),
             );
@@ -66,15 +67,15 @@ class ConnectionRequestPage extends StatelessWidget {
                           backgroundColor: Colors.cyan,
                           child: Text(
                             user[0],
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 18.sp,
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 16,
+                        SizedBox(
+                          width: 16.w,
                         ),
                         Expanded(
                           child: Column(
@@ -82,20 +83,20 @@ class ConnectionRequestPage extends StatelessWidget {
                             children: [
                               Text(
                                 user,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 4,
+                              SizedBox(
+                                height: 4.h,
                               ),
-                              const Text(
+                              Text(
                                 "Wants to connect with you",
                                 style: TextStyle(
                                   color: Colors.white54,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ],
@@ -120,7 +121,7 @@ class ConnectionRequestPage extends StatelessWidget {
                                     gravity: ToastGravity.BOTTOM,
                                     backgroundColor: Colors.green,
                                     textColor: Colors.white,
-                                    fontSize: 14.0,
+                                    fontSize: 14.0.sp,
                                   );
                                 } catch (e) {
                                   Fluttertoast.showToast(
@@ -129,7 +130,7 @@ class ConnectionRequestPage extends StatelessWidget {
                                     gravity: ToastGravity.BOTTOM,
                                     backgroundColor: Colors.red,
                                     textColor: Colors.white,
-                                    fontSize: 14.0,
+                                    fontSize: 14.0.sp,
                                   );
                                 }
                               },
@@ -143,16 +144,16 @@ class ConnectionRequestPage extends StatelessWidget {
                                   horizontal: 15,
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "Accept",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 8,
+                            SizedBox(
+                              height: 8.h,
                             ),
                             ElevatedButton(
                               onPressed: () async {
@@ -166,7 +167,7 @@ class ConnectionRequestPage extends StatelessWidget {
                                     gravity: ToastGravity.BOTTOM,
                                     backgroundColor: Colors.red,
                                     textColor: Colors.white,
-                                    fontSize: 14.0,
+                                    fontSize: 14.0.sp,
                                   );
                                 } catch (e) {
                                   Fluttertoast.showToast(
@@ -175,7 +176,7 @@ class ConnectionRequestPage extends StatelessWidget {
                                     gravity: ToastGravity.BOTTOM,
                                     backgroundColor: Colors.red,
                                     textColor: Colors.white,
-                                    fontSize: 14.0,
+                                    fontSize: 14.0.sp,
                                   );
                                 }
                               },
@@ -189,11 +190,11 @@ class ConnectionRequestPage extends StatelessWidget {
                                   horizontal: 15,
                                 ),
                               ),
-                              child: const Text(
+                              child: Text(
                                 "Reject",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ),

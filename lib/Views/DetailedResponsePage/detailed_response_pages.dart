@@ -1,5 +1,6 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
@@ -82,21 +83,21 @@ class DetailedResponsePages extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Question:",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.cyan,
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
+                        SizedBox(
+                          height: 10.h,
                         ),
                         Text(
                           question,
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
@@ -105,8 +106,8 @@ class DetailedResponsePages extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
+                SizedBox(
+                  height: 24.h,
                 ),
                 // Answer Section
                 Card(
@@ -121,21 +122,21 @@ class DetailedResponsePages extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Answer:",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.cyan,
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
+                        SizedBox(
+                          height: 10.h,
                         ),
                         Text(
                           answer,
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),

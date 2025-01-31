@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 
@@ -76,21 +77,21 @@ Widget exploreFriendsPageView() {
                 height: 20,
               ),
               Expanded(
-                child: controller.filteredUsers.isEmpty
-                    ? const Center(
+                child: controller.allUsers.isEmpty
+                    ? Center(
                         child: Text(
                           "No users found",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
                         ),
                       )
                     : ListView.builder(
-                        itemCount: controller.filteredUsers.length,
+                        itemCount: controller.allUsers.length,
                         itemBuilder: (context, index) {
-                          String user = controller.filteredUsers[index];
+                          String user = controller.allUsers[index];
                           bool requestSent =
                               controller.sentRequests.contains(user);
 
@@ -106,24 +107,26 @@ Widget exploreFriendsPageView() {
                                 backgroundColor: Colors.cyan,
                                 child: Text(
                                   user[0],
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 18,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                               title: Text(
                                 user,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               trailing: requestSent
-                                  ? const Icon(Icons.hourglass_empty,
-                                      color: Colors.yellow)
+                                  ? const Icon(
+                                      Icons.hourglass_empty,
+                                      color: Colors.yellow,
+                                    )
                                   : ElevatedButton(
                                       onPressed: () => controller
                                           .sendConnectionRequest(user),
@@ -134,10 +137,10 @@ Widget exploreFriendsPageView() {
                                               BorderRadius.circular(15),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child:  Text(
                                         "Connect",
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 14.sp,
                                           color: Colors.white,
                                         ),
                                       ),

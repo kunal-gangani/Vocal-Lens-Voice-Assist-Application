@@ -1,5 +1,6 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
@@ -21,11 +22,11 @@ class ChatSectionPage extends StatelessWidget {
           ),
         ),
         foregroundColor: Colors.white,
-        title: const Text(
+        title: Text(
           "Chat Section",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 20.sp,
           ),
         ),
         backgroundColor: Colors.blueGrey.shade900,
@@ -43,12 +44,12 @@ class ChatSectionPage extends StatelessWidget {
               );
             } else if (snapshot.hasData &&
                 userController.filteredUsers.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
                   "No connections yet! Add some connections.",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                 ),
               );
@@ -65,9 +66,9 @@ class ChatSectionPage extends StatelessWidget {
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16.0),
-                    leading: const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
+                    leading: CircleAvatar(
+                      radius: 30.r,
+                      backgroundImage: const NetworkImage(
                         'https://img.freepik.com/free-psd/contact-icon-illustration-isolated_23-2151903337.jpg',
                       ),
                     ),

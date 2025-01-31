@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget youTubePageView() {
   return Container(
@@ -48,8 +49,8 @@ Widget youTubePageView() {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: 8,
+                  SizedBox(
+                    width: 8.w,
                   ),
                   IconButton(
                     icon: const Icon(
@@ -62,8 +63,8 @@ Widget youTubePageView() {
               ),
             ),
           ),
-          const SizedBox(
-            height: 12,
+          SizedBox(
+            height: 12.h,
           ),
           Card(
             elevation: 6,
@@ -73,7 +74,7 @@ Widget youTubePageView() {
             ),
             child: Container(
               padding: const EdgeInsets.all(10.0),
-              height: 200,
+              height: 200.h,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
@@ -84,17 +85,18 @@ Widget youTubePageView() {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.play_circle_fill,
                   color: Colors.white,
-                  size: 70,
+                  size: 70.sp,
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 12),
-
+          SizedBox(
+            height: 12.h,
+          ),
           SizedBox(
             height: 300,
             child: ListView.builder(
@@ -109,8 +111,8 @@ Widget youTubePageView() {
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
                     leading: Container(
-                      width: 60,
-                      height: 60,
+                      width: 60.w,
+                      height: 60.h,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         image: const DecorationImage(
@@ -123,17 +125,17 @@ Widget youTubePageView() {
                     ),
                     title: Text(
                       "Video Title $index",
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
-                    subtitle: const Text(
+                    subtitle: Text(
                       "Channel Name",
                       style: TextStyle(
                         color: Colors.white70,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                     onTap: () {},

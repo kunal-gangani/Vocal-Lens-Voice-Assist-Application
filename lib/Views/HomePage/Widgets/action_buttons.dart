@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget actionButton({
   required IconData icon,
@@ -12,7 +13,7 @@ Widget actionButton({
     icon: Icon(icon, color: textColor),
     label: Text(label, style: TextStyle(color: textColor)),
     style: ElevatedButton.styleFrom(
-      minimumSize: const Size(160, 60),
+      minimumSize:  Size(160.w, 60.h),
       backgroundColor: buttonColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),

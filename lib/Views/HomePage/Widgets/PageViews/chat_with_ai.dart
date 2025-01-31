@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
@@ -33,23 +34,23 @@ Widget chatWithAIPage() {
             children: [
               Expanded(
                 child: chatController.getMessages.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               Icons.chat_bubble_outline,
-                              size: 80,
+                              size: 80.sp,
                               color: Colors.white24,
                             ),
                             SizedBox(
-                              height: 20,
+                              height: 20.h,
                             ),
                             Text(
                               "Start a conversation with Gemini-AI",
                               style: TextStyle(
                                 color: Colors.white70,
-                                fontSize: 18,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.w400,
                               ),
                               textAlign: TextAlign.center,
@@ -75,16 +76,16 @@ Widget chatWithAIPage() {
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade800,
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15.0.r),
+                                      topRight: Radius.circular(15.0.r),
                                       bottomLeft: Radius.zero,
-                                      bottomRight: Radius.circular(15.0),
+                                      bottomRight: Radius.circular(15.0.r),
                                     ),
                                   ),
-                                  child: const SpinKitThreeBounce(
+                                  child: SpinKitThreeBounce(
                                     color: Colors.white,
-                                    size: 20.0,
+                                    size: 20.0.sp,
                                   ),
                                 ),
                               ],
@@ -105,12 +106,12 @@ Widget chatWithAIPage() {
                                         horizontal: 15.0,
                                         vertical: 10.0,
                                       ),
-                                      decoration: const BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: Colors.blueAccent,
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15.0),
-                                          topRight: Radius.circular(15.0),
-                                          bottomLeft: Radius.circular(15.0),
+                                          topLeft: Radius.circular(15.0.r),
+                                          topRight: Radius.circular(15.0.r),
+                                          bottomLeft: Radius.circular(15.0.r),
                                           bottomRight: Radius.zero,
                                         ),
                                       ),
@@ -139,11 +140,12 @@ Widget chatWithAIPage() {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.grey.shade800,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15.0.r),
+                                            topRight: Radius.circular(15.0.r),
                                             bottomLeft: Radius.zero,
-                                            bottomRight: Radius.circular(15.0),
+                                            bottomRight:
+                                                Radius.circular(15.0.r),
                                           ),
                                         ),
                                         child: Text(

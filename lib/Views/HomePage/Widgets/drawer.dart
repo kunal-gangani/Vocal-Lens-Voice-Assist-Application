@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
@@ -13,12 +14,12 @@ Widget customDrawer() {
             decoration: BoxDecoration(
               color: Colors.blueGrey.shade900,
             ),
-            child: const Center(
+            child:  Center(
               child: Text(
                 "VocalLens Menu",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),

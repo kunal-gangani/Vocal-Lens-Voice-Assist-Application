@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
@@ -8,9 +9,9 @@ Widget navigationBar() {
   return Consumer<NavigationController>(builder: (context, value, _) {
     return NavigationBarTheme(
       data: NavigationBarThemeData(
-        labelTextStyle: const WidgetStatePropertyAll(
+        labelTextStyle: WidgetStatePropertyAll(
           TextStyle(
-            fontSize: 12.0,
+            fontSize: 12.0.sp,
             color: Colors.white,
           ),
         ),

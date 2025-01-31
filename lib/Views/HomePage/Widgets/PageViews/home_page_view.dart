@@ -1,5 +1,6 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/DetailedResponsePage/detailed_response_pages.dart';
@@ -38,8 +39,8 @@ Widget homePageView() {
                       )
                     : Text(
                         value.text,
-                        style: const TextStyle(
-                          fontSize: 20,
+                        style: TextStyle(
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -47,8 +48,8 @@ Widget homePageView() {
                       ),
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: 20.h,
             ),
             Card(
               elevation: 5,
@@ -61,16 +62,16 @@ Widget homePageView() {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Enter your Query:",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
+                    SizedBox(
+                      height: 15.h,
                     ),
                     Row(
                       children: [
@@ -105,8 +106,8 @@ Widget homePageView() {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: 10.w,
                         ),
                         ElevatedButton(
                           onPressed: value.isButtonEnabled
@@ -132,12 +133,12 @@ Widget homePageView() {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: 20.h,
             ),
             // Responses Section
             SizedBox(
-              height: 350,
+              height: 350.h,
               child: Card(
                 elevation: 5,
                 color: Colors.blueGrey.shade800,
@@ -151,16 +152,16 @@ Widget homePageView() {
                     children: [
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             "Response",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(
-                            width: 68,
+                          SizedBox(
+                            width: 68.w,
                           ),
                           IconButton(
                             onPressed: () {
@@ -211,8 +212,8 @@ Widget homePageView() {
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(
+                        height: 10.h,
                       ),
                       Flexible(
                         child: ListView.builder(
@@ -235,19 +236,19 @@ Widget homePageView() {
                                   children: [
                                     Text(
                                       "Que. ${value.responses[index]['question']}",
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                                      style: TextStyle(
+                                        fontSize: 16.h,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.cyan,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 8,
+                                    SizedBox(
+                                      height: 8.h,
                                     ),
                                     Text(
                                       "Ans:\n${value.responses[index]['answer']}",
-                                      style: const TextStyle(
-                                        fontSize: 16,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.w400,
                                         color: Colors.white,
                                       ),
