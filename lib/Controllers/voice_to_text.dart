@@ -30,10 +30,15 @@ class VoiceToTextController extends ChangeNotifier {
   String text = "Press the mic to start speaking...";
   String? lastSpokenAnswer;
 
+  // Keys for persistent storage
+  final String voiceKey = 'voice';
+  final String pitchKey = 'pitch';
+  final String speechRateKey = 'speechRate';
+
   // Voice settings
-  String voice = "en-us"; // Default voice model
-  double pitch = 1.0; // Default pitch
-  double speechRate = 0.5; // Default speech rate
+  String voice = "en-us";
+  double pitch = 1.0;
+  double speechRate = 0.5;
 
   // Data storage and history
   final GetStorage storage = GetStorage();
@@ -57,10 +62,10 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Constructor
   VoiceToTextController() {
-    Future<void> getAvailableVoices() async {
-      List<dynamic> voices = await flutterTts.getVoices;
-      log("Available Voices: $voices");
-    }
+    // Load saved values from storage
+    voice = storage.read<String>(voiceKey) ?? "en-us";
+    pitch = storage.read<double>(pitchKey) ?? 1.0;
+    speechRate = storage.read<double>(speechRateKey) ?? 0.5;
 
     speechToText = stt.SpeechToText();
     initializeTts();
@@ -81,6 +86,10 @@ class VoiceToTextController extends ChangeNotifier {
       notifyListeners();
     });
   }
+  // Save settings
+  void _saveVoice() => storage.write(voiceKey, voice);
+  void _savePitch() => storage.write(pitchKey, pitch);
+  void _saveSpeechRate() => storage.write(speechRateKey, speechRate);
 
   Future<void> requestMicrophonePermission() async {
     // Check current permission status
@@ -111,13 +120,31 @@ class VoiceToTextController extends ChangeNotifier {
   // Setters for voice settings
   void setVoice(String newVoice) async {
     List<dynamic> availableVoices = await flutterTts.getVoices;
+    log("Available voices: $availableVoices");
 
     if (availableVoices.contains(newVoice)) {
       voice = newVoice;
       await flutterTts.setVoice({"name": newVoice, "locale": "en-US"});
       log("Voice set to: $newVoice");
+      _saveVoice();
+      notifyListeners();
     } else {
       log("Voice model not found: $newVoice");
+    }
+  }
+
+  List<String> voiceModels = [];
+
+  void getAvailableVoices() async {
+    // Fetch voices from FlutterTTS or other source
+    List<dynamic> availableVoices = await flutterTts.getVoices;
+    voiceModels = availableVoices
+        .map<String>((voice) => voice['name'] as String)
+        .toList();
+
+    // Ensure the current voice is valid
+    if (!voiceModels.contains(voice) && voiceModels.isNotEmpty) {
+      voice = voiceModels[0];
     }
     notifyListeners();
   }
@@ -125,12 +152,14 @@ class VoiceToTextController extends ChangeNotifier {
   void setPitch(double newPitch) {
     pitch = newPitch;
     flutterTts.setPitch(pitch);
+    _savePitch();
     notifyListeners();
   }
 
   void setSpeechRate(double newSpeechRate) {
     speechRate = newSpeechRate;
     flutterTts.setSpeechRate(speechRate);
+    _saveSpeechRate();
     notifyListeners();
   }
 
@@ -150,18 +179,17 @@ class VoiceToTextController extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Initialize TTS
   void initializeTts() {
-    flutterTts.setLanguage(voice); // Use the selected voice language
-    flutterTts.setPitch(pitch); // Use the selected pitch
-    flutterTts.setSpeechRate(speechRate); // Use the selected speech rate
+    flutterTts.setLanguage(voice);
+    flutterTts.setPitch(pitch);
+    flutterTts.setSpeechRate(speechRate);
 
-    // Handle TTS completion event
     flutterTts.setCompletionHandler(() {
       isSpeaking = false;
       notifyListeners();
     });
 
-    // Handle TTS error event
     flutterTts.setErrorHandler((msg) {
       log("TTS Error: $msg");
       isSpeaking = false;
@@ -226,12 +254,12 @@ class VoiceToTextController extends ChangeNotifier {
         notifyListeners();
       }
     } else {
-      log('Microphone permission denied. Cannot start listening.');
+      log('Microphone permission denied.');
       Fluttertoast.showToast(msg: 'Microphone permission denied.');
     }
   }
 
-  // Stop listening
+// Stop listening
   void stopListening() {
     isListening = false;
     speechToText.stop();
@@ -289,11 +317,20 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
-  // Stop Text-to-Speech
-  void stopSpeaking() async {
-    await flutterTts.stop();
+  // Stop speaking
+  void stopSpeaking() {
     isSpeaking = false;
-    isPaused = true;
+    flutterTts.stop();
+    notifyListeners();
+  }
+
+  // Pause speaking
+  void pauseSpeaking() {
+    if (isSpeaking) {
+      isSpeaking = false;
+      isPaused = true;
+      flutterTts.stop();
+    }
     notifyListeners();
   }
 

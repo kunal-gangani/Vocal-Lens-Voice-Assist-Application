@@ -78,52 +78,6 @@ class AuthController extends ChangeNotifier {
     return _user;
   }
 
-  Future<void> updateProfilePicture() async {
-    if (_user == null) {
-      throw Exception("User is not authenticated. Please sign in first.");
-    }
-
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-      if (image == null) {
-        throw Exception("No image selected.");
-      }
-
-      final File file = File(image.path);
-
-      if (!file.existsSync()) {
-        throw Exception("The selected file does not exist: ${image.path}");
-      }
-
-      log("Uploading file: ${file.path}");
-      final ref = _storage.ref().child('user_profiles/${_user!.uid}.jpg');
-
-      final uploadTask = await ref.putFile(file);
-
-      final String photoURL = await uploadTask.ref.getDownloadURL();
-
-      await _user!.updatePhotoURL(photoURL);
-      await _user!.reload();
-      _user = FirebaseAuth.instance.currentUser;
-
-      log("Profile picture updated successfully: $photoURL");
-      notifyListeners();
-    } on FirebaseException catch (e) {
-      log("Firebase Storage error: ${e.code} - ${e.message}");
-      if (e.code == 'object-not-found') {
-        throw Exception("File does not exist in Firebase Storage.");
-      } else if (e.code == 'unauthorized') {
-        throw Exception("Unauthorized access to Firebase Storage.");
-      } else {
-        throw Exception("Firebase Storage error: ${e.message}");
-      }
-    } catch (e) {
-      log("Unexpected error: $e");
-      throw Exception("Error updating profile picture: $e");
-    }
-  }
 
   Future<void> updateDisplayName({required String displayName}) async {
     if (_user == null) {

@@ -11,12 +11,10 @@ class VoiceModificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final voiceController = Provider.of<VoiceToTextController>(context);
 
-    final List<String> voiceModels = [
-      "en-us",
-      "en-gb",
-      "en-in",
-      "robotic",
-    ];
+    // Call getAvailableVoices when the widget is first built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      voiceController.getAvailableVoices();
+    });
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -55,27 +53,37 @@ class VoiceModificationPage extends StatelessWidget {
               SizedBox(
                 height: 10.h,
               ),
-              DropdownButton<String>(
-                value: voiceController.voice,
-                onChanged: (newValue) {
-                  if (newValue != null) {
-                    voiceController.setVoice(newValue);
-                  }
-                },
-                items:
-                    voiceModels.map<DropdownMenuItem<String>>((String model) {
-                  return DropdownMenuItem<String>(
-                    value: model,
-                    child: Text(
-                      model,
-                      style: TextStyle(color: Colors.blueGrey.shade300),
+              // Dropdown only appears when voices are available
+              voiceController.voiceModels.isEmpty
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : DropdownButton<String>(
+                      value: voiceController.voice.isEmpty ||
+                              !voiceController.voiceModels
+                                  .contains(voiceController.voice)
+                          ? null // If voice is invalid or empty, set it to null
+                          : voiceController.voice,
+                      onChanged: (newValue) {
+                        if (newValue != null) {
+                          voiceController.setVoice(newValue);
+                        }
+                      },
+                      items: voiceController.voiceModels
+                          .map<DropdownMenuItem<String>>((String model) {
+                        return DropdownMenuItem<String>(
+                          value: model,
+                          child: Text(
+                            model,
+                            style: TextStyle(color: Colors.blueGrey.shade300),
+                          ),
+                        );
+                      }).toList(),
+                      isExpanded: true,
+                      iconEnabledColor: Colors.white,
+                      dropdownColor: Colors.black87,
                     ),
-                  );
-                }).toList(),
-                isExpanded: true,
-                iconEnabledColor: Colors.white,
-                dropdownColor: Colors.black87,
-              ),
+
               SizedBox(
                 height: 20.h,
               ),

@@ -60,9 +60,6 @@ class UserSettingsPage extends StatelessWidget {
                       color: Colors.white70,
                     ),
                   ),
-                  onTap: () async {
-                    await authValue.updateProfilePicture();
-                  },
                 ),
               ),
               const SizedBox(
