@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
+import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/chat_with_ai.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/explore_friends_view.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/home_page_view.dart';
@@ -15,6 +17,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Provider.of<VoiceToTextController>(context, listen: false)
+          .requestMicrophonePermission();
+    });
+
     return Consumer<NavigationController>(
       builder: (context, navigationController, _) {
         return Scaffold(

@@ -1,5 +1,6 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
@@ -33,86 +34,148 @@ class VoiceModificationPage extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
+            letterSpacing: 1.2,
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<String>(
-              value: voiceController.voice,
-              onChanged: (newValue) {
-                if (newValue != null) {
-                  voiceController.setVoice(newValue);
-                }
-              },
-              items: voiceModels.map<DropdownMenuItem<String>>((String model) {
-                return DropdownMenuItem<String>(
-                  value: model,
-                  child: Text(model),
-                );
-              }).toList(),
-            ),
-
-            Row(
-              children: [
-                const Text(
-                  "Pitch:",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Voice Model:",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
                 ),
-                Slider(
-                  activeColor: Colors.blueGrey,
-                  value: voiceController.pitch,
-                  min: 0.5,
-                  max: 2.0,
-                  divisions: 10,
-                  onChanged: (value) {
-                    voiceController.setPitch(value);
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              DropdownButton<String>(
+                value: voiceController.voice,
+                onChanged: (newValue) {
+                  if (newValue != null) {
+                    voiceController.setVoice(newValue);
+                  }
+                },
+                items:
+                    voiceModels.map<DropdownMenuItem<String>>((String model) {
+                  return DropdownMenuItem<String>(
+                    value: model,
+                    child: Text(
+                      model,
+                      style: TextStyle(color: Colors.blueGrey.shade300),
+                    ),
+                  );
+                }).toList(),
+                isExpanded: true,
+                iconEnabledColor: Colors.white,
+                dropdownColor: Colors.black87,
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Pitch:",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    voiceController.pitch.toStringAsFixed(1),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 8.h,
+              ),
+              Slider(
+                activeColor: Colors.blueGrey,
+                value: voiceController.pitch,
+                min: 0.5,
+                max: 2.0,
+                divisions: 10,
+                onChanged: (value) {
+                  voiceController.setPitch(value);
+                },
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Speech Rate:",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    voiceController.speechRate.toStringAsFixed(1),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 8.h,
+              ),
+              Slider(
+                activeColor: Colors.blueGrey,
+                value: voiceController.speechRate,
+                min: 0.1,
+                max: 1.0,
+                divisions: 9,
+                onChanged: (value) {
+                  voiceController.setSpeechRate(value);
+                },
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    voiceController.previewVoice();
                   },
-                ),
-                Text(
-                  voiceController.pitch.toStringAsFixed(1),
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey.shade800,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "Preview Voice",
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ],
-            ),
-            // Speech Rate Slider
-            Row(
-              children: [
-                const Text(
-                  "Speech Rate:",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                Slider(
-                  value: voiceController.speechRate,
-                  min: 0.1,
-                  max: 1.0,
-                  divisions: 9,
-                  onChanged: (value) {
-                    voiceController.setSpeechRate(
-                        value); // Update speech rate in the controller
-                  },
-                ),
-                Text(voiceController.speechRate.toStringAsFixed(1)),
-              ],
-            ),
-
-            // Button to preview the selected settings
-            ElevatedButton(
-              onPressed: () {
-                // Preview the voice based on the settings
-                voiceController.readOrPromptResponse();
-              },
-              child: const Text("Preview Voice"),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

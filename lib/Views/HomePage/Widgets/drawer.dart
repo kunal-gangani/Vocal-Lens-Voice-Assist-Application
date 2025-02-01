@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 
 Widget customDrawer() {
@@ -14,7 +15,7 @@ Widget customDrawer() {
             decoration: BoxDecoration(
               color: Colors.blueGrey.shade900,
             ),
-            child:  Center(
+            child: Center(
               child: Text(
                 "VocalLens Menu",
                 style: TextStyle(
@@ -102,6 +103,21 @@ Widget customDrawer() {
               ),
             ),
             onTap: value.openHowToUsePage,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.privacy_tip,
+              color: Colors.teal,
+            ),
+            title: const Text(
+              "Manage Permissions",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onTap: () async {
+              await openAppSettings();
+            },
           ),
         ],
       ),

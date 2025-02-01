@@ -3,6 +3,7 @@ import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -56,6 +57,11 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Constructor
   VoiceToTextController() {
+    Future<void> getAvailableVoices() async {
+      List<dynamic> voices = await flutterTts.getVoices;
+      log("Available Voices: $voices");
+    }
+
     speechToText = stt.SpeechToText();
     initializeTts();
 
@@ -86,21 +92,33 @@ class VoiceToTextController extends ChangeNotifier {
 
       if (result.isGranted) {
         log('Microphone permission granted!');
+        Fluttertoast.showToast(msg: 'Microphone permission granted!');
       } else if (result.isPermanentlyDenied) {
         log('Microphone permission permanently denied. Please enable it in settings.');
+        Fluttertoast.showToast(
+            msg: 'Permission permanently denied. Enable it in settings.');
         openAppSettings();
       } else {
         log('Microphone permission denied.');
+        Fluttertoast.showToast(msg: 'Microphone permission denied.');
       }
     } else if (status.isGranted) {
       log('Microphone permission already granted.');
+      Fluttertoast.showToast(msg: 'Microphone permission already granted.');
     }
   }
 
   // Setters for voice settings
-  void setVoice(String newVoice) {
-    voice = newVoice;
-    flutterTts.setLanguage(voice);
+  void setVoice(String newVoice) async {
+    List<dynamic> availableVoices = await flutterTts.getVoices;
+
+    if (availableVoices.contains(newVoice)) {
+      voice = newVoice;
+      await flutterTts.setVoice({"name": newVoice, "locale": "en-US"});
+      log("Voice set to: $newVoice");
+    } else {
+      log("Voice model not found: $newVoice");
+    }
     notifyListeners();
   }
 
@@ -183,25 +201,33 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Start listening using speech-to-text
   Future<void> startListening() async {
-    await requestMicrophonePermission();
-    bool available = await speechToText.initialize(
-      onError: (error) => log('SpeechToText Error: $error'),
-      onStatus: (status) => log('SpeechToText Status: $status'),
-    );
+    PermissionStatus status = await Permission.microphone.request();
 
-    if (available) {
-      isListening = true;
-      speechToText.listen(
-        onResult: (result) {
-          text = result.recognizedWords;
-          log('Recognized Words: $text');
-          notifyListeners();
-        },
+    if (status.isGranted) {
+      bool available = await speechToText.initialize(
+        onError: (error) => log('SpeechToText Error: $error'),
+        onStatus: (status) => log('SpeechToText Status: $status'),
       );
+
+      if (available) {
+        isListening = true;
+        notifyListeners();
+
+        speechToText.listen(
+          onResult: (result) {
+            text = result.recognizedWords;
+            log('Recognized Words: $text');
+            notifyListeners();
+          },
+        );
+      } else {
+        text = "Speech recognition is not available.";
+        log('Speech recognition unavailable');
+        notifyListeners();
+      }
     } else {
-      text = "Speech recognition is not available.";
-      log('Speech recognition unavailable');
-      notifyListeners();
+      log('Microphone permission denied. Cannot start listening.');
+      Fluttertoast.showToast(msg: 'Microphone permission denied.');
     }
   }
 
@@ -210,6 +236,22 @@ class VoiceToTextController extends ChangeNotifier {
     isListening = false;
     speechToText.stop();
     notifyListeners();
+  }
+
+  Future<void> previewVoice() async {
+    String previewText = "Hello! This is how your selected voice sounds.";
+    isSpeaking = true;
+    isPaused = false;
+    notifyListeners();
+
+    try {
+      await flutterTts.speak(previewText);
+    } catch (e) {
+      log("Error during TTS preview: $e");
+    } finally {
+      isSpeaking = false;
+      notifyListeners();
+    }
   }
 
   // Text-to-Speech: Speak a response or prompt
