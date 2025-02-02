@@ -9,15 +9,6 @@ Widget chatWithAIPage() {
     builder: (context, chatController, _) {
       return Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: const Text(
-            "Chat with Gemini-AI",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: Colors.blueGrey.shade900,
-        ),
         body: Container(
           padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
@@ -32,8 +23,46 @@ Widget chatWithAIPage() {
           ),
           child: Column(
             children: [
+              // Search Bar
+              TextField(
+                onChanged: (query) {
+                  chatController.setSearchQuery(query);
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search messages...',
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  border: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(30.0), // Rounded corners
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        const BorderSide(color: Colors.blueAccent, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        const BorderSide(color: Colors.white30, width: 1.5),
+                  ),
+                  filled: true,
+                  fillColor: Colors.black.withOpacity(0.6),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear, color: Colors.white70),
+                    onPressed: () {
+                      chatController.setSearchQuery('');
+                    },
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              // Display messages
               Expanded(
-                child: chatController.getMessages.isEmpty
+                child: chatController.filteredMessages.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -59,11 +88,11 @@ Widget chatWithAIPage() {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: chatController.getMessages.length +
+                        itemCount: chatController.filteredMessages.length +
                             (chatController.isLoading ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (chatController.isLoading &&
-                              index == chatController.getMessages.length) {
+                              index == chatController.filteredMessages.length) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -92,7 +121,8 @@ Widget chatWithAIPage() {
                             );
                           }
 
-                          final message = chatController.getMessages[index];
+                          final message =
+                              chatController.filteredMessages[index];
                           return Column(
                             children: [
                               if (message.containsKey('question'))
@@ -116,7 +146,8 @@ Widget chatWithAIPage() {
                                         ),
                                       ),
                                       child: Text(
-                                        message['question'] ?? '...',
+                                        message['question']?.toString() ??
+                                            '...',
                                         style: const TextStyle(
                                           color: Colors.white,
                                         ),
@@ -124,9 +155,7 @@ Widget chatWithAIPage() {
                                     ),
                                   ],
                                 ),
-                              if (message.containsKey(
-                                'answer',
-                              ))
+                              if (message.containsKey('answer'))
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -149,7 +178,8 @@ Widget chatWithAIPage() {
                                           ),
                                         ),
                                         child: Text(
-                                          message['answer'] ?? '...',
+                                          message['answer']?.toString() ??
+                                              '...',
                                           style: const TextStyle(
                                             color: Colors.white,
                                           ),

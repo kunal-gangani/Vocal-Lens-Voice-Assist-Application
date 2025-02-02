@@ -1,11 +1,13 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
+import 'package:vocal_lens/Widgets/auth_text_field.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});
@@ -128,7 +130,7 @@ class RegistrationPage extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        _buildTextFormField(
+                        buildTextFormField(
                           context: context,
                           controller: usernameController,
                           label: 'username'.tr(),
@@ -137,7 +139,7 @@ class RegistrationPage extends StatelessWidget {
                         const SizedBox(
                           height: 16,
                         ),
-                        _buildTextFormField(
+                        buildTextFormField(
                           context: context,
                           controller: emailController,
                           label: 'email'.tr(),
@@ -146,7 +148,7 @@ class RegistrationPage extends StatelessWidget {
                         const SizedBox(
                           height: 16,
                         ),
-                        _buildTextFormField(
+                        buildTextFormField(
                           context: context,
                           controller: passwordController,
                           label: 'password'.tr(),
@@ -219,6 +221,11 @@ class RegistrationPage extends StatelessWidget {
                                 backgroundColor: Colors.green,
                                 textColor: Colors.white,
                               );
+                              Flexify.goRemove(
+                                const LoginPage(),
+                                animation: FlexifyRouteAnimations.blur,
+                                duration: Durations.medium1,
+                              );
                             } catch (e) {
                               Fluttertoast.showToast(
                                 msg: 'google_sign_in_failed'.tr(),
@@ -230,17 +237,34 @@ class RegistrationPage extends StatelessWidget {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
                             padding: const EdgeInsets.symmetric(
                               vertical: 14,
                             ),
+                            elevation: 10,
                           ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.google,
-                            color: Colors.white,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.google,
+                                color: Colors.red,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Sign in with Google",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -270,58 +294,6 @@ class RegistrationPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextFormField({
-    required BuildContext context,
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    bool isPassword = false,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      style: const TextStyle(
-        color: Colors.white,
-      ),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(
-          color: Colors.white70,
-        ),
-        prefixIcon: Icon(
-          icon,
-          color: Colors.white70,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.white,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.white70,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-          ),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade800,
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return '${label}_required'.tr();
-        }
-        return null;
-      },
     );
   }
 }

@@ -1,12 +1,14 @@
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/RegistrationPage/registration_page.dart';
+import 'package:vocal_lens/Widgets/auth_text_field.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -118,7 +120,7 @@ class LoginPage extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        _buildTextFormField(
+                        buildTextFormField(
                           context: context,
                           controller: emailController,
                           label: 'email'.tr(),
@@ -127,7 +129,7 @@ class LoginPage extends StatelessWidget {
                         const SizedBox(
                           height: 16,
                         ),
-                        _buildTextFormField(
+                        buildTextFormField(
                           context: context,
                           controller: passwordController,
                           label: 'password'.tr(),
@@ -137,7 +139,7 @@ class LoginPage extends StatelessWidget {
                         const SizedBox(
                           height: 24,
                         ),
-                        ElevatedButton(
+                        TextButton(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               try {
@@ -163,19 +165,10 @@ class LoginPage extends StatelessWidget {
                               }
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                            ),
-                          ),
                           child: Text(
                             'login_title'.tr(),
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -211,17 +204,34 @@ class LoginPage extends StatelessWidget {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
                             padding: const EdgeInsets.symmetric(
                               vertical: 14,
                             ),
+                            elevation: 10,
                           ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.google,
-                            color: Colors.white,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.google,
+                                color: Colors.red,
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Sign in with Google",
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -251,58 +261,6 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextFormField({
-    required BuildContext context,
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    bool isPassword = false,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: isPassword,
-      style: const TextStyle(
-        color: Colors.white,
-      ),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(
-          color: Colors.white70,
-        ),
-        prefixIcon: Icon(
-          icon,
-          color: Colors.white70,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.white,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.white70,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-          ),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade800,
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return '${label}_required'.tr();
-        }
-        return null;
-      },
     );
   }
 }
