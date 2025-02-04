@@ -62,6 +62,19 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Constructor
   VoiceToTextController() {
+    flutterTts.setCompletionHandler(() {
+      isSpeaking = false;
+      isPaused = false;
+      notifyListeners();
+    });
+
+    flutterTts.setErrorHandler((msg) {
+      log("TTS Error: $msg");
+      isSpeaking = false;
+      isPaused = false;
+      notifyListeners();
+    });
+
     // Load saved values from storage
     voice = storage.read<String>(voiceKey) ?? "en-us";
     pitch = storage.read<double>(pitchKey) ?? 1.0;
@@ -133,10 +146,95 @@ class VoiceToTextController extends ChangeNotifier {
     }
   }
 
+  void handleVoiceCommands(String command) {
+    String lowerCommand = command.toLowerCase();
+    log("Recognized command: $lowerCommand");
+
+    // Default message for unrecognized commands
+    String responseMessage = "Command not recognized";
+
+    if (lowerCommand.contains("open chat")) {
+      log("Opening Chats");
+      openChatSection();
+      responseMessage = "Opening chat section.";
+    } else if (lowerCommand.contains("settings")) {
+      log("Opening Settings");
+      openUserSettings();
+      responseMessage = "Opening settings.";
+    } else if (lowerCommand.contains("go back")) {
+      log("Can't go back");
+      responseMessage = "Are you sure.This will close the app";
+    } else if (lowerCommand.contains("open history")) {
+      log("Opening History");
+      openPastResponses();
+      responseMessage = "Opening history.";
+    } else if (lowerCommand.contains("open connections")) {
+      log("Opening Connections Request Page");
+      openConnectionRequestPage();
+      responseMessage = "Opening connections request page.";
+    } else if (lowerCommand.contains("how to use")) {
+      log("Opening How To Use Page");
+      openHowToUsePage();
+      responseMessage = "Opening how to use page.";
+    } else if (lowerCommand.contains("voice settings")) {
+      log("Opening Voice Modification Page");
+      openVoiceModelPage();
+      responseMessage = "Opening voice modification settings.";
+    } else if (lowerCommand.contains("start listening")) {
+      log("Started Listening");
+      startListening();
+      responseMessage = "Started listening.";
+    } else if (lowerCommand.contains("stop listening")) {
+      log("Stopped Listening");
+      stopListening();
+      responseMessage = "Stopped listening.";
+    } else if (lowerCommand.contains("speak response")) {
+      log("Speaking Response");
+      readOrPromptResponse();
+      responseMessage = "Speaking response.";
+    } else if (lowerCommand.contains("stop speaking")) {
+      log("Stopped Speaking");
+      stopSpeaking();
+      responseMessage = "Stopped speaking.";
+    } else if (lowerCommand.contains("pause speaking")) {
+      log("Paused Speaking");
+      pauseSpeaking();
+      responseMessage = "Paused speaking.";
+    } else if (lowerCommand.contains("resume speaking")) {
+      log("Resumed Speaking");
+      resumeSpeaking();
+      responseMessage = "Resumed speaking.";
+    } else if (lowerCommand.contains("delete history")) {
+      log("Deleting History");
+      deleteAllHistory();
+      responseMessage = "History deleted.";
+    } else if (lowerCommand.contains("search")) {
+      log("Searching");
+
+      RegExp regExp = RegExp(r"search (.*)", caseSensitive: false);
+      final match = regExp.firstMatch(command);
+
+      if (match != null) {
+        String query = match.group(1)?.trim() ?? '';
+        log("Search query: $query");
+
+        searchFieldController.text = query;
+        searchYourQuery();
+      } else {
+        log("No search query found after 'search'.");
+      }
+    } else {
+      log("Command not recognized : $command");
+      Fluttertoast.showToast(msg: "Command not recognized: $command");
+    }
+
+    // Speak the response message
+    flutterTts.speak(responseMessage);
+  }
+
   List<String> voiceModels = [];
 
   void getAvailableVoices() async {
-    // Fetch voices from FlutterTTS or other source
     List<dynamic> availableVoices = await flutterTts.getVoices;
     voiceModels = availableVoices
         .map<String>((voice) => voice['name'] as String)
@@ -210,14 +308,12 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Toggle listening state
   void toggleListening() {
-    isListening = !isListening;
-    notifyListeners();
-
     if (isListening) {
-      startListening();
-    } else {
       stopListening();
+    } else {
+      startListening();
     }
+    notifyListeners();
   }
 
   // Delete all history
@@ -247,6 +343,9 @@ class VoiceToTextController extends ChangeNotifier {
             log('Recognized Words: $text');
             notifyListeners();
           },
+          listenFor: const Duration(seconds: 5),
+          pauseFor: const Duration(seconds: 2),
+          onSoundLevelChange: (level) => log("Sound level: $level"),
         );
       } else {
         text = "Speech recognition is not available.";
@@ -264,6 +363,12 @@ class VoiceToTextController extends ChangeNotifier {
     isListening = false;
     speechToText.stop();
     notifyListeners();
+
+    if (text.trim().isNotEmpty) {
+      handleVoiceCommands(text.trim());
+    } else {
+      log("No valid speech detected.");
+    }
   }
 
   Future<void> previewVoice() async {
@@ -326,20 +431,24 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Pause speaking
   void pauseSpeaking() {
+    log("Before Pause - isSpeaking: $isSpeaking, isPaused: $isPaused");
     if (isSpeaking) {
       isSpeaking = false;
       isPaused = true;
       flutterTts.stop();
+      log("Speech paused - isSpeaking: $isSpeaking, isPaused: $isPaused");
     }
     notifyListeners();
   }
 
   // Resume speaking
   void resumeSpeaking() {
+    log("Before Resume - isSpeaking: $isSpeaking, isPaused: $isPaused");
     if (!isSpeaking && isPaused) {
       isSpeaking = true;
       isPaused = false;
-      flutterTts.speak(lastSpokenAnswer!);
+      flutterTts.speak(lastSpokenAnswer ?? "");
+      log("Speech resumed - isSpeaking: $isSpeaking, isPaused: $isPaused");
     }
     notifyListeners();
   }

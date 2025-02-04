@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_glow/flutter_glow.dart';
@@ -40,8 +42,28 @@ Widget floatingButton() {
                           : [],
                     ),
                     child: FloatingActionButton(
-                      onPressed: () {
-                        voiceToTextController.toggleListening();
+                      onPressed: () async {
+                        await voiceToTextController.toggleListening;
+
+                        log("Waiting for speech-to-text to update...");
+
+                        await Future.delayed(
+                          const Duration(
+                            seconds: 2,
+                          ),
+                        );
+
+                        String recognizedText =
+                            voiceToTextController.text.trim();
+                        log("Final speech-to-text result: $recognizedText");
+
+                        if (!voiceToTextController.isListening &&
+                            recognizedText.isNotEmpty) {
+                          voiceToTextController
+                              .handleVoiceCommands(recognizedText);
+                        } else {
+                          log("No valid command recognized.");
+                        }
                       },
                       backgroundColor: Colors.blueGrey.shade600,
                       child: Icon(
