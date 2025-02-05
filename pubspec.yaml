@@ -36,6 +36,8 @@ dependencies:
   cloud_firestore: ^5.6.1
   permission_handler: ^11.3.1
   flutter_tts: ^4.2.2
+  youtube_player_flutter: ^9.1.1
+  youtube_player_iframe: ^5.2.1
 
 
 dev_dependencies:

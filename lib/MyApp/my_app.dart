@@ -13,6 +13,7 @@ import 'package:vocal_lens/Controllers/user_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Controllers/youtube_controller.dart';
 import 'package:vocal_lens/Views/SplashScreen/splash_screen.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

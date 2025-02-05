@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
             },
             children: [
               homePageView(),
-              youTubePageView(),
+              youTubePageView(context),
               exploreFriendsPageView(),
               chatWithAIPage(),
             ],
