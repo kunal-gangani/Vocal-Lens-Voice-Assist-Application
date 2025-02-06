@@ -136,6 +136,7 @@ Widget youTubePageView(BuildContext context) {
                               Flexify.go(
                                 YoutubePlayerPage(
                                   videoId: video["videoId"],
+                                  videoData: video,
                                 ),
                               );
                             },

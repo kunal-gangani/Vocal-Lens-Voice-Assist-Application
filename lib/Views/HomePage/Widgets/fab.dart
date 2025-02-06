@@ -43,7 +43,7 @@ Widget floatingButton() {
                     ),
                     child: FloatingActionButton(
                       onPressed: () async {
-                        await voiceToTextController.toggleListening;
+                        voiceToTextController.toggleListening;
 
                         log("Waiting for speech-to-text to update...");
 

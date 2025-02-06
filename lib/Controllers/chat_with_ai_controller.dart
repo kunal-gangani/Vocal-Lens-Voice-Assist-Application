@@ -35,13 +35,13 @@ class ChatWithAiController extends ChangeNotifier {
     if (storedMessages != null) {
       messages.addAll(storedMessages.map((e) => Map<String, String>.from(e)));
     }
-    filterMessages(); // Ensure messages are filtered on load
+    filterMessages();
     notifyListeners();
   }
 
   void setSearchQuery(String query) {
     searchQueryVar = query;
-    filterMessages(); // Filter messages based on the search query
+    filterMessages();
     notifyListeners();
   }
 
@@ -50,10 +50,8 @@ class ChatWithAiController extends ChangeNotifier {
       filteredMessages = List.from(messages);
     } else {
       filteredMessages = messages.where((message) {
-        String question =
-            message['question'] ?? ''; // Default to empty string if null
-        String answer =
-            message['answer'] ?? ''; // Default to empty string if null
+        String question = message['question'] ?? '';
+        String answer = message['answer'] ?? '';
 
         return question.toLowerCase().contains(searchQueryVar.toLowerCase()) ||
             answer.toLowerCase().contains(searchQueryVar.toLowerCase());
@@ -88,7 +86,7 @@ class ChatWithAiController extends ChangeNotifier {
       messages.add({'answer': 'Error: Unable to fetch AI response.'});
     } finally {
       isLoading = false;
-      filterMessages(); // Re-filter messages after new ones are added
+      filterMessages();
       notifyListeners();
     }
   }
@@ -123,7 +121,7 @@ class ChatWithAiController extends ChangeNotifier {
       });
     } finally {
       isLoading = false;
-      filterMessages(); // Re-filter messages after new ones are added
+      filterMessages();
       notifyListeners();
     }
   }
