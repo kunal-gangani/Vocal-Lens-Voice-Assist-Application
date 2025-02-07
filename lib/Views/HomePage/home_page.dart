@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/chat_with_ai.dart';
@@ -10,7 +12,6 @@ import 'package:vocal_lens/Views/HomePage/Widgets/appbar.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/drawer.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/fab.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/navigation_widget.dart';
-import 'package:get_storage/get_storage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,6 +27,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authController =
+          Provider.of<AuthController>(context, listen: false);
+      authController.speakWelcomeMessage();
+    });
+
     _checkMicrophonePermission();
   }
 

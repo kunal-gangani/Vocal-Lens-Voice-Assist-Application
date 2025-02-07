@@ -38,6 +38,7 @@ dependencies:
   flutter_tts: ^4.2.2
   youtube_player_flutter: ^9.1.1
   youtube_player_iframe: ^5.2.1
+  feature_discovery: ^0.14.2
 
 
 dev_dependencies:

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -26,7 +27,9 @@ void main() async {
       ],
       path: 'lib/Assets',
       fallbackLocale: const Locale('en', 'US'),
-      child: const MyApp(),
+      child: FeatureDiscovery(
+        child: const MyApp(),
+      ),
     ),
   );
 }
