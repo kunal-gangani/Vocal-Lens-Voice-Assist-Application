@@ -5,20 +5,22 @@ import 'package:vocal_lens/Model/feature_model.dart';
 class HowToUseProvider extends ChangeNotifier {
   final FlutterTts _flutterTts = FlutterTts();
   bool _isPlaying = false;
-  int _currentIndex = 0; // Track the index of the feature being spoken
+  int _currentIndex = 0;
 
   final List<FeatureModel> _features = [
     FeatureModel(
       featureId: 'install_feature',
       icon: Icons.download,
       title: 'Step 1: Install the App',
-      description: 'Download and install the app from the Play Store or App Store.',
+      description:
+          'Download and install the app from the Play Store or App Store.',
     ),
     FeatureModel(
       featureId: 'create_account_feature',
       icon: Icons.account_circle,
       title: 'Step 2: Create an Account',
-      description: 'Sign up using your email or Google account to access full features.',
+      description:
+          'Sign up using your email or Google account to access full features.',
     ),
     FeatureModel(
       featureId: 'search_voice_feature',

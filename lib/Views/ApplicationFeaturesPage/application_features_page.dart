@@ -120,7 +120,10 @@ class _ApplicationFeaturesPageState extends State<ApplicationFeaturesPage> {
                       "lib/Views/ApplicationFeaturesPage/Assets/voice_loader.json",
                 ),
                 titleWidget: Center(
-                  child: Text("Voice Commands", style: titleTextStyle()),
+                  child: Text(
+                    "Voice Commands",
+                    style: titleTextStyle(),
+                  ),
                 ),
                 bodyWidget: Column(
                   children: [
@@ -128,7 +131,10 @@ class _ApplicationFeaturesPageState extends State<ApplicationFeaturesPage> {
                         style: bodyTextStyle()),
                     Text("touch interaction, using only voice",
                         style: bodyTextStyle()),
-                    Text("commands.", style: bodyTextStyle()),
+                    Text(
+                      "commands.",
+                      style: bodyTextStyle(),
+                    ),
                   ],
                 ),
                 decoration: pageDecoration,
@@ -139,17 +145,29 @@ class _ApplicationFeaturesPageState extends State<ApplicationFeaturesPage> {
                       "lib/Views/ApplicationFeaturesPage/Assets/final_loader.json",
                 ),
                 titleWidget: Center(
-                  child: Text("Enjoy the Experience", style: titleTextStyle()),
+                  child: Text(
+                    "Enjoy the Experience",
+                    style: titleTextStyle(),
+                  ),
                 ),
                 bodyWidget: Column(
                   children: [
-                    Text("You're all set! While this is the final slide,",
-                        style: bodyTextStyle()),
-                    Text("VocalLens offers many more exciting",
-                        style: bodyTextStyle()),
-                    Text("features waiting for you to explore. Enjoy",
-                        style: bodyTextStyle()),
-                    Text("the journey!", style: bodyTextStyle()),
+                    Text(
+                      "You're all set! While this is the final slide,",
+                      style: bodyTextStyle(),
+                    ),
+                    Text(
+                      "VocalLens offers many more exciting",
+                      style: bodyTextStyle(),
+                    ),
+                    Text(
+                      "features waiting for you to explore. Enjoy",
+                      style: bodyTextStyle(),
+                    ),
+                    Text(
+                      "the journey!",
+                      style: bodyTextStyle(),
+                    ),
                   ],
                 ),
                 decoration: pageDecoration,
@@ -188,9 +206,7 @@ class _ApplicationFeaturesPageState extends State<ApplicationFeaturesPage> {
                       foregroundColor: Colors.white,
                     ),
                     child: Text(
-                      value.getCurrentIndex == 5
-                          ? "Get Started"
-                          : "Next", // Change text dynamically
+                      value.getCurrentIndex == 5 ? "Get Started" : "Next",
                     ),
                   ),
                 ],

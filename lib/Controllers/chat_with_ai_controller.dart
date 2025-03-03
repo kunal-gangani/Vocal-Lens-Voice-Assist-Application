@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:vocal_lens/Config/api_keys.dart';
 
 class ChatWithAiController extends ChangeNotifier {
   final TextEditingController messageController = TextEditingController();
@@ -14,8 +15,8 @@ class ChatWithAiController extends ChangeNotifier {
   List<Map<String, String>> filteredMessages = [];
 
   final GenerativeModel generativeModel = GenerativeModel(
-    model: 'gemini-pro',
-    apiKey: 'AIzaSyCzaJagaearxYYdwfRe8G_oEmcNKc3gB-Q',
+    model: ApiKeys.geminiModel,
+    apiKey: ApiKeys.geminiApiKey,
   );
 
   ChatWithAiController() {

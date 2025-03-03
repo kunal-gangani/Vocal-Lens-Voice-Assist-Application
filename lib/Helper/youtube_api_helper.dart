@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:vocal_lens/Config/api_keys.dart';
 
 class YoutubeService {
-  static const String apiKey = "AIzaSyB5afyDgR9WOZqE7jga7P-KeyNlzQ00g00";
-  static const String baseUrl = "https://www.googleapis.com/youtube/v3";
+  static String apiKey = ApiKeys.youtubeApiKey;
+  static String baseUrl = ApiKeys.youtubeBaseUrl;
 
   Future<List<Map<String, dynamic>>> searchVideos(String query) async {
     final url = Uri.parse(
