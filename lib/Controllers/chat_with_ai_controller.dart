@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:vocal_lens/Config/api_keys.dart';
+import 'package:vocal_lens/Keys/api_keys.dart';
 
 class ChatWithAiController extends ChangeNotifier {
   final TextEditingController messageController = TextEditingController();

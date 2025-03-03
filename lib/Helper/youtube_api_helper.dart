@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vocal_lens/Config/api_keys.dart';
+import 'package:vocal_lens/Keys/api_keys.dart';
 
 class YoutubeService {
   static String apiKey = ApiKeys.youtubeApiKey;
