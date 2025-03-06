@@ -34,7 +34,11 @@ class ChatWithAiController extends ChangeNotifier {
   void loadMessages() {
     List<dynamic>? storedMessages = box.read<List<dynamic>>('chat_messages');
     if (storedMessages != null) {
-      messages.addAll(storedMessages.map((e) => Map<String, String>.from(e)));
+      messages.addAll(
+        storedMessages.map(
+          (e) => Map<String, String>.from(e),
+        ),
+      );
     }
     filterMessages();
     notifyListeners();
@@ -54,8 +58,12 @@ class ChatWithAiController extends ChangeNotifier {
         String question = message['question'] ?? '';
         String answer = message['answer'] ?? '';
 
-        return question.toLowerCase().contains(searchQueryVar.toLowerCase()) ||
-            answer.toLowerCase().contains(searchQueryVar.toLowerCase());
+        return question.toLowerCase().contains(
+                  searchQueryVar.toLowerCase(),
+                ) ||
+            answer.toLowerCase().contains(
+                  searchQueryVar.toLowerCase(),
+                );
       }).toList();
     }
   }
@@ -85,6 +93,8 @@ class ChatWithAiController extends ChangeNotifier {
     } catch (error) {
       log('Error during API call: $error');
       messages.add({'answer': 'Error: Unable to fetch AI response.'});
+      log('------------------------------------');
+      log('Error during API call: $error');
     } finally {
       isLoading = false;
       filterMessages();
@@ -124,6 +134,23 @@ class ChatWithAiController extends ChangeNotifier {
       isLoading = false;
       filterMessages();
       notifyListeners();
+    }
+  }
+
+  void testGeminiAPI() async {
+    try {
+      final generativeModel = GenerativeModel(
+        model: 'gemini-1.5-pro',
+        apiKey: 'YOUR_API_KEY',
+      );
+
+      final response = await generativeModel.generateContent([
+        Content.text('Hello Gemini, can you respond?'),
+      ]);
+
+      log('AI Response: ${response.text}');
+    } catch (e) {
+      log('Error: $e');
     }
   }
 }

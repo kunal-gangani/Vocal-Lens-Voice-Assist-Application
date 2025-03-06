@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:vocal_lens/Helper/firebase_helper.dart';
+import 'package:vocal_lens/Helper/auth_helper.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
 

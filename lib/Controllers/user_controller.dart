@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vocal_lens/Helper/firebase_helper.dart';
+import 'package:vocal_lens/Helper/auth_helper.dart';
 
 class UserController extends ChangeNotifier {
   final AuthHelper _authHelper = AuthHelper();

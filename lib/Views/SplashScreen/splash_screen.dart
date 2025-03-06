@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:vocal_lens/Helper/firebase_helper.dart';
+import 'package:vocal_lens/Helper/auth_helper.dart';
 import 'package:vocal_lens/Views/ApplicationFeaturesPage/application_features_page.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
 

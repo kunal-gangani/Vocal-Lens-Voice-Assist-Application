@@ -15,6 +15,7 @@ class AuthHelper {
         email: email,
         password: password,
       );
+      await _createUserDocument(userCredential.user!);
       return userCredential.user;
     } catch (e) {
       throw Exception("Error signing in with email: $e");
@@ -25,9 +26,7 @@ class AuthHelper {
   Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw Exception("Google sign-in aborted");
-      }
+      if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -38,8 +37,7 @@ class AuthHelper {
 
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
-
-      await createUserDocument(userCredential.user!);
+      await _createUserDocument(userCredential.user!);
       return userCredential.user;
     } catch (e) {
       throw Exception("Google sign-in failed: $e");
@@ -57,26 +55,23 @@ class AuthHelper {
     return _auth.currentUser;
   }
 
-  // Create user document in Firestore
-  Future<void> createUserDocument(User user) async {
-    try {
-      final userRef = _firestore.collection('users').doc(user.uid);
-      final docSnapshot = await userRef.get();
+  // Create or update user document in Firestore
+  Future<void> _createUserDocument(User user) async {
+    final userRef = _firestore.collection('users').doc(user.uid);
+    final docSnapshot = await userRef.get();
 
-      if (!docSnapshot.exists) {
-        await userRef.set({
-          'username': user.displayName ?? 'Unnamed',
-          'email': user.email,
-          'uid': user.uid,
-          'profile_picture': user.photoURL ?? '',
-        });
-      }
-    } catch (e) {
-      throw Exception("Error creating user document: $e");
+    if (!docSnapshot.exists) {
+      await userRef.set({
+        'uid': user.uid,
+        'username': user.displayName ?? 'Unnamed',
+        'email': user.email,
+        'profile_picture': user.photoURL ?? '',
+        'connections': []
+      });
     }
   }
 
-  // Get all registered users (except current user)
+  // Fetch all registered users except the current user
   Future<List<String>> getAllUsers() async {
     try {
       final currentUser = _auth.currentUser;
@@ -86,37 +81,19 @@ class AuthHelper {
 
       final usersSnapshot = await _firestore.collection('users').get();
       List<String> users = [];
+
       for (var doc in usersSnapshot.docs) {
         if (doc.id != currentUser.uid) {
-          users.add(doc['username']);
+          users.add(doc.data()['username'].toString());
         }
       }
+
       return users;
     } catch (e) {
       throw Exception("Error fetching users: $e");
     }
   }
 
-  // Send a connection request
-  Future<void> sendConnectionRequest(String userName) async {
-    try {
-      final currentUser = _auth.currentUser;
-      if (currentUser == null) {
-        throw Exception("No user is logged in.");
-      }
-
-      await _firestore.collection('connection_requests').add({
-        'sender': currentUser.uid,
-        'receiver': userName,
-        'status': 'pending',
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      throw Exception("Error sending connection request: $e");
-    }
-  }
-
-  // Check if connection request has been sent
   Future<bool> hasSentRequest(String userName) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
@@ -137,74 +114,6 @@ class AuthHelper {
     }
   }
 
-  // Get received connection requests
-  Future<List<Map<String, dynamic>>> getConnectionRequests() async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception("No user is logged in.");
-    }
-
-    try {
-      final querySnapshot = await _firestore
-          .collection('connection_requests')
-          .where('receiver', isEqualTo: currentUser.uid)
-          .get();
-
-      return querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      throw Exception("Error fetching connection requests: $e");
-    }
-  }
-
-  // Accept a connection request
-  Future<void> acceptConnectionRequest(String requestId) async {
-    try {
-      final requestRef =
-          _firestore.collection('connection_requests').doc(requestId);
-      await requestRef.update({
-        'status': 'accepted',
-      });
-    } catch (e) {
-      throw Exception("Error accepting connection request: $e");
-    }
-  }
-
-  // Reject a connection request
-  Future<void> rejectConnectionRequest(String requestId) async {
-    try {
-      final requestRef =
-          _firestore.collection('connection_requests').doc(requestId);
-      await requestRef.update({
-        'status': 'rejected',
-      });
-    } catch (e) {
-      throw Exception("Error rejecting connection request: $e");
-    }
-  }
-
-  // Get accepted connections
-  Future<List<String>> getAcceptedConnections() async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception("No user is logged in.");
-    }
-
-    try {
-      final connectionsQuery = await _firestore
-          .collection('connections')
-          .doc(currentUser.uid)
-          .collection('accepted')
-          .get();
-
-      return connectionsQuery.docs
-          .map((doc) => doc.data()['username'] as String)
-          .toList();
-    } catch (e) {
-      throw Exception("Error fetching accepted connections: $e");
-    }
-  }
-
-  // Accept connection by username
   Future<void> acceptConnectionByUserName(String userName) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
@@ -225,9 +134,7 @@ class AuthHelper {
 
       final requestDoc = querySnapshot.docs.first;
 
-      await requestDoc.reference.update({
-        'status': 'accepted',
-      });
+      await requestDoc.reference.update({'status': 'accepted'});
 
       await _firestore.collection('connections').doc(currentUser.uid).set({
         'accepted': FieldValue.arrayUnion([userName]),
@@ -249,23 +156,6 @@ class AuthHelper {
     }
   }
 
-  // Remove a connection
-  Future<void> removeConnection(String userName) async {
-    final currentUser = _auth.currentUser;
-    if (currentUser == null) {
-      throw Exception("No user is logged in.");
-    }
-
-    try {
-      await _firestore.collection('connections').doc(currentUser.uid).set({
-        'accepted': FieldValue.arrayRemove([userName]),
-      }, SetOptions(merge: true));
-    } catch (e) {
-      throw Exception("Error removing connection with $userName: $e");
-    }
-  }
-
-  // Reject connection request by username
   Future<void> rejectConnectionByUserName(String userName) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
@@ -285,11 +175,109 @@ class AuthHelper {
       }
 
       final requestDoc = querySnapshot.docs.first;
-      await requestDoc.reference.update({
-        'status': 'rejected',
-      });
+      await requestDoc.reference.update({'status': 'rejected'});
     } catch (e) {
       throw Exception("Error rejecting connection from $userName: $e");
     }
+  }
+
+  // Send a connection request
+  Future<void> sendConnectionRequest(String receiverId) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    await _firestore.collection('connection_requests').add({
+      'sender': currentUser.uid,
+      'receiver': receiverId,
+      'status': 'pending',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
+  // Get received connection requests
+  Future<List<Map<String, dynamic>>> getConnectionRequests() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    final querySnapshot = await _firestore
+        .collection('connection_requests')
+        .where('receiver', isEqualTo: currentUser.uid)
+        .where('status', isEqualTo: 'pending')
+        .get();
+
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  // Accept a connection request
+  Future<void> acceptConnection(String senderId) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    final querySnapshot = await _firestore
+        .collection('connection_requests')
+        .where('receiver', isEqualTo: currentUser.uid)
+        .where('sender', isEqualTo: senderId)
+        .where('status', isEqualTo: 'pending')
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      throw Exception("No pending request found from this user.");
+    }
+
+    final requestDoc = querySnapshot.docs.first;
+    await requestDoc.reference.update({'status': 'accepted'});
+
+    await _firestore.collection('connections').doc(currentUser.uid).set({
+      'accepted': FieldValue.arrayUnion([senderId]),
+    }, SetOptions(merge: true));
+
+    await _firestore.collection('connections').doc(senderId).set({
+      'accepted': FieldValue.arrayUnion([currentUser.uid]),
+    }, SetOptions(merge: true));
+  }
+
+  // Reject a connection request
+  Future<void> rejectConnection(String senderId) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    final querySnapshot = await _firestore
+        .collection('connection_requests')
+        .where('receiver', isEqualTo: currentUser.uid)
+        .where('sender', isEqualTo: senderId)
+        .where('status', isEqualTo: 'pending')
+        .get();
+
+    if (querySnapshot.docs.isEmpty) return;
+
+    final requestDoc = querySnapshot.docs.first;
+    await requestDoc.reference.delete();
+  }
+
+  // Get list of accepted connections
+  Future<List<String>> getAcceptedConnections() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    final docSnapshot =
+        await _firestore.collection('connections').doc(currentUser.uid).get();
+    if (docSnapshot.exists) {
+      return List<String>.from(docSnapshot.data()?['accepted'] ?? []);
+    }
+    return [];
+  }
+
+  // Remove a connection
+  Future<void> removeConnection(String userId) async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception("No user is logged in.");
+
+    await _firestore.collection('connections').doc(currentUser.uid).update({
+      'accepted': FieldValue.arrayRemove([userId]),
+    });
+
+    await _firestore.collection('connections').doc(userId).update({
+      'accepted': FieldValue.arrayRemove([currentUser.uid]),
+    });
   }
 }

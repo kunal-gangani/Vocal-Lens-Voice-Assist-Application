@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:vocal_lens/Keys/api_keys.dart';
 import 'package:vocal_lens/Views/ChatSection/chat_section.dart';
 import 'package:vocal_lens/Views/ConnectionsRequestPage/connection_request_page.dart';
 import 'package:vocal_lens/Views/FavouritesResponsesPage/favourite_responses_page.dart';
@@ -55,7 +56,7 @@ class VoiceToTextController extends ChangeNotifier {
   final TextEditingController searchFieldController = TextEditingController();
 
   // API key for Google Generative AI
-  static const String apiKey = "AIzaSyCzaJagaearxYYdwfRe8G_oEmcNKc3gB-Q";
+  static const String apiKey = ApiKeys.geminiApiKey;
 
   // Getters
   List<String> get favoritesList => _favoritesList;
@@ -118,7 +119,8 @@ class VoiceToTextController extends ChangeNotifier {
       } else if (result.isPermanentlyDenied) {
         log('Microphone permission permanently denied. Please enable it in settings.');
         Fluttertoast.showToast(
-            msg: 'Permission permanently denied. Enable it in settings.');
+          msg: 'Permission permanently denied. Enable it in settings.',
+        );
         openAppSettings();
       } else {
         log('Microphone permission denied.');
