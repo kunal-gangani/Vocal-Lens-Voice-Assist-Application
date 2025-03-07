@@ -6,6 +6,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -17,6 +18,7 @@ import 'package:vocal_lens/Views/HowToUsePage/how_to_use_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
 import 'package:vocal_lens/Views/VoiceModificationPage/voice_modification_page.dart';
+import 'package:porcupine_flutter/porcupine.dart';
 
 class VoiceToTextController extends ChangeNotifier {
   // Speech-to-Text and Text-to-Speech instances
@@ -100,6 +102,10 @@ class VoiceToTextController extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  // Porcupine Manager
+  PorcupineManager? _porcupineManager;
+
   // Save settings
   void _saveVoice() => storage.write(voiceKey, voice);
   void _savePitch() => storage.write(pitchKey, pitch);
@@ -516,14 +522,26 @@ class VoiceToTextController extends ChangeNotifier {
   }
 
   // Navigation methods
-  void openChatSection() => _navigateTo(const ChatSectionPage());
-  void openUserSettings() => _navigateTo(const UserSettingsPage());
+  void openChatSection() => _navigateTo(
+        const ChatSectionPage(),
+      );
+  void openUserSettings() => _navigateTo(
+        const UserSettingsPage(),
+      );
   void openConnectionRequestPage() =>
       _navigateTo(const ConnectionRequestPage());
-  void openPastResponses() => _navigateTo(const PastResponsesPage());
-  void openFavoriteResponses() => _navigateTo(const FavouriteResponsesPage());
-  void openHowToUsePage() => _navigateTo(const HowToUsePage());
-  void openVoiceModelPage() => _navigateTo(const VoiceModificationPage());
+  void openPastResponses() => _navigateTo(
+        const PastResponsesPage(),
+      );
+  void openFavoriteResponses() => _navigateTo(
+        const FavouriteResponsesPage(),
+      );
+  void openHowToUsePage() => _navigateTo(
+        const HowToUsePage(),
+      );
+  void openVoiceModelPage() => _navigateTo(
+        const VoiceModificationPage(),
+      );
 
   void _navigateTo(Widget page) {
     Flexify.go(
@@ -533,10 +551,34 @@ class VoiceToTextController extends ChangeNotifier {
     );
   }
 
+  // Porcupine Code
+  Future<void> initializeWakeWord() async {
+    try {
+      _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+        "TX9u6WAL7lR6cy5njvSOQuwu5GlrVllhEo0/bC6Mbw0lFc3dbjUp/w==",
+        [
+          BuiltInKeyword.BUMBLEBEE,
+          BuiltInKeyword.PORCUPINE,
+        ],
+        onWakeWordDetected,
+      );
+
+      await _porcupineManager?.start();
+      log("Wake word detection started...");
+    } catch (e) {
+      log("Porcupine initialization failed: $e");
+    }
+  }
+
+  void onWakeWordDetected(int keywordIndex) {
+    log("Wake word detected! Activating Vocal Lens... (Keyword index: $keywordIndex)");
+  }
+
   @override
   void dispose() {
     searchFieldController.dispose();
     flutterTts.stop();
+
     super.dispose();
   }
 }

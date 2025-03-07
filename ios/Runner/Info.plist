@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
+	<string>[Permission explanation]</string>
+	<key>NSMicrophoneUsageDescription</key>
 	<string>Reason for microphone access</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

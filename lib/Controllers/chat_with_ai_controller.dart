@@ -141,7 +141,7 @@ class ChatWithAiController extends ChangeNotifier {
     try {
       final generativeModel = GenerativeModel(
         model: 'gemini-1.5-pro',
-        apiKey: 'YOUR_API_KEY',
+        apiKey: ApiKeys.geminiApiKey,
       );
 
       final response = await generativeModel.generateContent([
