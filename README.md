@@ -5,9 +5,6 @@
 ## 🚀 Introduction
 Vocal Lens is an advanced **AI-powered voice assistant** application built using **Flutter and GetX**. It offers real-time voice interaction, YouTube integration, AI chat, multi-language support, and customizable voice modifications.
 
-## 🎯 Purpose and Impact
-Vocal Lens aims to bridge the gap between human interaction and AI-driven assistance. With an intuitive voice-first approach, it provides accessibility for users who prefer voice commands over traditional inputs. From simplifying daily tasks to offering AI-generated content, Vocal Lens enhances productivity and user convenience. 
-
 ## ✨ Features
 
 - 🎙 **Voice Commands**
@@ -75,11 +72,8 @@ Vocal Lens aims to bridge the gap between human interaction and AI-driven assist
 - **Speech Recognition & TTS APIs** - Voice processing
 - **AI Image Generation APIs** - Create images from text descriptions
 
-## 📸 Screenshots
-
-| Home Screen | AI Chat | YouTube Search |
-|------------|--------|--------------|
-| ![Home](https://your-image-url.com) | ![Chat](https://your-image-url.com) | ![YouTube](https://your-image-url.com) |
+## 🎯 Purpose and Impact
+Vocal Lens aims to bridge the gap between human interaction and AI-driven assistance. With an intuitive voice-first approach, it provides accessibility for users who prefer voice commands over traditional inputs. From simplifying daily tasks to offering AI-generated content, Vocal Lens enhances productivity and user convenience. 
 
 ## 🚀 Getting Started
 
