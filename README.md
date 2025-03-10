@@ -1,6 +1,5 @@
 # Vocal Lens - Voice Assistant Application
 
-![Vocal Lens](https://your-banner-image-url.com)
 
 ## 🚀 Introduction
 Vocal Lens is an advanced **AI-powered voice assistant** application built using **Flutter and GetX**. It offers real-time voice interaction, YouTube integration, AI chat, multi-language support, and customizable voice modifications.
