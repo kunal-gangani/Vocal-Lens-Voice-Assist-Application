@@ -7,6 +7,7 @@ import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/chat_with_ai.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/explore_friends_view.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/home_page_view.dart';
+import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/image_generator_page_view.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/PageViews/youtube_page_view.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/appbar.dart';
 import 'package:vocal_lens/Views/HomePage/Widgets/drawer.dart';
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage> {
             },
             children: [
               homePageView(),
+              imageGeneratorPageView(),
               youTubePageView(context),
               exploreFriendsPageView(),
               chatWithAIPage(),

@@ -36,6 +36,13 @@ Widget navigationBar() {
             ),
           ),
           NavigationDestination(
+            label: "Image Gen",
+            icon: Icon(
+              Icons.auto_awesome,
+              color: Colors.green,
+            ),
+          ),
+          NavigationDestination(
             label: "Youtube",
             icon: FaIcon(
               FontAwesomeIcons.youtube,

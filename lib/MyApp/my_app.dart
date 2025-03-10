@@ -7,6 +7,7 @@ import 'package:vocal_lens/Controllers/application_features_controller.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
 import 'package:vocal_lens/Controllers/chat_with_ai_controller.dart';
 import 'package:vocal_lens/Controllers/how_to_use_controller.dart';
+import 'package:vocal_lens/Controllers/image_generator_controller.dart';
 import 'package:vocal_lens/Controllers/navigation_controller.dart';
 import 'package:vocal_lens/Controllers/position_controller.dart';
 import 'package:vocal_lens/Controllers/theme_controller.dart';
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => VoiceToTextController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ImageGeneratorController(),
         ),
         ChangeNotifierProvider(
           create: (context) => ThemeController(),
