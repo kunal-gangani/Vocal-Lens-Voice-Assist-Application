@@ -38,13 +38,13 @@ Vocal Lens is an advanced **AI-powered voice assistant** application built using
   - Allows users to customize the assistant’s voice with different pitch and tone variations.
   - Enhances the user experience with fun and engaging voice customization options.
 
-- 🏗 **GetX for State Management**
+- 🏗 **Provider for State Management**
   - Ensures efficient state management with minimal boilerplate code.
   - Improves app performance by reducing unnecessary widget rebuilds.
 
 - 🏎 **Fast Navigation**
   - Provides smooth and responsive screen transitions within the app.
-  - Uses GetX for optimized routing and navigation efficiency.
+  - Uses Flexify for optimized routing and navigation efficiency.
 
 - 🏠 **Theming**
   - Offers light and dark mode options for user preference and comfort.
@@ -69,7 +69,7 @@ Vocal Lens is an advanced **AI-powered voice assistant** application built using
 ## 🛠️ Technologies Used
 
 - **Flutter** (Dart) - UI Development
-- **GetX** - State Management & Navigation
+- **Provider** - State Management & Navigation
 - **Firebase** - Authentication & Data Management
 - **Google APIs** - YouTube Search & AI Chat
 - **Speech Recognition & TTS APIs** - Voice processing
