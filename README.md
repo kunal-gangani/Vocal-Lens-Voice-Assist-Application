@@ -125,9 +125,8 @@ This project is licensed under the **MIT License**.
 ## 📬 Contact
 For any queries, feel free to reach out!
 
-📧 Email: [Your Email]  
-💬 Telegram: [Your Telegram Channel]  
-🚀 GitHub: [Your GitHub Profile]
+📧 Email: thekunalgangani@gmail.com
+💬 Linkedin: https://www.linkedin.com/in/kunal-gangani-b1b69625a/ 
 
 ---
 Give a ⭐ if you found this project helpful! 🚀
