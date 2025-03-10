@@ -101,6 +101,9 @@ class VoiceToTextController extends ChangeNotifier {
       isButtonEnabled = searchFieldController.text.isNotEmpty;
       notifyListeners();
     });
+
+    // Initialize Porcupine wake word detection
+    initializeWakeWord();
   }
 
   // Porcupine Manager
@@ -136,6 +139,33 @@ class VoiceToTextController extends ChangeNotifier {
       log('Microphone permission already granted.');
       Fluttertoast.showToast(msg: 'Microphone permission already granted.');
     }
+  }
+
+  // Initialize Porcupine wake word detection
+  Future<void> initializeWakeWord() async {
+    try {
+      _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+        ApiKeys.porcupineApiKey,
+        [
+          BuiltInKeyword.BUMBLEBEE,
+          BuiltInKeyword.PORCUPINE,
+          BuiltInKeyword.ALEXA,
+          BuiltInKeyword.AMERICANO,],
+        onWakeWordDetected,
+      );
+
+      await _porcupineManager?.start();
+      log("Wake word detection started...");
+    } catch (e) {
+      log("Porcupine initialization failed: $e");
+    }
+  }
+
+  void onWakeWordDetected(int keywordIndex) async {
+    log("Wake word detected! Activating Vocal Lens... (Keyword index: $keywordIndex)");
+    await flutterTts.speak("Hello User, You can now use Voice Commands!");
+    // Start listening for user command
+    startListening();
   }
 
   // Setters for voice settings
@@ -350,6 +380,10 @@ class VoiceToTextController extends ChangeNotifier {
             text = result.recognizedWords;
             log('Recognized Words: $text');
             notifyListeners();
+
+            if (result.finalResult) {
+              handleVoiceCommands(text);
+            }
           },
           listenFor: const Duration(seconds: 5),
           pauseFor: const Duration(seconds: 2),
@@ -549,29 +583,6 @@ class VoiceToTextController extends ChangeNotifier {
       animation: FlexifyRouteAnimations.blur,
       animationDuration: Durations.medium1,
     );
-  }
-
-  // Porcupine Code
-  Future<void> initializeWakeWord() async {
-    try {
-      _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
-        "TX9u6WAL7lR6cy5njvSOQuwu5GlrVllhEo0/bC6Mbw0lFc3dbjUp/w==",
-        [
-          BuiltInKeyword.BUMBLEBEE,
-          BuiltInKeyword.PORCUPINE,
-        ],
-        onWakeWordDetected,
-      );
-
-      await _porcupineManager?.start();
-      log("Wake word detection started...");
-    } catch (e) {
-      log("Porcupine initialization failed: $e");
-    }
-  }
-
-  void onWakeWordDetected(int keywordIndex) {
-    log("Wake word detected! Activating Vocal Lens... (Keyword index: $keywordIndex)");
   }
 
   @override
