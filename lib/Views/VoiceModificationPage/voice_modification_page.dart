@@ -62,7 +62,7 @@ class VoiceModificationPage extends StatelessWidget {
                       value: voiceController.voice.isEmpty ||
                               !voiceController.voiceModels
                                   .contains(voiceController.voice)
-                          ? null // If voice is invalid or empty, set it to null
+                          ? null
                           : voiceController.voice,
                       onChanged: (newValue) {
                         if (newValue != null) {
@@ -154,8 +154,41 @@ class VoiceModificationPage extends StatelessWidget {
                   voiceController.setSpeechRate(value);
                 },
               ),
+              // SizedBox(
+              //   height: 30.h,
+              // ),
+              Text(
+                "Mic Duration (Seconds):",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                ),
+              ),
               SizedBox(
-                height: 30.h,
+                height: 10.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Slider(
+                      activeColor: Colors.blueGrey,
+                      value: voiceController.micDuration.toDouble(),
+                      min: 5,
+                      max: 60,
+                      divisions: 11,
+                      onChanged: (value) {
+                        voiceController.setMicDuration(value.toInt());
+                      },
+                    ),
+                  ),
+                  Text(
+                    "${voiceController.micDuration}s",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ],
               ),
               Center(
                 child: ElevatedButton(

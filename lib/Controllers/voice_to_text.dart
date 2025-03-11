@@ -42,6 +42,7 @@ class VoiceToTextController extends ChangeNotifier {
   String voice = "en-us";
   double pitch = 1.0;
   double speechRate = 0.5;
+  int micDuration = 5;
 
   // Data storage and history
   final GetStorage storage = GetStorage();
@@ -82,6 +83,7 @@ class VoiceToTextController extends ChangeNotifier {
     voice = storage.read<String>(voiceKey) ?? "en-us";
     pitch = storage.read<double>(pitchKey) ?? 1.0;
     speechRate = storage.read<double>(speechRateKey) ?? 0.5;
+    loadMicDuration();
 
     speechToText = stt.SpeechToText();
     initializeTts();
@@ -114,6 +116,17 @@ class VoiceToTextController extends ChangeNotifier {
   void _savePitch() => storage.write(pitchKey, pitch);
   void _saveSpeechRate() => storage.write(speechRateKey, speechRate);
 
+  // Load the saved mic duration from GetStorage
+  void loadMicDuration() {
+    micDuration = storage.read('micDuration') ?? 5;
+  }
+
+  // Save the selected mic duration
+  void setMicDuration(int seconds) {
+    micDuration = seconds;
+    storage.write('micDuration', seconds);
+  }
+
   Future<void> requestMicrophonePermission() async {
     // Check current permission status
     PermissionStatus status = await Permission.microphone.status;
@@ -145,12 +158,14 @@ class VoiceToTextController extends ChangeNotifier {
   Future<void> initializeWakeWord() async {
     try {
       _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
-        ApiKeys.porcupineApiKey,
+        ApiKeys.picoVoiceApiKey,
         [
           BuiltInKeyword.BUMBLEBEE,
           BuiltInKeyword.PORCUPINE,
           BuiltInKeyword.ALEXA,
-          BuiltInKeyword.AMERICANO,],
+          BuiltInKeyword.AMERICANO,
+          BuiltInKeyword.BLUEBERRY
+        ],
         onWakeWordDetected,
       );
 
@@ -385,7 +400,7 @@ class VoiceToTextController extends ChangeNotifier {
               handleVoiceCommands(text);
             }
           },
-          listenFor: const Duration(seconds: 5),
+          listenFor: Duration(seconds: micDuration),
           pauseFor: const Duration(seconds: 2),
           onSoundLevelChange: (level) => log("Sound level: $level"),
         );
