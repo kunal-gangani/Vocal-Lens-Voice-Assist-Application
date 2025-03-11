@@ -2,7 +2,7 @@
 
 
 ## 🚀 Introduction
-Vocal Lens is an advanced **AI-powered voice assistant** application built using **Flutter and GetX**. It offers real-time voice interaction, YouTube integration, AI chat, multi-language support, and customizable voice modifications.
+Vocal Lens is an advanced **AI-powered voice assistant** application built using **Flutter and Provider**. It offers real-time voice interaction, YouTube integration, AI chat, multi-language support, and customizable voice modifications.
 
 ## ✨ Features
 
@@ -30,17 +30,21 @@ Vocal Lens is an advanced **AI-powered voice assistant** application built using
   - Recognizes and processes multiple languages for voice inputs and outputs.
   - Supports diverse users by enabling seamless communication in different languages.
 
+- 🔊 **Wake Word Detection**
+    - Activate the assistant hands-free using a custom wake word.
+    - Designed for real-time voice activation without pressing buttons.
+
 - 🎭 **Voice Modifications**
   - Allows users to customize the assistant’s voice with different pitch and tone variations.
   - Enhances the user experience with fun and engaging voice customization options.
 
-- 🏗 **GetX for State Management**
+- 🏗 **Provider for State Management**
   - Ensures efficient state management with minimal boilerplate code.
   - Improves app performance by reducing unnecessary widget rebuilds.
 
 - 🏎 **Fast Navigation**
   - Provides smooth and responsive screen transitions within the app.
-  - Uses GetX for optimized routing and navigation efficiency.
+  - Uses Flexify for optimized routing and navigation efficiency.
 
 - 🏠 **Theming**
   - Offers light and dark mode options for user preference and comfort.
@@ -65,7 +69,7 @@ Vocal Lens is an advanced **AI-powered voice assistant** application built using
 ## 🛠️ Technologies Used
 
 - **Flutter** (Dart) - UI Development
-- **GetX** - State Management & Navigation
+- **Provider** - State Management & Navigation
 - **Firebase** - Authentication & Data Management
 - **Google APIs** - YouTube Search & AI Chat
 - **Speech Recognition & TTS APIs** - Voice processing
