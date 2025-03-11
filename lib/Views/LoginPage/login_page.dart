@@ -202,25 +202,7 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () async {
-                              try {
-                                await authController.signInWithGoogle();
-                                Fluttertoast.showToast(
-                                  msg: 'google_sign_in_success'.tr(),
-                                  backgroundColor: Colors.green,
-                                  textColor: Colors.white,
-                                );
-                                Flexify.goRemove(
-                                  const HomePage(),
-                                  animation: FlexifyRouteAnimations.blur,
-                                  duration: Durations.medium1,
-                                );
-                              } catch (e) {
-                                Fluttertoast.showToast(
-                                  msg: 'google_sign_in_failed'.tr(),
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                );
-                              }
+                              await authController.signInWithGoogle();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,

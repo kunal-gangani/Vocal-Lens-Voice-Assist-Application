@@ -1,8 +1,12 @@
+import 'dart:developer';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vocal_lens/Helper/auth_helper.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/LoginPage/login_page.dart';
@@ -50,16 +54,33 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> signInWithGoogle() async {
-    try {
-      _user = await _authHelper.signInWithGoogle();
-      notifyListeners();
-      speakWelcomeMessage();
-      _navigateToHomePage();
-    } on FirebaseAuthException catch (e) {
-      throw Exception("Google sign-in error: ${e.message}");
-    } catch (e) {
-      throw Exception("Unexpected error during Google sign-in: $e");
+    String msg = await _authHelper.signInWithGoogle();
+
+    log("MSG : $msg");
+
+    if (msg == "Success") {
+      Fluttertoast.showToast(
+        msg: 'google_sign_in_success'.tr(),
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+      );
+      Flexify.goRemove(
+        const HomePage(),
+        animation: FlexifyRouteAnimations.blur,
+        duration: Durations.medium1,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: 'google_sign_in_failed'.tr(),
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
     }
+
+    speakWelcomeMessage();
+    _navigateToHomePage();
+
+    notifyListeners();
   }
 
   Future<void> signOut() async {

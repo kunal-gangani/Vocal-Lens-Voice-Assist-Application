@@ -127,8 +127,9 @@ class YoutubeController extends ChangeNotifier {
 
   if (await File(filePath).exists()) {
     await File(filePath).copy(newFile.path);
-    print("File moved to Downloads: ${newFile.path}");
+    log("File moved to Downloads: ${newFile.path}");
   } else {
-    print("File not found!");
+    log("File not found!");
   }
+}
 }

@@ -23,25 +23,30 @@ class AuthHelper {
   }
 
   // Sign in with Google
-  Future<User?> signInWithGoogle() async {
+  Future<String> signInWithGoogle() async {
+    String msg = "";
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-      await _createUserDocument(userCredential.user!);
-      return userCredential.user;
-    } catch (e) {
-      throw Exception("Google sign-in failed: $e");
+        final UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        await _createUserDocument(userCredential.user!);
+
+        msg = "Success";
+      }
+    } on FirebaseAuthException catch (e) {
+      msg = e.code;
     }
+
+    return msg;
   }
 
   // Sign out
@@ -58,17 +63,19 @@ class AuthHelper {
   // Create or update user document in Firestore
   Future<void> _createUserDocument(User user) async {
     final userRef = _firestore.collection('users').doc(user.uid);
-    final docSnapshot = await userRef.get();
+    // final docSnapshot = await userRef.get();
 
-    if (!docSnapshot.exists) {
-      await userRef.set({
-        'uid': user.uid,
-        'username': user.displayName ?? 'Unnamed',
-        'email': user.email,
-        'profile_picture': user.photoURL ?? '',
-        'connections': []
-      });
-    }
+    // if (!docSnapshot.exists) {
+
+    // }
+
+    await userRef.set({
+      'uid': user.uid,
+      'username': user.displayName ?? 'Unnamed',
+      'email': user.email,
+      'profile_picture': user.photoURL ?? '',
+      'connections': []
+    });
   }
 
   // Fetch all registered users except the current user
