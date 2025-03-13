@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,9 @@ class FavouriteResponsesPage extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         title: Text(
-          "Favourite Responses",
+          tr(
+            "Favourite Responses",
+          ),
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
@@ -40,7 +43,9 @@ class FavouriteResponsesPage extends StatelessWidget {
         child: voiceToTextController.favoritesList.isEmpty
             ? Center(
                 child: Text(
-                  "No favorites yet!",
+                  tr(
+                    "No favorites yet!",
+                  ),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18.sp,
@@ -61,8 +66,9 @@ class FavouriteResponsesPage extends StatelessWidget {
                       children: [
                         SlidableAction(
                           onPressed: (context) {
-                            voiceToTextController
-                                .deleteHistory(index.toString());
+                            voiceToTextController.deleteHistory(
+                              index.toString(),
+                            );
                           },
                           backgroundColor: Colors.red.shade700,
                           foregroundColor: Colors.white,

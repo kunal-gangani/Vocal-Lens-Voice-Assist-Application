@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -87,16 +89,19 @@ class AuthHelper {
       }
 
       final usersSnapshot = await _firestore.collection('users').get();
-      List<String> users = [];
 
+      List<String> users = [];
       for (var doc in usersSnapshot.docs) {
+        log("User found: ${doc.data()}"); // Debugging
         if (doc.id != currentUser.uid) {
           users.add(doc.data()['username'].toString());
         }
       }
 
+      log("Fetched users: $users");
       return users;
     } catch (e) {
+      log("Error fetching users: $e");
       throw Exception("Error fetching users: $e");
     }
   }

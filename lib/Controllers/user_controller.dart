@@ -1,14 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vocal_lens/Helper/auth_helper.dart';
 
 class UserController extends ChangeNotifier {
   final AuthHelper _authHelper = AuthHelper();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<String> allUsers = [];
   List<String> filteredUsers = [];
   List<String> sentRequests = [];
   List<Map<String, dynamic>> receivedRequests = [];
   List<String> connections = [];
+
+  void listenToUsers() {
+    _firestore.collection('users').snapshots().listen((snapshot) {
+      allUsers = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return data.containsKey('username')
+            ? data['username'] as String
+            : "Unnamed";
+      }).toList();
+
+      filteredUsers = List.from(allUsers);
+      print("Updated users: $allUsers"); // Debugging
+      notifyListeners();
+    });
+  }
+
+  void filterUsers(String query) {
+    filteredUsers = allUsers
+        .where((user) => user.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    notifyListeners();
+  }
 
   Future<void> fetchUsers() async {
     try {
@@ -67,12 +91,5 @@ class UserController extends ChangeNotifier {
     } catch (e) {
       throw Exception("Error declining connection request: $e");
     }
-  }
-
-  void filterUsers(String query) {
-    filteredUsers = allUsers
-        .where((user) => user.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-    notifyListeners();
   }
 }

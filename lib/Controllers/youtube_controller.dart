@@ -39,7 +39,7 @@ class YoutubeController extends ChangeNotifier {
   void initializePlayer(String videoId) {
     _playerController = YoutubePlayerController.fromVideoId(
       videoId: videoId,
-      autoPlay: _isAutoPlay, // Set auto-play here
+      autoPlay: _isAutoPlay, 
       params: const YoutubePlayerParams(
         showFullscreenButton: false,
         showVideoAnnotations: false,

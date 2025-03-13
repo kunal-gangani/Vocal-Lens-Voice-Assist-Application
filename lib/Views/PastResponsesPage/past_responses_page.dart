@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -22,9 +23,11 @@ class PastResponsesPage extends StatelessWidget {
           ),
         ),
         foregroundColor: Colors.white,
-        title: const Text(
-          "Past Responses",
-          style: TextStyle(
+        title: Text(
+          tr(
+            "Past Responses",
+          ),
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -38,9 +41,9 @@ class PastResponsesPage extends StatelessWidget {
                 listen: false,
               ).deleteAllHistory();
             },
-            child: const Text(
-              "Delete All",
-              style: TextStyle(
+            child: Text(
+              tr("Delete All"),
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
               ),
@@ -55,10 +58,10 @@ class PastResponsesPage extends StatelessWidget {
             vertical: 12.0,
           ),
           child: value.history.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
-                    "No past responses yet.",
-                    style: TextStyle(
+                    tr("No past responses yet."),
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 18,
                     ),
@@ -194,7 +197,8 @@ class PastResponsesPage extends StatelessWidget {
                                                 IconButton(
                                                   onPressed: () {
                                                     value.shareResponse(
-                                                        response: query);
+                                                      response: query,
+                                                    );
                                                   },
                                                   icon: Icon(
                                                     Icons.share,

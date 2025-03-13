@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,9 +28,9 @@ class VoiceModificationPage extends StatelessWidget {
             Icons.arrow_back_ios_new,
           ),
         ),
-        title: const Text(
-          "Modify Voice Settings",
-          style: TextStyle(
+        title: Text(
+          tr('modify_voice_settings'),
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
             letterSpacing: 1.2,
@@ -43,7 +44,7 @@ class VoiceModificationPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Voice Model:",
+                tr('voice_model'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18.sp,
@@ -75,7 +76,9 @@ class VoiceModificationPage extends StatelessWidget {
                           value: model,
                           child: Text(
                             model,
-                            style: TextStyle(color: Colors.blueGrey.shade300),
+                            style: TextStyle(
+                              color: Colors.blueGrey.shade300,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -90,7 +93,7 @@ class VoiceModificationPage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Pitch:",
+                    tr('pitch'),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.sp,
@@ -125,7 +128,7 @@ class VoiceModificationPage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Speech Rate:",
+                    tr('speech_rate'),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.sp,
@@ -158,7 +161,7 @@ class VoiceModificationPage extends StatelessWidget {
               //   height: 30.h,
               // ),
               Text(
-                "Mic Duration (Seconds):",
+                tr('mic_duration'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.sp,
@@ -206,7 +209,7 @@ class VoiceModificationPage extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Preview Voice",
+                    tr('preview_voice'),
                     style: TextStyle(
                       fontSize: 18.sp,
                       color: Colors.white,

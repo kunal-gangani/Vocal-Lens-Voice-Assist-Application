@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,10 @@ class UserSettingsPage extends StatelessWidget {
             Icons.arrow_back_ios_new_outlined,
           ),
         ),
-        title: const Text(
-          "User Settings",
+        title: Text(
+          tr(
+            "User Settings",
+          ),
         ),
         backgroundColor: Colors.blueGrey.shade900,
       ),
@@ -73,16 +76,16 @@ class UserSettingsPage extends StatelessWidget {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16.0),
-                  title: const Text(
-                    'Notifications',
-                    style: TextStyle(
+                  title: Text(
+                    tr('Notifications'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: const Text(
-                    'Enable or disable app notifications',
-                    style: TextStyle(
+                  subtitle: Text(
+                    tr('enable_disable_notifications'),
+                    style: const TextStyle(
                       color: Colors.white70,
                     ),
                   ),
@@ -106,16 +109,16 @@ class UserSettingsPage extends StatelessWidget {
                   builder: (context, themeController, value) {
                     return ListTile(
                       contentPadding: const EdgeInsets.all(16.0),
-                      title: const Text(
-                        'Dark Mode',
-                        style: TextStyle(
+                      title: Text(
+                        tr('dark_mode'),
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: const Text(
-                        'Enable or disable dark theme',
-                        style: TextStyle(
+                      subtitle: Text(
+                        tr('enable_disable_dark_theme'),
+                        style: const TextStyle(
                           color: Colors.white70,
                         ),
                       ),
@@ -141,16 +144,16 @@ class UserSettingsPage extends StatelessWidget {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16.0),
-                  title: const Text(
-                    'Language',
-                    style: TextStyle(
+                  title: Text(
+                    tr('language'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: const Text(
-                    'Change app language',
-                    style: TextStyle(
+                  subtitle: Text(
+                    tr('change_app_language'),
+                    style: const TextStyle(
                       color: Colors.white70,
                     ),
                   ),
@@ -168,16 +171,16 @@ class UserSettingsPage extends StatelessWidget {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16.0),
-                  title: const Text(
-                    'Log Out',
-                    style: TextStyle(
+                  title: Text(
+                    tr('log_out'),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: const Text(
-                    'Log Out from your account',
-                    style: TextStyle(
+                  subtitle: Text(
+                    tr('log_out_account'),
+                    style: const TextStyle(
                       color: Colors.white70,
                     ),
                   ),
@@ -194,23 +197,23 @@ class UserSettingsPage extends StatelessWidget {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             backgroundColor: Colors.black,
-                            title: const Text(
-                              'Sign Out',
-                              style: TextStyle(
+                            title: Text(
+                              tr('sign_out'),
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
-                            content: const Text(
-                              'Are you sure you want to log out?',
-                              style: TextStyle(
+                            content: Text(
+                              tr('log_out_confirm'),
+                              style: const TextStyle(
                                 color: Colors.white70,
                               ),
                             ),
                             actions: <Widget>[
                               TextButton(
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
+                                child: Text(
+                                  tr('cancel'),
+                                  style: const TextStyle(
                                     color: Colors.white,
                                   ),
                                 ),
@@ -219,9 +222,9 @@ class UserSettingsPage extends StatelessWidget {
                                 },
                               ),
                               TextButton(
-                                child: const Text(
-                                  'I\'m Sure',
-                                  style: TextStyle(
+                                child: Text(
+                                  tr('im_sure'),
+                                  style: const TextStyle(
                                     color: Colors.blue,
                                   ),
                                 ),

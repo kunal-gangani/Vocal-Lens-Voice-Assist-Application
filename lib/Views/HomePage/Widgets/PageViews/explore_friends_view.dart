@@ -4,23 +4,20 @@ import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 
 Widget exploreFriendsPageView() {
-  final TextEditingController searchController = TextEditingController();
-
   return ChangeNotifierProvider<UserController>(
-    create: (_) => UserController(),
+    create: (context) => UserController(),
     child: Consumer<UserController>(
       builder: (context, controller, _) {
+        final TextEditingController searchController = TextEditingController();
+
         return Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 20.0,
+            horizontal: 20,
+            vertical: 20,
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Colors.blueGrey.shade900,
-                Colors.black,
-              ],
+              colors: [Colors.blueGrey.shade900, Colors.black],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -28,6 +25,7 @@ Widget exploreFriendsPageView() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 🔹 SEARCH FIELD
               Card(
                 elevation: 5,
                 color: Colors.blueGrey.shade800,
@@ -66,18 +64,19 @@ Widget exploreFriendsPageView() {
                         ),
                         onPressed: () {
                           searchController.clear();
-                          controller.filterUsers(''); // Reset filter
+                          controller.filterUsers('');
                         },
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 20.h,
               ),
+              // 🔹 USER LIST VIEW
               Expanded(
-                child: controller.allUsers.isEmpty
+                child: controller.filteredUsers.isEmpty
                     ? Center(
                         child: Text(
                           "No users found",
@@ -89,12 +88,11 @@ Widget exploreFriendsPageView() {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: controller.allUsers.length,
+                        itemCount: controller.filteredUsers.length,
                         itemBuilder: (context, index) {
-                          String user = controller.allUsers[index];
+                          String user = controller.filteredUsers[index];
                           bool requestSent =
                               controller.sentRequests.contains(user);
-
                           return Card(
                             elevation: 5,
                             color: Colors.blueGrey.shade800,
@@ -137,7 +135,7 @@ Widget exploreFriendsPageView() {
                                               BorderRadius.circular(15),
                                         ),
                                       ),
-                                      child:  Text(
+                                      child: Text(
                                         "Connect",
                                         style: TextStyle(
                                           fontSize: 14.sp,

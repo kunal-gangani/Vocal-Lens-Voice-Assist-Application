@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -126,7 +127,7 @@ class YoutubePlayerPage extends StatelessWidget {
               height: 10.h,
             ),
             Text(
-              "Video Description",
+              tr('video_description'),
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
@@ -185,7 +186,7 @@ class YoutubePlayerPage extends StatelessWidget {
               height: 4.h,
             ),
             Text(
-              "YouTube Creator",
+              tr('youtube_creator'),
               style: TextStyle(
                 fontSize: 14.sp,
                 color: Colors.grey[400],

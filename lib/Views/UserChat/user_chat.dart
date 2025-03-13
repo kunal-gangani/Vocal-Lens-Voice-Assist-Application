@@ -68,7 +68,9 @@ class UserChatPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 15.0),
+                          vertical: 10.0,
+                          horizontal: 15.0,
+                        ),
                         child: Text(
                           messageData["message"],
                           style: const TextStyle(

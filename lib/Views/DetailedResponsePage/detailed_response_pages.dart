@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -57,8 +58,10 @@ class DetailedResponsePages extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          title: const Text(
-            "Response Details",
+          title: Text(
+            tr(
+              "Response Details",
+            ),
           ),
         ),
         body: Padding(
@@ -84,7 +87,9 @@ class DetailedResponsePages extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Question:",
+                          tr(
+                            "Question:",
+                          ),
                           style: TextStyle(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
@@ -123,7 +128,7 @@ class DetailedResponsePages extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Answer:",
+                          tr("Answer:"),
                           style: TextStyle(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.bold,

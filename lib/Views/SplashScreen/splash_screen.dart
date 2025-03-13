@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:vocal_lens/Controllers/facts_controller.dart';
 import 'package:vocal_lens/Helper/auth_helper.dart';
 import 'package:vocal_lens/Views/ApplicationFeaturesPage/application_features_page.dart';
 import 'package:vocal_lens/Views/HomePage/home_page.dart';
@@ -12,7 +14,10 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 3), () {
+    final fact = context.watch<FactsController>().getRandomFact();
+
+    // Navigate after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
       AuthHelper().getCurrentUser() != null
           ? Flexify.goRemove(
               const HomePage(),
@@ -38,42 +43,87 @@ class SplashScreen extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 150.w,
-                height: 150.h,
-                child: Lottie.asset(
-                  "lib/Views/SplashScreen/Assets/loader.json",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(),
+            // Centered Content
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Lottie Animation
+                SizedBox(
+                  width: 150.w,
+                  height: 150.h,
+                  child: Lottie.asset(
+                    "lib/Views/SplashScreen/Assets/loader.json",
+                  ),
+                ),
+                SizedBox(
+                  height: 30.h,
+                ),
+                // App Name
+                Text(
+                  'VocalLens',
+                  style: TextStyle(
+                    fontSize: 32.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                // Tagline
+                Text(
+                  'Empowering Vision through AI',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ),
+            // Fact at the Bottom
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 30.w,
+                vertical: 20.h,
+              ),
+              child: Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.lightbulb,
+                      color: Colors.amberAccent,
+                      size: 20.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        fact,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.9),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: 30.h,
-              ),
-              Text(
-                'VocalLens',
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              SizedBox(
-                height: 10.h,
-              ),
-              Text(
-                'Empowering Vision through AI',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white.withValues(),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

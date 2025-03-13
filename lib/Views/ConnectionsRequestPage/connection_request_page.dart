@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,7 +17,7 @@ class ConnectionRequestPage extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Flexify.back();
           },
           icon: const Icon(
             Icons.arrow_back_ios_new,
@@ -23,8 +25,10 @@ class ConnectionRequestPage extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         backgroundColor: Colors.blueGrey.shade900,
-        title: const Text(
-          "Connection Requests",
+        title: Text(
+          tr(
+            'Connection Requests',
+          ),
         ),
       ),
       body: FutureBuilder(
@@ -37,7 +41,9 @@ class ConnectionRequestPage extends StatelessWidget {
           } else if (userController.receivedRequests.isEmpty) {
             return Center(
               child: Text(
-                "No connection requests available",
+                tr(
+                  'No connection requests available',
+                ),
                 style: TextStyle(
                   color: Colors.white54,
                   fontSize: 16.sp,
@@ -93,7 +99,9 @@ class ConnectionRequestPage extends StatelessWidget {
                                 height: 4.h,
                               ),
                               Text(
-                                "Wants to connect with you",
+                                tr(
+                                  "Wants to connect with you",
+                                ),
                                 style: TextStyle(
                                   color: Colors.white54,
                                   fontSize: 14.sp,
@@ -102,8 +110,8 @@ class ConnectionRequestPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 12,
+                        SizedBox(
+                          width: 12.w,
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -191,7 +199,7 @@ class ConnectionRequestPage extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                "Reject",
+                                tr("Reject"),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14.sp,

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 import 'package:vocal_lens/Controllers/voice_to_text.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChatSectionPage extends StatelessWidget {
   const ChatSectionPage({super.key});
@@ -23,7 +24,7 @@ class ChatSectionPage extends StatelessWidget {
         ),
         foregroundColor: Colors.white,
         title: Text(
-          "Chat Section",
+          tr('chat_section'),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.sp,
@@ -46,7 +47,7 @@ class ChatSectionPage extends StatelessWidget {
                 userController.filteredUsers.isEmpty) {
               return Center(
                 child: Text(
-                  "No connections yet! Add some connections.",
+                  tr('no_users_found'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16.sp,

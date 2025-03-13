@@ -20,6 +20,7 @@ class AuthController extends ChangeNotifier {
   AuthController() {
     _user = FirebaseAuth.instance.currentUser;
     _initializeTts();
+    checkAuth();
   }
 
   User? get user => _user;
@@ -133,6 +134,16 @@ class AuthController extends ChangeNotifier {
       default:
         return "Authentication error.";
     }
+  }
+
+  void checkAuth() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        log("No user logged in");
+      } else {
+        log("Logged in as: ${user.email}");
+      }
+    });
   }
 
   /// Navigates to the Home Page

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +27,11 @@ class HowToUsePage extends StatelessWidget {
               Icons.arrow_back_ios_new,
             ),
           ),
-          title: const Text(
-            "How to Use",
-            style: TextStyle(
+          title: Text(
+            tr(
+              "How to Use",
+            ),
+            style: const TextStyle(
               color: Colors.white,
             ),
           ),

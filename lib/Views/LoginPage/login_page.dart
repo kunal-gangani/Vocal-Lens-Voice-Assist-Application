@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
-import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/RegistrationPage/registration_page.dart';
 import 'package:vocal_lens/Widgets/auth_text_field.dart';
 import 'package:vocal_lens/Widgets/drop_down_text_style.dart';
