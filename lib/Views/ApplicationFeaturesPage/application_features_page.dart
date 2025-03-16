@@ -201,7 +201,7 @@ class ApplicationFeaturesPage extends StatelessWidget {
               showDoneButton: false,
               onChange: (index) {
                 value
-                    .updateIndex(index); // Notify listeners instead of setState
+                    .updateIndex(index); // Update the current index of the page
               },
               globalFooter: Padding(
                 padding: const EdgeInsets.symmetric(

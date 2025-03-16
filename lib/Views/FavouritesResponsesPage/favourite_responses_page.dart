@@ -29,7 +29,7 @@ class FavouriteResponsesPage extends StatelessWidget {
         foregroundColor: Colors.white,
         title: Text(
           tr(
-            "Favourite Responses",
+            "favourite_responses",
           ),
           style: TextStyle(
             fontSize: 20.sp,
@@ -44,7 +44,7 @@ class FavouriteResponsesPage extends StatelessWidget {
             ? Center(
                 child: Text(
                   tr(
-                    "No favorites yet!",
+                    "no_favorites_yet",
                   ),
                   style: TextStyle(
                     color: Colors.white,

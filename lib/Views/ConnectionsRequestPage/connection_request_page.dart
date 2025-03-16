@@ -27,7 +27,7 @@ class ConnectionRequestPage extends StatelessWidget {
         backgroundColor: Colors.blueGrey.shade900,
         title: Text(
           tr(
-            'Connection Requests',
+            'connection_requests',
           ),
         ),
       ),
@@ -42,7 +42,7 @@ class ConnectionRequestPage extends StatelessWidget {
             return Center(
               child: Text(
                 tr(
-                  'No connection requests available',
+                  'no_connection_requests',
                 ),
                 style: TextStyle(
                   color: Colors.white54,

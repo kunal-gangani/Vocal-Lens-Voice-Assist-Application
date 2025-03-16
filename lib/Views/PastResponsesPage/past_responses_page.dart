@@ -25,7 +25,7 @@ class PastResponsesPage extends StatelessWidget {
         foregroundColor: Colors.white,
         title: Text(
           tr(
-            "Past Responses",
+            "past_responses",
           ),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
@@ -42,7 +42,7 @@ class PastResponsesPage extends StatelessWidget {
               ).deleteAllHistory();
             },
             child: Text(
-              tr("Delete All"),
+              tr("delete_all"),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -60,7 +60,7 @@ class PastResponsesPage extends StatelessWidget {
           child: value.history.isEmpty
               ? Center(
                   child: Text(
-                    tr("No past responses yet."),
+                    tr("no_past_responses"),
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 18,

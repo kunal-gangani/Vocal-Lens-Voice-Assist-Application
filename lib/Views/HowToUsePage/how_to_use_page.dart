@@ -29,7 +29,7 @@ class HowToUsePage extends StatelessWidget {
           ),
           title: Text(
             tr(
-              "How to Use",
+              "how_to_use",
             ),
             style: const TextStyle(
               color: Colors.white,
