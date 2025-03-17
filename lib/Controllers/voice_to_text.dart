@@ -157,14 +157,10 @@ class VoiceToTextController extends ChangeNotifier {
   // Initialize Porcupine wake word detection
   Future<void> initializeWakeWord() async {
     try {
-      _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+      _porcupineManager = await PorcupineManager.fromKeywordPaths(
         ApiKeys.picoVoiceApiKey,
         [
-          BuiltInKeyword.BUMBLEBEE,
-          BuiltInKeyword.PORCUPINE,
-          BuiltInKeyword.ALEXA,
-          BuiltInKeyword.AMERICANO,
-          BuiltInKeyword.BLUEBERRY
+          "Assets/Vocal_en_android_v3_0_0.ppn",
         ],
         onWakeWordDetected,
       );

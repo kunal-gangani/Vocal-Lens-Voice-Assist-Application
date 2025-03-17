@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vocal_lens/Helper/auth_helper.dart';
 
@@ -12,6 +15,10 @@ class UserController extends ChangeNotifier {
   List<Map<String, dynamic>> receivedRequests = [];
   List<String> connections = [];
 
+  UserController() {
+    listenToUsers();
+  }
+
   void listenToUsers() {
     _firestore.collection('users').snapshots().listen((snapshot) {
       allUsers = snapshot.docs.map((doc) {
@@ -22,7 +29,7 @@ class UserController extends ChangeNotifier {
       }).toList();
 
       filteredUsers = List.from(allUsers);
-      print("Updated users: $allUsers"); // Debugging
+      log("Updated users: $allUsers");
       notifyListeners();
     });
   }
@@ -44,13 +51,30 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  Future<void> sendConnectionRequest(String userName) async {
+  Future<void> sendConnectionRequest(String recipientId) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      log("❌ Error: User not authenticated.");
+      return;
+    }
+
+    final connectionRequest = {
+      'from': currentUser.uid,
+      'to': recipientId,
+      'status': 'pending',
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    log("🟢 Sending request: $connectionRequest");
+
     try {
-      await _authHelper.sendConnectionRequest(userName);
-      sentRequests.add(userName);
-      notifyListeners();
+      await FirebaseFirestore.instance
+          .collection('connection_requests')
+          .add(connectionRequest);
+      log("✅ Request sent!");
     } catch (e) {
-      throw Exception("Error sending connection request: $e");
+      log("❌ Firestore Error: $e");
     }
   }
 
