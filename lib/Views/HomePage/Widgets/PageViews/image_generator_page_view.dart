@@ -53,30 +53,16 @@ Widget imageGeneratorPageView() {
                           size: 50.0,
                         )
                       : imageController.generatedImage == null
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (imageController.errorMessage != null)
-                                  Text(
-                                    imageController.errorMessage!,
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                if (imageController.errorMessage == null)
-                                  const Text(
-                                    "Enter a prompt and generate an image!",
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                              ],
+                          ? const Text(
+                              "Enter a prompt and generate an image!",
+                              style: TextStyle(
+                                color: Colors.white70,
+                              ),
                             )
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.memory(
-                                imageController
-                                    .generatedImage!, // ✅ Display raw binary image
+                                imageController.generatedImage!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                               ),

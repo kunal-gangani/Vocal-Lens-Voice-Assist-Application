@@ -13,20 +13,68 @@ class HowToUseProvider extends ChangeNotifier {
       icon: Icons.download,
       title: 'Step 1: Install the App',
       description:
-          'Download and install the app from the Play Store or App Store.',
+          'Download and install Vocal Lens from the Play Store or App Store.',
     ),
     FeatureModel(
       featureId: 'create_account_feature',
       icon: Icons.account_circle,
       title: 'Step 2: Create an Account',
       description:
-          'Sign up using your email or Google account to access full features.',
+          'Sign up using your email or Google account to unlock all features.',
+    ),
+    FeatureModel(
+      featureId: 'login_feature',
+      icon: Icons.login,
+      title: 'Step 3: Log In',
+      description: 'Enter your credentials and log in to get started.',
     ),
     FeatureModel(
       featureId: 'search_voice_feature',
       icon: Icons.search,
-      title: 'Step 3: Search with Voice',
-      description: 'Use voice commands to search and get results instantly.',
+      title: 'Step 4: Search with Voice',
+      description: 'Tap the microphone and speak your query to get results.',
+    ),
+    FeatureModel(
+      featureId: 'ai_chat_feature',
+      icon: Icons.chat,
+      title: 'Step 5: Chat with AI',
+      description:
+          'Use the AI chat feature to ask questions and get intelligent responses.',
+    ),
+    FeatureModel(
+      featureId: 'youtube_feature',
+      icon: Icons.video_library,
+      title: 'Step 6: YouTube Integration',
+      description:
+          'Search and play YouTube videos directly using voice commands.',
+    ),
+    FeatureModel(
+      featureId: 'multi_language_feature',
+      icon: Icons.language,
+      title: 'Step 7: Multi-language Support',
+      description:
+          'Change the app language in settings for a personalized experience.',
+    ),
+    FeatureModel(
+      featureId: 'wake_word_feature',
+      icon: Icons.record_voice_over,
+      title: 'Step 8: Custom Wake Word',
+      description:
+          'Enable custom wake words like "Hey Vocal" to activate voice commands.',
+    ),
+    FeatureModel(
+      featureId: 'real_time_voice_feature',
+      icon: Icons.hearing,
+      title: 'Step 9: Real-time Voice Responses',
+      description:
+          'Get immediate spoken responses to your queries for a hands-free experience.',
+    ),
+    FeatureModel(
+      featureId: 'theme_feature',
+      icon: Icons.brightness_6,
+      title: 'Step 10: Dark Mode and Customization',
+      description:
+          'Switch between light and dark themes to customize your experience.',
     ),
   ];
 

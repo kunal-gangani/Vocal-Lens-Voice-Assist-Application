@@ -53,7 +53,6 @@ class UserController extends ChangeNotifier {
 
   Future<void> sendConnectionRequest(String recipientId) async {
     final currentUser = FirebaseAuth.instance.currentUser;
-
     if (currentUser == null) {
       log("❌ Error: User not authenticated.");
       return;
@@ -66,13 +65,13 @@ class UserController extends ChangeNotifier {
       'timestamp': FieldValue.serverTimestamp(),
     };
 
-    log("🟢 Sending request: $connectionRequest");
+    log("📤 Sending connection request: $connectionRequest");
 
     try {
       await FirebaseFirestore.instance
           .collection('connection_requests')
           .add(connectionRequest);
-      log("✅ Request sent!");
+      log("✅ Connection request sent successfully!");
     } catch (e) {
       log("❌ Firestore Error: $e");
     }
@@ -86,13 +85,43 @@ class UserController extends ChangeNotifier {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getConnectionRequests() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      log("❌ Error: User not authenticated.");
+      return [];
+    }
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('connection_requests')
+          .where('to', isEqualTo: currentUser.uid)
+          .where('status', isEqualTo: 'pending')
+          .get();
+
+      final requests = snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          'sender': doc['from'],
+        };
+      }).toList();
+
+      log("📥 Connection Requests Fetched: $requests");
+      return requests;
+    } catch (e) {
+      log("❌ Firestore Error fetching connection requests: $e");
+      return [];
+    }
+  }
+
   Future<void> fetchConnectionRequests() async {
     try {
       final requests = await _authHelper.getConnectionRequests();
+      log("✅ Received Requests: $requests");
       receivedRequests = requests;
       notifyListeners();
     } catch (e) {
-      throw Exception("Error fetching connection requests: $e");
+      log("❌ Error fetching connection requests: $e");
     }
   }
 

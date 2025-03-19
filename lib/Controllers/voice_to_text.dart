@@ -18,7 +18,6 @@ import 'package:vocal_lens/Views/HowToUsePage/how_to_use_page.dart';
 import 'package:vocal_lens/Views/PastResponsesPage/past_responses_page.dart';
 import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
 import 'package:vocal_lens/Views/VoiceModificationPage/voice_modification_page.dart';
-import 'package:porcupine_flutter/porcupine.dart';
 
 class VoiceToTextController extends ChangeNotifier {
   // Speech-to-Text and Text-to-Speech instances
@@ -510,7 +509,7 @@ class VoiceToTextController extends ChangeNotifier {
   Future<void> searchYourQuery() async {
     responses.clear();
     final model = GenerativeModel(
-      model: 'gemini-pro',
+      model: 'gemini-1.5-pro',
       apiKey: apiKey,
     );
 
