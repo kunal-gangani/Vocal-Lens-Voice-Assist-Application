@@ -51,6 +51,43 @@ class UserController extends ChangeNotifier {
     }
   }
 
+  Future<void> debugFetchAllUsers() async {
+    final usersSnapshot =
+        await FirebaseFirestore.instance.collection('users').get();
+    final users = usersSnapshot.docs.map((doc) {
+      return {
+        'uid': doc.id,
+        'username': doc.data()['username'],
+      };
+    }).toList();
+    log("📋 All Firestore Users: $users");
+  }
+
+  Future<String?> getUserUidByName(String userName) async {
+    final trimmedUserName = userName.trim().toLowerCase();
+    try {
+      log("🔍 Searching UID for username: '$trimmedUserName'");
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('username_lower',
+              isEqualTo: trimmedUserName) // 👈 Query lowercase field
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final uid = querySnapshot.docs.first.id;
+        log("✅ Found UID for '$trimmedUserName': $uid");
+        return uid;
+      } else {
+        log("⚠️ No UID found for username: '$trimmedUserName'");
+      }
+    } catch (e) {
+      log("❌ Error fetching UID for '$trimmedUserName': $e");
+    }
+    return null;
+  }
+
   Future<void> sendConnectionRequest(String recipientId) async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
@@ -59,8 +96,8 @@ class UserController extends ChangeNotifier {
     }
 
     final connectionRequest = {
-      'from': currentUser.uid,
-      'to': recipientId,
+      'from': currentUser.uid, // ✅ Store UID instead of username
+      'to': recipientId, // ✅ Use recipient UID
       'status': 'pending',
       'timestamp': FieldValue.serverTimestamp(),
     };
@@ -115,34 +152,107 @@ class UserController extends ChangeNotifier {
   }
 
   Future<void> fetchConnectionRequests() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      log("❌ Error: User not authenticated.");
+      return;
+    }
+
+    log("🆔 Fetching requests for user: ${currentUser.uid}");
+
     try {
-      final requests = await _authHelper.getConnectionRequests();
-      log("✅ Received Requests: $requests");
-      receivedRequests = requests;
+      final snapshot = await FirebaseFirestore.instance
+          .collection('connection_requests')
+          .where('to', isEqualTo: currentUser.uid) // ✅ Compare UID
+          .where('status', isEqualTo: 'pending')
+          .get();
+
+      receivedRequests = snapshot.docs.map((doc) {
+        return {
+          'id': doc.id,
+          'from': doc['from'], // ✅ Store UID, not username
+        };
+      }).toList();
+
+      log("✅ Processed Requests: $receivedRequests");
+
       notifyListeners();
     } catch (e) {
-      log("❌ Error fetching connection requests: $e");
+      log("❌ Firestore Error fetching connection requests: $e");
     }
   }
 
-  Future<void> acceptConnectionRequest(String userName) async {
+  /// Accept a connection request
+  Future<void> acceptRequest(String senderUid) async {
     try {
-      await _authHelper.acceptConnectionByUserName(userName);
-      connections.add(userName);
-      receivedRequests.removeWhere((request) => request['sender'] == userName);
-      notifyListeners();
+      // Update request status to "accepted"
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('connection_requests')
+          .where('from', isEqualTo: senderUid)
+          .where('to',
+              isEqualTo:
+                  'your_current_user_uid') // Replace with actual UID fetching logic
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await _firestore
+            .collection('connection_requests')
+            .doc(doc.id)
+            .update({'status': 'accepted'});
+      }
+
+      // Add to connections list
+      await _firestore.collection('connections').add({
+        'user1': 'your_current_user_uid', // Replace with actual UID
+        'user2': senderUid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Refresh data
+      fetchConnectionRequests();
     } catch (e) {
-      throw Exception("Error accepting connection request: $e");
+      debugPrint("Error accepting request: $e");
     }
   }
 
-  Future<void> declineConnectionRequest(String userName) async {
+  /// Get username from UID
+  Future<String> getUserName(String uid) async {
     try {
-      await _authHelper.rejectConnectionByUserName(userName);
-      receivedRequests.removeWhere((request) => request['sender'] == userName);
-      notifyListeners();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        return userDoc['username'] ?? 'Unknown';
+      } else {
+        return 'Unknown';
+      }
     } catch (e) {
-      throw Exception("Error declining connection request: $e");
+      debugPrint("Error fetching username: $e");
+      return 'Unknown';
+    }
+  }
+
+  /// Reject a connection request
+  Future<void> rejectRequest(String senderUid) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('connection_requests')
+          .where('from', isEqualTo: senderUid)
+          .where('to',
+              isEqualTo:
+                  'your_current_user_uid') // Replace with actual UID fetching logic
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await _firestore
+            .collection('connection_requests')
+            .doc(doc.id)
+            .delete(); // Delete request instead of updating status
+      }
+
+      // Refresh data
+      fetchConnectionRequests();
+    } catch (e) {
+      debugPrint("Error rejecting request: $e");
     }
   }
 }

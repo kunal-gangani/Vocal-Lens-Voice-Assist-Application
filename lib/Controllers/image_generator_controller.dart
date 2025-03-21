@@ -35,7 +35,6 @@ class ImageGeneratorController extends ChangeNotifier {
         textColor: Colors.white,
       );
 
-      // ✅ Keep the image section empty
       generatedImage = null;
       errorMessage = null;
     } finally {
