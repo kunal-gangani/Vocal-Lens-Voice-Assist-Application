@@ -6,259 +6,346 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/auth_controller.dart';
+import 'package:vocal_lens/Views/HomePage/home_page.dart';
 import 'package:vocal_lens/Views/RegistrationPage/registration_page.dart';
 import 'package:vocal_lens/Widgets/auth_text_field.dart';
-import 'package:vocal_lens/Widgets/drop_down_text_style.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    AuthController authController = Provider.of<AuthController>(
-      context,
-      listen: false,
-    );
-
-    void changeLanguage(Locale locale) {
-      context.setLocale(locale);
-    }
+    AuthController authController =
+        Provider.of<AuthController>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          tr("login_title"),
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      appBar: _buildAppBar(context),
+      body: _buildBody(context, authController),
+    );
+  }
+
+  // 🔹 App Bar
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      foregroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: Text(
+        tr("login_title"),
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: DropdownButton<Locale>(
+            dropdownColor: Colors.grey[900],
+            icon: const Icon(Icons.language, color: Colors.white),
+            underline: Container(),
+            onChanged: (Locale? newLocale) {
+              if (newLocale != null) {
+                context.setLocale(newLocale);
+              }
+            },
+            items: [
+              _buildDropdownItem('English', const Locale('en', 'US')),
+              _buildDropdownItem('Español', const Locale('es', 'ES')),
+              _buildDropdownItem('German', const Locale('de', 'DE')),
+              _buildDropdownItem('Hindi', const Locale('hi', 'IN')),
+              _buildDropdownItem('Français', const Locale('fr', 'FR')),
+              _buildDropdownItem('Dutch', const Locale('nl', 'NL')),
+            ],
+          ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: DropdownButton<Locale>(
-              dropdownColor: Colors.grey[900],
-              icon: const Icon(
-                Icons.language,
-                color: Colors.white,
-              ),
-              underline: Container(),
-              onChanged: (Locale? newLocale) {
-                if (newLocale != null) {
-                  changeLanguage(newLocale);
-                }
-              },
-              items: [
-                DropdownMenuItem(
-                  value: const Locale('en', 'US'),
-                  child: Text(
-                    'English',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: const Locale('es', 'ES'),
-                  child: Text(
-                    'Español',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: const Locale('de', 'DE'),
-                  child: Text(
-                    'German',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: const Locale('hi', 'IN'),
-                  child: Text(
-                    'Hindi',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: const Locale('fr', 'FR'),
-                  child: Text(
-                    'Français',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-                DropdownMenuItem(
-                  value: const Locale('nl', 'NL'),
-                  child: Text(
-                    'Dutch',
-                    style: dropDownMenuTextStyle(),
-                  ),
-                ),
-              ],
+      ],
+    );
+  }
+
+  // 🔹 Body UI
+  Widget _buildBody(BuildContext context, AuthController authController) {
+    return Stack(
+      children: [
+        // Main UI
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black, Colors.grey],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black, Colors.grey],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade900.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          Text(
-                            'welcome_back'.tr(),
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade900.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                           ),
-                          const SizedBox(height: 20),
-                          buildTextFormField(
-                            context: context,
-                            controller: emailController,
-                            label: 'email'.tr(),
-                            icon: Icons.email,
-                          ),
-                          const SizedBox(height: 16),
-                          buildTextFormField(
-                            context: context,
-                            controller: passwordController,
-                            label: 'password'.tr(),
-                            icon: Icons.lock,
-                            isPassword: true,
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton(
-                            onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                try {
-                                  await authController.signInWithEmail(
-                                    emailController.text,
-                                    passwordController.text,
-                                  );
-                                  Fluttertoast.showToast(
-                                    msg: 'login_successful'.tr(),
-                                    backgroundColor: Colors.green,
-                                    textColor: Colors.white,
-                                  );
-                                } catch (e) {
-                                  Fluttertoast.showToast(
-                                    msg: 'login_failed'.tr(),
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                  );
-                                }
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                              ),
-                            ),
-                            child: Text(
-                              'login_title'.tr(),
+                        ],
+                      ),
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Text(
+                              'welcome_back'.tr(),
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 26,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () async {
-                              await authController.signInWithGoogle();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                              ),
+                            const SizedBox(height: 20),
+                            buildTextFormField(
+                              context: context,
+                              controller: emailController,
+                              label: 'email'.tr(),
+                              icon: Icons.email,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.google,
-                                  color: Colors.red,
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  "Sign in with Google",
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
+                            const SizedBox(height: 16),
+                            buildTextFormField(
+                              context: context,
+                              controller: passwordController,
+                              label: 'password'.tr(),
+                              icon: Icons.lock,
+                              isPassword: true,
+                            ),
+                            const SizedBox(height: 24),
+                            _buildLoginButton(authController),
+                            const SizedBox(height: 16),
+                            _buildGoogleSignInButton(authController),
+                            const SizedBox(height: 16),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegistrationPage(),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Flexify.goRemove(
-                                const RegistrationPage(),
-                                animation: FlexifyRouteAnimations.blur,
-                                duration: Durations.medium1,
-                              );
-                            },
-                            child: Text(
-                              'register_prompt'.tr(),
-                              style: const TextStyle(
-                                color: Colors.grey,
+                                );
+                              },
+                              child: Text(
+                                'register_prompt'.tr(),
+                                style: const TextStyle(color: Colors.grey),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+        ),
+
+        // 🔹 Loader Overlay (if loading)
+        Consumer<AuthController>(
+          builder: (context, authController, _) {
+            return authController.isLoading
+                ? Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          },
+        ),
+      ],
+    );
+  }
+
+  // 🔹 Login Button
+ Widget _buildLoginButton(AuthController authController) {
+  return ElevatedButton(
+    onPressed: authController.isLoading
+        ? null // Disable button while loading
+        : () async {
+            if (formKey.currentState!.validate()) {
+              try {
+                authController.setLoading(true); // Start loader
+
+                await authController.signInWithEmail(
+                  emailController.text,
+                  passwordController.text,
+                );
+
+                Fluttertoast.showToast(
+                  msg: 'login_successful'.tr(),
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                );
+
+                Flexify.goRemove(
+                  const HomePage(),
+                  animation: FlexifyRouteAnimations.fade,
+                  duration: Durations.medium1,
+                );
+              } catch (e) {
+                Fluttertoast.showToast(
+                  msg: 'login_failed'.tr(),
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                );
+              } finally {
+                authController.setLoading(false); // Stop loader
+              }
+            }
+          },
+    style: ElevatedButton.styleFrom(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.black.withOpacity(0.2),
+      elevation: 5,
+    ).copyWith(
+      backgroundColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.pressed)) {
+          return Colors.blueGrey.shade700;
+        }
+        return Colors.transparent;
+      }),
+    ),
+    child: authController.isLoading
+        ? const SizedBox(
+            height: 24,
+            width: 24,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
+          )
+        : Ink(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Colors.deepPurple, Colors.blueAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'login_title'.tr(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+  );
+}
+
+
+
+  // 🔹 Google Sign-In Button
+  Widget _buildGoogleSignInButton(AuthController authController) {
+    return ElevatedButton(
+      onPressed: authController.isLoading
+          ? null // Disable button while loading
+          : () async {
+              try {
+                authController.setLoading(true); // Start loader
+
+                await authController.signInWithGoogle();
+
+                Fluttertoast.showToast(
+                  msg: 'google_sign_in_success'.tr(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                );
+
+                Flexify.goRemove(
+                  const HomePage(),
+                  animation: FlexifyRouteAnimations.blur,
+                  duration: Durations.medium1,
+                );
+              } catch (e) {
+                Fluttertoast.showToast(
+                  msg: 'google_sign_in_failed'.tr(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                );
+              } finally {
+                authController.setLoading(false); // Stop loader
+              }
+            },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        elevation: 10,
+      ),
+      child: authController.isLoading
+          ? const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                color: Colors.black,
+                strokeWidth: 2,
+              ),
+            )
+          : const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.google,
+                  color: Colors.red,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "Sign in with Google",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  // 🔹 Dropdown Helper Function
+  DropdownMenuItem<Locale> _buildDropdownItem(String language, Locale locale) {
+    return DropdownMenuItem(
+      value: locale,
+      child: Text(
+        language,
+        style: const TextStyle(
+          color: Colors.white,
         ),
       ),
     );

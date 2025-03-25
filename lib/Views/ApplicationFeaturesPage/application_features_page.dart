@@ -107,31 +107,31 @@ class ApplicationFeaturesPage extends StatelessWidget {
                   ),
                   decoration: pageDecoration,
                 ),
-                PageViewModel(
-                  image: lottieWidget(
-                    lottiePath:
-                        "lib/Views/ApplicationFeaturesPage/Assets/loader_3.json",
-                  ),
-                  titleWidget: Center(
-                    child: Text(
-                      "Explore New Friends",
-                      style: titleTextStyle(),
-                    ),
-                  ),
-                  bodyWidget: Column(
-                    children: [
-                      Text(
-                        "Discover and connect with new friends on",
-                        style: bodyTextStyle(),
-                      ),
-                      Text(
-                        "VocalLens, just like on social media!",
-                        style: bodyTextStyle(),
-                      ),
-                    ],
-                  ),
-                  decoration: pageDecoration,
-                ),
+                // PageViewModel(
+                //   image: lottieWidget(
+                //     lottiePath:
+                //         "lib/Views/ApplicationFeaturesPage/Assets/loader_3.json",
+                //   ),
+                //   titleWidget: Center(
+                //     child: Text(
+                //       "Explore New Friends",
+                //       style: titleTextStyle(),
+                //     ),
+                //   ),
+                //   bodyWidget: Column(
+                //     children: [
+                //       Text(
+                //         "Discover and connect with new friends on",
+                //         style: bodyTextStyle(),
+                //       ),
+                //       Text(
+                //         "VocalLens, just like on social media!",
+                //         style: bodyTextStyle(),
+                //       ),
+                //     ],
+                //   ),
+                //   decoration: pageDecoration,
+                // ),
                 PageViewModel(
                   image: lottieWidget(
                     lottiePath:
@@ -200,12 +200,13 @@ class ApplicationFeaturesPage extends StatelessWidget {
               showNextButton: false,
               showDoneButton: false,
               onChange: (index) {
-                value
-                    .updateIndex(index); // Update the current index of the page
+                value.updateIndex(index);
               },
               globalFooter: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 10.0),
+                  horizontal: 20.0,
+                  vertical: 10.0,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -17,8 +17,15 @@ class AuthController extends ChangeNotifier {
   final FlutterTts _flutterTts = FlutterTts();
   User? _user;
   bool _isNotificationsEnabled = true;
+  bool _isLoading = false;
 
   bool get isNotificationsEnabled => _isNotificationsEnabled;
+  bool get isLoading => _isLoading;
+
+  void setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   AuthController() {
     _user = FirebaseAuth.instance.currentUser;
@@ -49,8 +56,13 @@ class AuthController extends ChangeNotifier {
     await _flutterTts.speak(getWelcomeMessage());
   }
 
+  Future<void> signUpWithEmail(String email, String password) {
+    return _authHelper.signUpWithEmail(email: email, password: password);
+  }
+
   Future<void> signInWithEmail(String email, String password) async {
     try {
+      setLoading(true); // Start loader
       _user = await _authHelper.signInWithEmail(email, password);
       notifyListeners();
       speakWelcomeMessage();
@@ -58,35 +70,49 @@ class AuthController extends ChangeNotifier {
       throw Exception(_getAuthErrorMessage(e.code));
     } catch (e) {
       throw Exception("Unexpected error during email sign-in: $e");
+    } finally {
+      setLoading(false); // Stop loader
     }
   }
 
   Future<void> signInWithGoogle() async {
-    String msg = await _authHelper.signInWithGoogle();
+    try {
+      setLoading(true); // Start loader
 
-    log("MSG : $msg");
+      String msg = await _authHelper.signInWithGoogle();
+      log("MSG : $msg");
 
-    if (msg == "Success") {
-      Fluttertoast.showToast(
-        msg: 'google_sign_in_success'.tr(),
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
-      Flexify.goRemove(
-        const HomePage(),
-        animation: FlexifyRouteAnimations.blur,
-        duration: Durations.medium1,
-      );
-    } else {
+      if (msg == "Success") {
+        Fluttertoast.showToast(
+          msg: 'google_sign_in_success'.tr(),
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+
+        Flexify.goRemove(
+          const HomePage(),
+          animation: FlexifyRouteAnimations.blur,
+          duration: Durations.medium1,
+        );
+
+        speakWelcomeMessage();
+        _navigateToHomePage();
+      } else {
+        Fluttertoast.showToast(
+          msg: 'google_sign_in_failed'.tr(),
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      }
+    } catch (e) {
       Fluttertoast.showToast(
         msg: 'google_sign_in_failed'.tr(),
         backgroundColor: Colors.red,
         textColor: Colors.white,
       );
+    } finally {
+      setLoading(false); // Stop loader
     }
-
-    speakWelcomeMessage();
-    _navigateToHomePage();
 
     notifyListeners();
   }
@@ -165,7 +191,7 @@ class AuthController extends ChangeNotifier {
   /// Navigates to the Login Page
   void _navigateToLoginPage() {
     Flexify.goRemove(
-      const LoginPage(),
+      LoginPage(),
       animation: FlexifyRouteAnimations.blur,
       duration: Durations.medium1,
     );

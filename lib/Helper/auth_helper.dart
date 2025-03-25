@@ -106,6 +106,17 @@ class AuthHelper {
     }
   }
 
+  Future<void> signUpWithEmail(
+      {required String email, required String password}) async {
+    try {
+      final UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await _createUserDocument(userCredential.user!);
+    } catch (e) {
+      throw Exception("Error signing up with email: $e");
+    }
+  }
+
   Future<bool> hasSentRequest(String userName) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {

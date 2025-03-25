@@ -52,7 +52,7 @@ class YoutubePlayerPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      _buildFloatingBottomBar(context),
+                      // _buildFloatingBottomBar(context),
                     ],
                   ),
                 );

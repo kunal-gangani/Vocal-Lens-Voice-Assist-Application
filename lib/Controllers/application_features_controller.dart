@@ -16,7 +16,7 @@ class ApplicationFeaturesController extends ChangeNotifier {
 
   void onIntroEnd(BuildContext context) {
     Flexify.goRemove(
-      const LoginPage(),
+       LoginPage(),
       animation: FlexifyRouteAnimations.blur,
       duration: Durations.medium1,
     );

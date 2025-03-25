@@ -71,6 +71,8 @@ class VoiceToTextController extends ChangeNotifier {
       notifyListeners();
     });
 
+    initializeSpeechToText();
+
     flutterTts.setErrorHandler((msg) {
       log("TTS Error: $msg");
       isSpeaking = false;
@@ -156,25 +158,33 @@ class VoiceToTextController extends ChangeNotifier {
   // Initialize Porcupine wake word detection
   Future<void> initializeWakeWord() async {
     try {
-      _porcupineManager = await PorcupineManager.fromKeywordPaths(
-        ApiKeys.picoVoiceApiKey,
-        [
-          "Assets/Vocal_en_android_v3_0_0.ppn",
-        ],
-        onWakeWordDetected,
-      );
-
-      await _porcupineManager?.start();
-      log("Wake word detection started...");
+      log("Initializing wake word...");
+      await _initializeWithApiKey(ApiKeys.picoVoiceApiKey);
     } catch (e) {
-      log("Porcupine initialization failed: $e");
+      log("Primary API key failed: $e. Trying secondary key...");
+      try {
+        await _initializeWithApiKey(ApiKeys.picoVoiceApiKey2);
+      } catch (e) {
+        log("Both API keys failed: $e. Wake word detection disabled.");
+        _porcupineManager = null;
+      }
     }
+  }
+
+  Future<void> _initializeWithApiKey(String apiKey) async {
+    _porcupineManager = await PorcupineManager.fromKeywordPaths(
+      apiKey,
+      ["Assets/Vocal_en_android_v3_0_0.ppn"],
+      onWakeWordDetected,
+    );
+
+    await _porcupineManager?.start();
+    log("Wake word detection started with API key: $apiKey");
   }
 
   void onWakeWordDetected(int keywordIndex) async {
     log("Wake word detected! Activating Vocal Lens... (Keyword index: $keywordIndex)");
     await flutterTts.speak("Hello User, You can now use Voice Commands!");
-    // Start listening for user command
     startListening();
   }
 
@@ -185,98 +195,92 @@ class VoiceToTextController extends ChangeNotifier {
 
     if (availableVoices.contains(newVoice)) {
       voice = newVoice;
-      await flutterTts.setVoice({"name": newVoice, "locale": "en-US"});
-      log("Voice set to: $newVoice");
+      await flutterTts.setVoice({
+        "name": newVoice,
+        "locale": "en-US",
+      });
+      log(
+        "Voice set to: $newVoice",
+      );
       _saveVoice();
       notifyListeners();
     } else {
-      log("Voice model not found: $newVoice");
+      log(
+        "Voice model not found: $newVoice",
+      );
+    }
+  }
+
+  Future<void> initializeSpeechToText() async {
+    if (!speechToText.isAvailable) {
+      bool available = await speechToText.initialize(
+        onError: (error) => log('SpeechToText Error: $error'),
+        onStatus: (status) => log('SpeechToText Status: $status'),
+      );
+      if (!available) {
+        log("Speech recognition unavailable.");
+      }
     }
   }
 
   void handleVoiceCommands(String command) {
-    String lowerCommand = command.toLowerCase();
+    String lowerCommand = command.trim().toLowerCase();
     log("Recognized command: $lowerCommand");
 
-    // Default message for unrecognized commands
     String responseMessage = "Command not recognized";
 
-    if (lowerCommand.contains("open chat")) {
-      log("Opening Chats");
-      openChatSection();
-      responseMessage = "Opening chat section.";
-    } else if (lowerCommand.contains("settings")) {
-      log("Opening Settings");
+    if (lowerCommand.contains("settings")) {
       openUserSettings();
       responseMessage = "Opening settings.";
     } else if (lowerCommand.contains("go back")) {
-      log("Can't go back");
-      responseMessage = "Are you sure.This will close the app";
+      responseMessage = "Are you sure? This will close the app.";
     } else if (lowerCommand.contains("open history")) {
-      log("Opening History");
       openPastResponses();
       responseMessage = "Opening history.";
     } else if (lowerCommand.contains("open connections")) {
-      log("Opening Connections Request Page");
       openConnectionRequestPage();
       responseMessage = "Opening connections request page.";
     } else if (lowerCommand.contains("how to use")) {
-      log("Opening How To Use Page");
       openHowToUsePage();
       responseMessage = "Opening how to use page.";
     } else if (lowerCommand.contains("voice settings")) {
-      log("Opening Voice Modification Page");
       openVoiceModelPage();
       responseMessage = "Opening voice modification settings.";
     } else if (lowerCommand.contains("start listening")) {
-      log("Started Listening");
       startListening();
       responseMessage = "Started listening.";
     } else if (lowerCommand.contains("stop listening")) {
-      log("Stopped Listening");
       stopListening();
       responseMessage = "Stopped listening.";
     } else if (lowerCommand.contains("speak response")) {
-      log("Speaking Response");
       readOrPromptResponse();
       responseMessage = "Speaking response.";
     } else if (lowerCommand.contains("stop speaking")) {
-      log("Stopped Speaking");
       stopSpeaking();
       responseMessage = "Stopped speaking.";
     } else if (lowerCommand.contains("pause speaking")) {
-      log("Paused Speaking");
       pauseSpeaking();
       responseMessage = "Paused speaking.";
     } else if (lowerCommand.contains("resume speaking")) {
-      log("Resumed Speaking");
       resumeSpeaking();
       responseMessage = "Resumed speaking.";
     } else if (lowerCommand.contains("delete history")) {
-      log("Deleting History");
       deleteAllHistory();
       responseMessage = "History deleted.";
-    } else if (lowerCommand.contains("search")) {
-      log("Searching");
-
-      RegExp regExp = RegExp(r"search (.*)", caseSensitive: false);
-      final match = regExp.firstMatch(command);
-
-      if (match != null) {
-        String query = match.group(1)?.trim() ?? '';
+    } else if (lowerCommand.startsWith("search ")) {
+      // ✅ More accurate match
+      String query = lowerCommand.replaceFirst("search ", "").trim();
+      if (query.isNotEmpty) {
         log("Search query: $query");
-
         searchFieldController.text = query;
         searchYourQuery();
+        responseMessage = "Searching for: $query";
       } else {
-        log("No search query found after 'search'.");
+        responseMessage = "Please provide a search query.";
       }
-    } else {
-      log("Command not recognized : $command");
-      Fluttertoast.showToast(msg: "Command not recognized: $command");
     }
 
-    // Speak the response message
+    log("Final response message: $responseMessage");
     flutterTts.speak(responseMessage);
   }
 
@@ -327,10 +331,6 @@ class VoiceToTextController extends ChangeNotifier {
 
   // Initialize TTS
   void initializeTts() {
-    flutterTts.setLanguage(voice);
-    flutterTts.setPitch(pitch);
-    flutterTts.setSpeechRate(speechRate);
-
     flutterTts.setCompletionHandler(() {
       isSpeaking = false;
       notifyListeners();
@@ -341,6 +341,20 @@ class VoiceToTextController extends ChangeNotifier {
       isSpeaking = false;
       notifyListeners();
     });
+
+    flutterTts.awaitSpeakCompletion(true);
+  }
+
+  void switchLanguage(String langCode) async {
+    try {
+      await flutterTts.setLanguage(langCode);
+      voice = langCode;
+      _saveVoice();
+      notifyListeners();
+      log("Language switched to $langCode");
+    } catch (e) {
+      log("Failed to switch language: $e");
+    }
   }
 
   // Toggle pin status for a response
@@ -372,7 +386,7 @@ class VoiceToTextController extends ChangeNotifier {
   }
 
   // Start listening using speech-to-text
-  Future<void> startListening() async {
+  void startListening() async {
     PermissionStatus status = await Permission.microphone.request();
 
     if (status.isGranted) {
@@ -397,7 +411,6 @@ class VoiceToTextController extends ChangeNotifier {
           },
           listenFor: Duration(seconds: micDuration),
           pauseFor: const Duration(seconds: 2),
-          onSoundLevelChange: (level) => log("Sound level: $level"),
         );
       } else {
         text = "Speech recognition is not available.";
@@ -408,6 +421,20 @@ class VoiceToTextController extends ChangeNotifier {
       log('Microphone permission denied.');
       Fluttertoast.showToast(msg: 'Microphone permission denied.');
     }
+  }
+
+  bool isWakeWordActive = true;
+
+  void toggleWakeWordDetection() async {
+    if (isWakeWordActive) {
+      await _porcupineManager?.stop();
+      log("Wake word detection disabled.");
+    } else {
+      await _porcupineManager?.start();
+      log("Wake word detection enabled.");
+    }
+    isWakeWordActive = !isWakeWordActive;
+    notifyListeners();
   }
 
 // Stop listening
