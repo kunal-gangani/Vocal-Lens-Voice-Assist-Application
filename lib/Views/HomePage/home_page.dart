@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               homePageView(),
               imageGeneratorPageView(),
               youTubePageView(context),
-              exploreFriendsPageView(),
+              // exploreFriendsPageView(),
               chatWithAIPage(),
             ],
           ),

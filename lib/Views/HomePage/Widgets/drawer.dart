@@ -39,19 +39,19 @@ Widget customDrawer() {
             ),
             onTap: value.openPastResponses,
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.group_add,
-              color: Colors.blue,
-            ),
-            title: const Text(
-              "Connection Requests",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-            onTap: value.openConnectionRequestPage,
-          ),
+          // ListTile(
+          //   leading: const Icon(
+          //     Icons.group_add,
+          //     color: Colors.blue,
+          //   ),
+          //   title: const Text(
+          //     "Connection Requests",
+          //     style: TextStyle(
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          //   onTap: value.openConnectionRequestPage,
+          // ),
           ListTile(
             leading: const Icon(
               Icons.mic,

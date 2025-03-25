@@ -49,13 +49,13 @@ Widget navigationBar() {
               color: Colors.red,
             ),
           ),
-          NavigationDestination(
-            label: "Discover",
-            icon: Icon(
-              Icons.group_add,
-              color: Colors.cyan,
-            ),
-          ),
+          // NavigationDestination(
+          //   label: "Discover",
+          //   icon: Icon(
+          //     Icons.group_add,
+          //     color: Colors.cyan,
+          //   ),
+          // ),
           NavigationDestination(
             label: "AI-Assist",
             icon: Icon(

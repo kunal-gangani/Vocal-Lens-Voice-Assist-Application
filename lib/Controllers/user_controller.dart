@@ -154,27 +154,39 @@ class UserController extends ChangeNotifier {
   Future<void> fetchConnectionRequests() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      log("❌ Error: User not authenticated.");
+      log("❌ User not authenticated.");
       return;
     }
 
     log("🆔 Fetching requests for user: ${currentUser.uid}");
 
     try {
+      // 🔍 Step 1: Fetch connection requests for the current user
       final snapshot = await FirebaseFirestore.instance
           .collection('connection_requests')
-          .where('to', isEqualTo: currentUser.uid) // ✅ Compare UID
+          .where('to', isEqualTo: currentUser.uid) // ✅ Ensure UID is used
           .where('status', isEqualTo: 'pending')
           .get();
 
       receivedRequests = snapshot.docs.map((doc) {
         return {
           'id': doc.id,
-          'from': doc['from'], // ✅ Store UID, not username
+          'from': doc['from'],
         };
       }).toList();
 
       log("✅ Processed Requests: $receivedRequests");
+
+      // ❗ If no requests found, debug by fetching all connection requests
+      if (receivedRequests.isEmpty) {
+        log("⚠️ No requests found. Fetching all requests for debugging...");
+
+        final debugSnapshot = await FirebaseFirestore.instance
+            .collection('connection_requests')
+            .get();
+
+        log("🔍 All Requests in Firestore: ${debugSnapshot.docs.map((doc) => doc.data()).toList()}");
+      }
 
       notifyListeners();
     } catch (e) {
@@ -203,7 +215,7 @@ class UserController extends ChangeNotifier {
 
       // Add to connections list
       await _firestore.collection('connections').add({
-        'user1': 'your_current_user_uid', // Replace with actual UID
+        'user1': 'your_current_user_uid',
         'user2': senderUid,
         'timestamp': FieldValue.serverTimestamp(),
       });
@@ -237,16 +249,14 @@ class UserController extends ChangeNotifier {
       QuerySnapshot querySnapshot = await _firestore
           .collection('connection_requests')
           .where('from', isEqualTo: senderUid)
-          .where('to',
-              isEqualTo:
-                  'your_current_user_uid') // Replace with actual UID fetching logic
+          .where(
+            'to',
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+          )
           .get();
 
       for (var doc in querySnapshot.docs) {
-        await _firestore
-            .collection('connection_requests')
-            .doc(doc.id)
-            .delete(); // Delete request instead of updating status
+        await _firestore.collection('connection_requests').doc(doc.id).delete();
       }
 
       // Refresh data

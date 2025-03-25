@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class NavigationController extends ChangeNotifier {
   int _selectedIndex = 0;
-  PageController pageController = PageController();
+  final PageController pageController = PageController();
 
   int get selectedIndex => _selectedIndex;
 
@@ -11,16 +11,18 @@ class NavigationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changePageView({
-    required int index,
-  }) {
+  void changePageView({required int index}) {
     pageController.animateToPage(
       index,
-      duration: const Duration(
-        milliseconds: 500,
-      ),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 }

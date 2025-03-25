@@ -30,16 +30,16 @@ PreferredSizeWidget appBar({required BuildContext context}) {
         },
         color: Colors.white,
       ),
-      IconButton(
-        icon: const FaIcon(
-          FontAwesomeIcons.commentDots,
-        ),
-        onPressed: Provider.of<VoiceToTextController>(
-          context,
-          listen: false,
-        ).openChatSection,
-        color: Colors.white,
-      ),
+      // IconButton(
+      //   icon: const FaIcon(
+      //     FontAwesomeIcons.commentDots,
+      //   ),
+      //   onPressed: Provider.of<VoiceToTextController>(
+      //     context,
+      //     listen: false,
+      //   ).openChatSection,
+      //   color: Colors.white,
+      // ),
     ],
   );
 }

@@ -6,13 +6,24 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:vocal_lens/Controllers/user_controller.dart';
 
-class ConnectionRequestPage extends StatelessWidget {
+class ConnectionRequestPage extends StatefulWidget {
   const ConnectionRequestPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final userController = Provider.of<UserController>(context, listen: false);
+  _ConnectionRequestPageState createState() => _ConnectionRequestPageState();
+}
 
+class _ConnectionRequestPageState extends State<ConnectionRequestPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch connection requests when the page is loaded
+    Future.microtask(() => Provider.of<UserController>(context, listen: false)
+        .fetchConnectionRequests());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -23,85 +34,74 @@ class ConnectionRequestPage extends StatelessWidget {
         backgroundColor: Colors.blueGrey.shade900,
         title: Text(tr('connection_requests')),
       ),
-      body: FutureBuilder(
-        future: userController.fetchConnectionRequests(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (userController.receivedRequests.isEmpty) {
+      body: Consumer<UserController>(
+        builder: (context, userController, child) {
+          if (userController.receivedRequests.isEmpty) {
             return Center(
               child: Text(
                 tr('no_connection_requests'),
                 style: TextStyle(color: Colors.white54, fontSize: 16.sp),
               ),
             );
-          } else {
-            return ListView.builder(
-              itemCount: userController.receivedRequests.length,
-              itemBuilder: (context, index) {
-                String senderUid =
-                    userController.receivedRequests[index]['from'];
-
-                return FutureBuilder<String>(
-                  future: userController
-                      .getUserName(senderUid), // Fetch username from UID
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return ListTile(
-                        title: Text(
-                          tr('loading_username'),
-                          style:
-                              TextStyle(color: Colors.white54, fontSize: 14.sp),
-                        ),
-                      );
-                    } else {
-                      String username = snapshot.data ?? tr('unknown_user');
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 5.h),
-                        color: Colors.blueGrey.shade800,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.blueAccent,
-                            child: Text(username[0].toUpperCase(),
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                          title: Text(username,
-                              style: TextStyle(color: Colors.white)),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.check,
-                                    color: Colors.greenAccent),
-                                onPressed: () {
-                                  userController.acceptRequest(senderUid);
-                                  Fluttertoast.showToast(
-                                      msg: tr('request_accepted'));
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.close,
-                                    color: Colors.redAccent),
-                                onPressed: () {
-                                  userController.rejectRequest(senderUid);
-                                  Fluttertoast.showToast(
-                                      msg: tr('request_declined'));
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-            );
           }
+
+          return ListView.builder(
+            itemCount: userController.receivedRequests.length,
+            itemBuilder: (context, index) {
+              String senderUid = userController.receivedRequests[index]['from'];
+
+              return FutureBuilder<String>(
+                future: userController.getUserName(senderUid),
+                builder: (context, snapshot) {
+                  String username = snapshot.data ?? tr('unknown_user');
+
+                  return Card(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                    color: Colors.blueGrey.shade800,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blueAccent,
+                        child: Text(username[0].toUpperCase(),
+                            style: const TextStyle(color: Colors.white)),
+                      ),
+                      title: Text(username,
+                          style: const TextStyle(color: Colors.white)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.check,
+                                color: Colors.greenAccent),
+                            onPressed: () async {
+                              await userController.acceptRequest(senderUid);
+                              Fluttertoast.showToast(
+                                  msg: tr('request_accepted'));
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close,
+                                color: Colors.redAccent),
+                            onPressed: () async {
+                              await userController.rejectRequest(senderUid);
+                              Fluttertoast.showToast(
+                                msg: tr(
+                                  'request_declined',
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
         },
       ),
       backgroundColor: Colors.black,

@@ -34,8 +34,8 @@ class UserSettingsPage extends StatelessWidget {
           child: ListView(
             children: [
               _buildUserProfileCard(user),
-              _buildNotificationCard(),
-              _buildDarkModeCard(),
+              _buildNotificationCard(context),
+              // _buildDarkModeCard(),
               _buildLanguageSelectionCard(context),
               _buildLogoutCard(context, authValue),
             ],
@@ -74,7 +74,7 @@ class UserSettingsPage extends StatelessWidget {
   }
 
   /// Notification Toggle Card
-  Widget _buildNotificationCard() {
+  Widget _buildNotificationCard(BuildContext context) {
     return Card(
       elevation: 5,
       color: Colors.blueGrey.shade800,
@@ -100,7 +100,10 @@ class UserSettingsPage extends StatelessWidget {
         ),
         trailing: Switch(
           value: true,
-          onChanged: (bool value) {},
+          onChanged: (bool value) {
+            Provider.of<AuthController>(context, listen: false)
+                .toggleNotifications();
+          },
           activeColor: Colors.blueGrey.shade900,
         ),
       ),

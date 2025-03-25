@@ -16,11 +16,18 @@ class AuthController extends ChangeNotifier {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final FlutterTts _flutterTts = FlutterTts();
   User? _user;
+  bool _isNotificationsEnabled = true;
+
+  bool get isNotificationsEnabled => _isNotificationsEnabled;
 
   AuthController() {
     _user = FirebaseAuth.instance.currentUser;
     _initializeTts();
     checkAuth();
+  }
+  void toggleNotifications() {
+    _isNotificationsEnabled = !_isNotificationsEnabled;
+    notifyListeners();
   }
 
   User? get user => _user;
