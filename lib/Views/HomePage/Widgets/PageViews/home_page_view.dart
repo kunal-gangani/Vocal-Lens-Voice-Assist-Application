@@ -22,9 +22,41 @@ Widget homePageView() {
       ),
     ),
     child: Consumer<VoiceToTextController>(builder: (context, value, _) {
+      final remainingSearches = value.remainingSearchesToday;
+      final isLimitWarning = remainingSearches <= 1;
+
       return SingleChildScrollView(
         child: Column(
           children: [
+            // Search limit indicator
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              decoration: BoxDecoration(
+                color: isLimitWarning
+                    ? Colors.red.shade900
+                    : Colors.blueGrey.shade800,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isLimitWarning)
+                    Icon(Icons.warning_amber_rounded,
+                        color: Colors.orange.shade300, size: 16.sp),
+                  if (isLimitWarning) SizedBox(width: 8.w),
+                  Text(
+                    'Searches: $remainingSearches/${VoiceToTextController.dailySearchLimit}',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 15.h),
+
             Card(
               elevation: 5,
               color: Colors.blueGrey.shade800,
@@ -110,12 +142,26 @@ Widget homePageView() {
                           width: 10.w,
                         ),
                         ElevatedButton(
-                          onPressed: value.isButtonEnabled
-                              ? value.searchYourQuery
+                          onPressed: value.isButtonEnabled &&
+                                  remainingSearches > 0
+                              ? () {
+                                  if (remainingSearches > 0) {
+                                    value.searchYourQuery();
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Daily search limit reached'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyan,
-                            disabledBackgroundColor: Colors.grey,
+                            backgroundColor: remainingSearches > 0
+                                ? Colors.cyan
+                                : Colors.grey,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
@@ -129,6 +175,19 @@ Widget homePageView() {
                         ),
                       ],
                     ),
+                    if (isLimitWarning)
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.h),
+                        child: Text(
+                          remainingSearches == 0
+                              ? 'You have reached your daily search limit'
+                              : 'Only $remainingSearches search${remainingSearches == 1 ? '' : 's'} left',
+                          style: TextStyle(
+                            color: Colors.orange,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

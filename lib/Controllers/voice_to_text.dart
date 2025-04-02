@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
@@ -20,145 +21,344 @@ import 'package:vocal_lens/Views/UserSettingsPage/user_settings_page.dart';
 import 'package:vocal_lens/Views/VoiceModificationPage/voice_modification_page.dart';
 
 class VoiceToTextController extends ChangeNotifier {
-  // Speech-to-Text and Text-to-Speech instances
+  // Constants
+  static const int _dailySearchLimit = 3;
+  static const String _lastSearchDateKey = 'lastSearchDate';
+  static const String _searchCountKey = 'searchCount';
+  static const String _apiKey = ApiKeys.geminiApiKey;
+  static const int dailySearchLimit = 3;
+
+  // Speech services
   late stt.SpeechToText speechToText;
   final FlutterTts flutterTts = FlutterTts();
+  PorcupineManager? _porcupineManager;
 
-  // States and properties
-  bool isListening = false;
-  bool isLoading = false;
-  bool isSpeaking = false;
-  bool isPaused = false;
-  String text = "Press the mic to start speaking...";
-  String? lastSpokenAnswer;
-
-  // Keys for persistent storage
-  final String voiceKey = 'voice';
-  final String pitchKey = 'pitch';
-  final String speechRateKey = 'speechRate';
+  // State variables
+  bool _isListening = false;
+  bool _isLoading = false;
+  bool _isSpeaking = false;
+  bool _isPaused = false;
+  bool _isWakeWordActive = true;
+  String _text = "Press the mic to start speaking...";
+  String? _lastSpokenAnswer;
 
   // Voice settings
-  String voice = "en-us";
-  double pitch = 1.0;
-  double speechRate = 0.5;
-  int micDuration = 5;
+  String _voice = "en-us";
+  double _pitch = 1.0;
+  double _speechRate = 0.5;
+  int _micDuration = 5;
+  List<String> _voiceModels = [];
 
-  // Data storage and history
-  final GetStorage storage = GetStorage();
-  final String historyKey = 'history';
-  final String favoritesKey = 'favorites';
-  final String pinnedKey = 'pinned';
-  List<String> history = [];
-  List<String> _favoritesList = [];
-  List<String> pinnedList = [];
-  List<Map<String, dynamic>> responses = [];
+  List<String> get voiceModels => _voiceModels;
 
-  // Input and UI controls
-  bool isButtonEnabled = false;
-  final TextEditingController searchFieldController = TextEditingController();
-
-  // API key for Google Generative AI
-  static const String apiKey = ApiKeys.geminiApiKey;
+  // Data storage
+  final GetStorage _storage = GetStorage();
+  final List<String> _history = [];
+  final List<String> _favoritesList = [];
+  final List<String> _pinnedList = [];
+  final List<Map<String, dynamic>> _responses = [];
+  final TextEditingController _searchFieldController = TextEditingController();
 
   // Getters
+  bool get isListening => _isListening;
+  bool get isLoading => _isLoading;
+  bool get isSpeaking => _isSpeaking;
+  bool get isPaused => _isPaused;
+  bool get isWakeWordActive => _isWakeWordActive;
+  String get text => _text;
+  String? get lastSpokenAnswer => _lastSpokenAnswer;
+  String get voice => _voice;
+  double get pitch => _pitch;
+  double get speechRate => _speechRate;
+  int get micDuration => _micDuration;
+  List<String> get history => _history;
   List<String> get favoritesList => _favoritesList;
+  List<String> get pinnedList => _pinnedList;
+  List<Map<String, dynamic>> get responses => _responses;
+  TextEditingController get searchFieldController => _searchFieldController;
+  bool get isButtonEnabled => _searchFieldController.text.isNotEmpty;
 
-  // Constructor
+  // Timer for mic duration
+  Timer? _listeningTimer;
+
   VoiceToTextController() {
-    flutterTts.setCompletionHandler(() {
-      isSpeaking = false;
-      isPaused = false;
+    _initializeServices();
+    _loadPreferences();
+    _setupListeners();
+    _initializeWakeWord();
+    speechToText = stt.SpeechToText();
+  }
+
+  Future<void> _initializeServices() async {
+    await _initializeTts();
+    await _initializeSpeechToText();
+    await _initializeWakeWord();
+  }
+
+  int get remainingSearchesToday {
+    final lastSearchDate = _storage.read<String>(_lastSearchDateKey);
+    final currentDate = DateTime.now().toIso8601String().substring(0, 10);
+
+    if (lastSearchDate != currentDate) {
+      // New day, reset counter
+      return dailySearchLimit;
+    }
+
+    final searchCount = _storage.read<int>(_searchCountKey) ?? 0;
+    return dailySearchLimit - searchCount;
+  }
+
+  void _setupListeners() {
+    _searchFieldController.addListener(() {
       notifyListeners();
     });
 
-    initializeSpeechToText();
+    flutterTts.setCompletionHandler(() {
+      _isSpeaking = false;
+      _isPaused = false;
+      notifyListeners();
+    });
 
     flutterTts.setErrorHandler((msg) {
       log("TTS Error: $msg");
-      isSpeaking = false;
-      isPaused = false;
+      _isSpeaking = false;
+      _isPaused = false;
       notifyListeners();
     });
-
-    // Load saved values from storage
-    voice = storage.read<String>(voiceKey) ?? "en-us";
-    pitch = storage.read<double>(pitchKey) ?? 1.0;
-    speechRate = storage.read<double>(speechRateKey) ?? 0.5;
-    loadMicDuration();
-
-    speechToText = stt.SpeechToText();
-    initializeTts();
-
-    flutterTts.setLanguage("en-US");
-    flutterTts.setPitch(pitch);
-    flutterTts.setSpeechRate(speechRate);
-
-    // Load saved data
-    history = (storage.read<List<dynamic>>(historyKey) ?? []).cast<String>();
-    _favoritesList =
-        (storage.read<List<dynamic>>(favoritesKey) ?? []).cast<String>();
-    pinnedList = (storage.read<List<dynamic>>(pinnedKey) ?? []).cast<String>();
-
-    // Enable search button based on input
-    searchFieldController.addListener(() {
-      isButtonEnabled = searchFieldController.text.isNotEmpty;
-      notifyListeners();
-    });
-
-    // Initialize Porcupine wake word detection
-    initializeWakeWord();
   }
 
-  // Porcupine Manager
-  PorcupineManager? _porcupineManager;
+  Future<void> _loadPreferences() async {
+    _voice = _storage.read<String>('voice') ?? "en-us";
+    _pitch = _storage.read<double>('pitch') ?? 1.0;
+    _speechRate = _storage.read<double>('speechRate') ?? 0.5;
+    _micDuration = _storage.read<int>('micDuration') ?? 5;
 
-  // Save settings
-  void _saveVoice() => storage.write(voiceKey, voice);
-  void _savePitch() => storage.write(pitchKey, pitch);
-  void _saveSpeechRate() => storage.write(speechRateKey, speechRate);
+    _history
+        .addAll((_storage.read<List<dynamic>>('history') ?? []).cast<String>());
+    _favoritesList.addAll(
+        (_storage.read<List<dynamic>>('favorites') ?? []).cast<String>());
+    _pinnedList
+        .addAll((_storage.read<List<dynamic>>('pinned') ?? []).cast<String>());
 
-  // Load the saved mic duration from GetStorage
-  void loadMicDuration() {
-    micDuration = storage.read('micDuration') ?? 5;
+    // Initialize TTS with loaded preferences
+    await flutterTts.setLanguage("en-US");
+    await flutterTts.setPitch(_pitch);
+    await flutterTts.setSpeechRate(_speechRate);
   }
 
-  // Save the selected mic duration
-  void setMicDuration(int seconds) {
-    micDuration = seconds;
-    storage.write('micDuration', seconds);
+  // ========== Usage Limit Management ==========
+  bool _checkDailyLimit() {
+    final lastSearchDate = _storage.read<String>(_lastSearchDateKey);
+    final currentDate = DateTime.now().toIso8601String().substring(0, 10);
+
+    if (lastSearchDate != currentDate) {
+      // New day, reset counter
+      _storage.write(_lastSearchDateKey, currentDate);
+      _storage.write(_searchCountKey, 0);
+      return true;
+    }
+
+    final searchCount = _storage.read<int>(_searchCountKey) ?? 0;
+    return searchCount < _dailySearchLimit;
+  }
+
+  void _incrementSearchCount() {
+    final currentCount = _storage.read<int>(_searchCountKey) ?? 0;
+    _storage.write(_searchCountKey, currentCount + 1);
+  }
+
+  // ========== Speech-to-Text Methods ==========
+  Future<void> _initializeSpeechToText() async {
+    if (!speechToText.isAvailable) {
+      await speechToText.initialize(
+        onError: (error) => log('SpeechToText Error: $error'),
+        onStatus: (status) => log('SpeechToText Status: $status'),
+      );
+    }
   }
 
   Future<void> requestMicrophonePermission() async {
-    // Check current permission status
-    PermissionStatus status = await Permission.microphone.status;
+    final status = await Permission.microphone.status;
 
-    // If permission is denied or restricted, request it
     if (status.isDenied || status.isRestricted) {
-      PermissionStatus result = await Permission.microphone.request();
+      final result = await Permission.microphone.request();
 
       if (result.isGranted) {
         log('Microphone permission granted!');
         Fluttertoast.showToast(msg: 'Microphone permission granted!');
       } else if (result.isPermanentlyDenied) {
-        log('Microphone permission permanently denied. Please enable it in settings.');
+        log('Microphone permission permanently denied');
         Fluttertoast.showToast(
           msg: 'Permission permanently denied. Enable it in settings.',
         );
         openAppSettings();
-      } else {
-        log('Microphone permission denied.');
-        Fluttertoast.showToast(msg: 'Microphone permission denied.');
       }
     } else if (status.isGranted) {
       log('Microphone permission already granted.');
-      Fluttertoast.showToast(msg: 'Microphone permission already granted.');
     }
   }
 
-  // Initialize Porcupine wake word detection
-  Future<void> initializeWakeWord() async {
+  Future<void> startListening() async {
+    if (!await Permission.microphone.isGranted) {
+      await requestMicrophonePermission();
+      return;
+    }
+
+    if (!await speechToText.initialize()) {
+      _text = "Speech recognition is not available.";
+      notifyListeners();
+      return;
+    }
+
+    _isListening = true;
+    notifyListeners();
+
+    // Set timer for automatic stop
+    _listeningTimer?.cancel();
+    _listeningTimer = Timer(Duration(seconds: _micDuration), () {
+      if (_isListening) {
+        stopListening();
+      }
+    });
+
+    speechToText.listen(
+      onResult: (result) {
+        _text = result.recognizedWords;
+        notifyListeners();
+
+        if (result.finalResult) {
+          handleVoiceCommands(_text);
+        }
+      },
+      listenFor: const Duration(seconds: 35),
+      pauseFor: const Duration(seconds: 5),
+    );
+  }
+
+  void stopListening() {
+    _isListening = false;
+    _listeningTimer?.cancel();
+    speechToText.stop();
+    notifyListeners();
+
+    if (_text.trim().isNotEmpty) {
+      handleVoiceCommands(_text.trim());
+    }
+  }
+
+  void toggleListening() {
+    _isListening ? stopListening() : startListening();
+  }
+
+  // ========== Text-to-Speech Methods ==========
+  Future<void> _initializeTts() async {
+    await flutterTts.awaitSpeakCompletion(true);
+    await getAvailableVoices();
+  }
+
+  Future<void> getAvailableVoices() async {
+    final availableVoices = await flutterTts.getVoices;
+    final voiceModels = availableVoices
+        .map<String>((voice) => voice['name'] as String)
+        .toList();
+
+    if (voiceModels.isNotEmpty && !voiceModels.contains(_voice)) {
+      _voice = voiceModels[0];
+      _saveVoice();
+    }
+  }
+
+  Future<void> setVoice(String newVoice) async {
+    final availableVoices = await flutterTts.getVoices;
+    if (availableVoices.any((v) => v['name'] == newVoice)) {
+      _voice = newVoice;
+      await flutterTts.setVoice({"name": newVoice, "locale": "en-US"});
+      _saveVoice();
+      notifyListeners();
+    }
+  }
+
+  void setPitch(double newPitch) {
+    _pitch = newPitch;
+    flutterTts.setPitch(_pitch);
+    _savePitch();
+    notifyListeners();
+  }
+
+  void setSpeechRate(double newSpeechRate) {
+    _speechRate = newSpeechRate;
+    flutterTts.setSpeechRate(_speechRate);
+    _saveSpeechRate();
+    notifyListeners();
+  }
+
+  Future<void> previewVoice() async {
+    if (_isSpeaking) return;
+
+    _isSpeaking = true;
+    notifyListeners();
+
     try {
-      log("Initializing wake word...");
+      await flutterTts.speak("Hello! This is how your selected voice sounds.");
+    } catch (e) {
+      log("Error during TTS preview: $e");
+    } finally {
+      _isSpeaking = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> readOrPromptResponse() async {
+    if (_responses.isEmpty) {
+      await _speak("Please search for a question or request first.");
+      return;
+    }
+
+    final currentAnswer = _responses.last['answer'] ?? "No answer available";
+    await _speak(currentAnswer);
+  }
+
+  Future<void> _speak(String text) async {
+    if (_isSpeaking) return;
+
+    _isSpeaking = true;
+    _lastSpokenAnswer = text;
+    notifyListeners();
+
+    try {
+      await flutterTts.speak(text);
+    } catch (e) {
+      log("Error during TTS: $e");
+    }
+  }
+
+  void stopSpeaking() {
+    _isSpeaking = false;
+    flutterTts.stop();
+    notifyListeners();
+  }
+
+  void pauseSpeaking() {
+    if (_isSpeaking) {
+      _isSpeaking = false;
+      _isPaused = true;
+      flutterTts.stop();
+      notifyListeners();
+    }
+  }
+
+  void resumeSpeaking() {
+    if (!_isSpeaking && _isPaused && _lastSpokenAnswer != null) {
+      _isSpeaking = true;
+      _isPaused = false;
+      flutterTts.speak(_lastSpokenAnswer!);
+      notifyListeners();
+    }
+  }
+
+  // ========== Wake Word Detection ==========
+  Future<void> _initializeWakeWord() async {
+    try {
       await _initializeWithApiKey(ApiKeys.picoVoiceApiKey);
     } catch (e) {
       log("Primary API key failed: $e. Trying secondary key...");
@@ -166,7 +366,6 @@ class VoiceToTextController extends ChangeNotifier {
         await _initializeWithApiKey(ApiKeys.picoVoiceApiKey2);
       } catch (e) {
         log("Both API keys failed: $e. Wake word detection disabled.");
-        _porcupineManager = null;
       }
     }
   }
@@ -175,56 +374,149 @@ class VoiceToTextController extends ChangeNotifier {
     _porcupineManager = await PorcupineManager.fromKeywordPaths(
       apiKey,
       ["Assets/Vocal_en_android_v3_0_0.ppn"],
-      onWakeWordDetected,
+      _onWakeWordDetected,
     );
-
     await _porcupineManager?.start();
-    log("Wake word detection started with API key: $apiKey");
   }
 
-  void onWakeWordDetected(int keywordIndex) async {
-    log("Wake word detected! Activating Vocal Lens... (Keyword index: $keywordIndex)");
-    await flutterTts.speak("Hello User, You can now use Voice Commands!");
+  void _onWakeWordDetected(int keywordIndex) async {
+    log("Wake word detected!");
+    await _speak("Hello User, You can now use Voice Commands!");
     startListening();
   }
 
-  // Setters for voice settings
-  void setVoice(String newVoice) async {
-    List<dynamic> availableVoices = await flutterTts.getVoices;
-    log("Available voices: $availableVoices");
-
-    if (availableVoices.contains(newVoice)) {
-      voice = newVoice;
-      await flutterTts.setVoice({
-        "name": newVoice,
-        "locale": "en-US",
-      });
-      log(
-        "Voice set to: $newVoice",
-      );
-      _saveVoice();
-      notifyListeners();
+  void toggleWakeWordDetection() async {
+    if (_isWakeWordActive) {
+      await _porcupineManager?.stop();
     } else {
-      log(
-        "Voice model not found: $newVoice",
-      );
+      await _porcupineManager?.start();
     }
+    _isWakeWordActive = !_isWakeWordActive;
+    notifyListeners();
   }
 
-  Future<void> initializeSpeechToText() async {
-    if (!speechToText.isAvailable) {
-      bool available = await speechToText.initialize(
-        onError: (error) => log('SpeechToText Error: $error'),
-        onStatus: (status) => log('SpeechToText Status: $status'),
-      );
-      if (!available) {
-        log("Speech recognition unavailable.");
+  // ========== AI Search Methods ==========
+  Future<void> searchYourQuery() async {
+    if (!_checkDailyLimit()) {
+      await _speak(
+          "You've reached your daily search limit. Try again tomorrow.");
+      return;
+    }
+
+    final prompt = _searchFieldController.text.trim();
+    if (prompt.isEmpty) return;
+
+    _responses.clear();
+    _history.add(prompt);
+    _saveHistory();
+    _incrementSearchCount();
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: _apiKey);
+      final response = await model.generateContent([Content.text(prompt)]);
+
+      if (response.text != null) {
+        _responses.add({
+          "question": prompt,
+          "answer": response.text,
+        });
+        await readOrPromptResponse();
       }
+    } catch (e) {
+      log("Error during query search: $e");
+      await _speak("Sorry, there was an error processing your request.");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
+  // ========== Data Management ==========
+  void addToFavorites(String response) {
+    if (!_favoritesList.contains(response)) {
+      _favoritesList.add(response);
+      _saveFavorites();
+      notifyListeners();
+    }
+  }
+
+  void removeFromFavorites(String response) {
+    _favoritesList.remove(response);
+    _saveFavorites();
+    notifyListeners();
+  }
+
+  void togglePin(String response) {
+    if (_pinnedList.contains(response)) {
+      _pinnedList.remove(response);
+    } else {
+      _pinnedList.add(response);
+    }
+    _savePinned();
+    notifyListeners();
+  }
+
+  void deleteHistory(String item) {
+    _history.remove(item);
+    _saveHistory();
+    notifyListeners();
+  }
+
+  void deleteAllHistory() {
+    _history.clear();
+    _saveHistory();
+    notifyListeners();
+  }
+
+  // ========== Storage Methods ==========
+  void _saveVoice() => _storage.write('voice', _voice);
+  void _savePitch() => _storage.write('pitch', _pitch);
+  void _saveSpeechRate() => _storage.write('speechRate', _speechRate);
+  void _saveHistory() => _storage.write('history', _history);
+  void _saveFavorites() => _storage.write('favorites', _favoritesList);
+  void _savePinned() => _storage.write('pinned', _pinnedList);
+
+  void setMicDuration(int seconds) {
+    _micDuration = seconds;
+    _storage.write('micDuration', seconds);
+  }
+
+  // ========== Sharing Methods ==========
+  void shareResponse({required String response}) {
+    Share.share(response, subject: "Check out this response!");
+  }
+
+  void copyToClipboard({required String text, required BuildContext context}) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Copied to clipboard!")),
+    );
+  }
+
+  // ========== Navigation Methods ==========
+  void openChatSection() => _navigateTo(const ChatSectionPage());
+  void openUserSettings() => _navigateTo(const UserSettingsPage());
+  void openConnectionRequestPage() =>
+      _navigateTo(const ConnectionRequestPage());
+  void openPastResponses() => _navigateTo(const PastResponsesPage());
+  void openFavoriteResponses() => _navigateTo(const FavouriteResponsesPage());
+  void openHowToUsePage() => _navigateTo(const HowToUsePage());
+  void openVoiceModelPage() => _navigateTo(const VoiceModificationPage());
+
+  void _navigateTo(Widget page) {
+    Flexify.go(
+      page,
+      animation: FlexifyRouteAnimations.blur,
+      animationDuration: Durations.medium1,
+    );
+  }
+
+  // ========== Voice Command Handling ==========
   void handleVoiceCommands(String command) {
-    String lowerCommand = command.trim().toLowerCase();
+    final lowerCommand = command.trim().toLowerCase();
     log("Recognized command: $lowerCommand");
 
     String responseMessage = "Command not recognized";
@@ -237,9 +529,6 @@ class VoiceToTextController extends ChangeNotifier {
     } else if (lowerCommand.contains("open history")) {
       openPastResponses();
       responseMessage = "Opening history.";
-    } else if (lowerCommand.contains("open connections")) {
-      openConnectionRequestPage();
-      responseMessage = "Opening connections request page.";
     } else if (lowerCommand.contains("how to use")) {
       openHowToUsePage();
       responseMessage = "Opening how to use page.";
@@ -268,365 +557,26 @@ class VoiceToTextController extends ChangeNotifier {
       deleteAllHistory();
       responseMessage = "History deleted.";
     } else if (lowerCommand.startsWith("search ")) {
-      // ✅ More accurate match
-      String query = lowerCommand.replaceFirst("search ", "").trim();
+      final query = lowerCommand.replaceFirst("search ", "").trim();
       if (query.isNotEmpty) {
-        log("Search query: $query");
-        searchFieldController.text = query;
+        _searchFieldController.text = query;
         searchYourQuery();
         responseMessage = "Searching for: $query";
-      } else {
-        responseMessage = "Please provide a search query.";
       }
+    } else if (lowerCommand.contains("remaining searches")) {
+      responseMessage =
+          "You have ${remainingSearchesToday} searches left today.";
     }
 
-    log("Final response message: $responseMessage");
-    flutterTts.speak(responseMessage);
-  }
-
-  List<String> voiceModels = [];
-
-  void getAvailableVoices() async {
-    List<dynamic> availableVoices = await flutterTts.getVoices;
-    voiceModels = availableVoices
-        .map<String>((voice) => voice['name'] as String)
-        .toList();
-
-    // Ensure the current voice is valid
-    if (!voiceModels.contains(voice) && voiceModels.isNotEmpty) {
-      voice = voiceModels[0];
-    }
-    notifyListeners();
-  }
-
-  void setPitch(double newPitch) {
-    pitch = newPitch;
-    flutterTts.setPitch(pitch);
-    _savePitch();
-    notifyListeners();
-  }
-
-  void setSpeechRate(double newSpeechRate) {
-    speechRate = newSpeechRate;
-    flutterTts.setSpeechRate(speechRate);
-    _saveSpeechRate();
-    notifyListeners();
-  }
-
-  // Save history to storage
-  void _saveHistory() => storage.write(historyKey, history);
-
-  // Save favorites to storage
-  void _saveFavorites() => storage.write(favoritesKey, _favoritesList);
-
-  // Save pinned responses to storage
-  void _savePinned() => storage.write(pinnedKey, pinnedList);
-
-  // Delete specific history item
-  void deleteHistory(String item) {
-    history.remove(item);
-    _saveHistory();
-    notifyListeners();
-  }
-
-  // Initialize TTS
-  void initializeTts() {
-    flutterTts.setCompletionHandler(() {
-      isSpeaking = false;
-      notifyListeners();
-    });
-
-    flutterTts.setErrorHandler((msg) {
-      log("TTS Error: $msg");
-      isSpeaking = false;
-      notifyListeners();
-    });
-
-    flutterTts.awaitSpeakCompletion(true);
-  }
-
-  void switchLanguage(String langCode) async {
-    try {
-      await flutterTts.setLanguage(langCode);
-      voice = langCode;
-      _saveVoice();
-      notifyListeners();
-      log("Language switched to $langCode");
-    } catch (e) {
-      log("Failed to switch language: $e");
-    }
-  }
-
-  // Toggle pin status for a response
-  void togglePin(String response) {
-    if (pinnedList.contains(response)) {
-      pinnedList.remove(response);
-    } else {
-      pinnedList.add(response);
-    }
-    _savePinned();
-    notifyListeners();
-  }
-
-  // Toggle listening state
-  void toggleListening() {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-    notifyListeners();
-  }
-
-  // Delete all history
-  void deleteAllHistory() {
-    history.clear();
-    _saveHistory();
-    notifyListeners();
-  }
-
-  // Start listening using speech-to-text
-  void startListening() async {
-    PermissionStatus status = await Permission.microphone.request();
-
-    if (status.isGranted) {
-      bool available = await speechToText.initialize(
-        onError: (error) => log('SpeechToText Error: $error'),
-        onStatus: (status) => log('SpeechToText Status: $status'),
-      );
-
-      if (available) {
-        isListening = true;
-        notifyListeners();
-
-        speechToText.listen(
-          onResult: (result) {
-            text = result.recognizedWords;
-            log('Recognized Words: $text');
-            notifyListeners();
-
-            if (result.finalResult) {
-              handleVoiceCommands(text);
-            }
-          },
-          listenFor: Duration(seconds: micDuration),
-          pauseFor: const Duration(seconds: 2),
-        );
-      } else {
-        text = "Speech recognition is not available.";
-        log('Speech recognition unavailable');
-        notifyListeners();
-      }
-    } else {
-      log('Microphone permission denied.');
-      Fluttertoast.showToast(msg: 'Microphone permission denied.');
-    }
-  }
-
-  bool isWakeWordActive = true;
-
-  void toggleWakeWordDetection() async {
-    if (isWakeWordActive) {
-      await _porcupineManager?.stop();
-      log("Wake word detection disabled.");
-    } else {
-      await _porcupineManager?.start();
-      log("Wake word detection enabled.");
-    }
-    isWakeWordActive = !isWakeWordActive;
-    notifyListeners();
-  }
-
-// Stop listening
-  void stopListening() {
-    isListening = false;
-    speechToText.stop();
-    notifyListeners();
-
-    if (text.trim().isNotEmpty) {
-      handleVoiceCommands(text.trim());
-    } else {
-      log("No valid speech detected.");
-    }
-  }
-
-  Future<void> previewVoice() async {
-    String previewText = "Hello! This is how your selected voice sounds.";
-    isSpeaking = true;
-    isPaused = false;
-    notifyListeners();
-
-    try {
-      await flutterTts.speak(previewText);
-    } catch (e) {
-      log("Error during TTS preview: $e");
-    } finally {
-      isSpeaking = false;
-      notifyListeners();
-    }
-  }
-
-  // Text-to-Speech: Speak a response or prompt
-  Future<void> readOrPromptResponse() async {
-    if (responses.isNotEmpty) {
-      String currentAnswer = responses.last['answer'] ?? "No answer available";
-      try {
-        isSpeaking = true;
-        isPaused = false;
-        lastSpokenAnswer = currentAnswer;
-        notifyListeners();
-
-        await flutterTts.speak(currentAnswer);
-      } catch (e) {
-        log("Error during TTS: $e");
-      } finally {
-        isSpeaking = false;
-        notifyListeners();
-      }
-    } else {
-      if (!isSpeaking && !isPaused) {
-        try {
-          isSpeaking = true;
-          lastSpokenAnswer = "Please search for a question or request first.";
-          notifyListeners();
-
-          await flutterTts.speak(lastSpokenAnswer!);
-        } catch (e) {
-          log("Error during TTS prompt: $e");
-        } finally {
-          isSpeaking = false;
-          notifyListeners();
-        }
-      }
-    }
-  }
-
-  // Stop speaking
-  void stopSpeaking() {
-    isSpeaking = false;
-    flutterTts.stop();
-    notifyListeners();
-  }
-
-  // Pause speaking
-  void pauseSpeaking() {
-    log("Before Pause - isSpeaking: $isSpeaking, isPaused: $isPaused");
-    if (isSpeaking) {
-      isSpeaking = false;
-      isPaused = true;
-      flutterTts.stop();
-      log("Speech paused - isSpeaking: $isSpeaking, isPaused: $isPaused");
-    }
-    notifyListeners();
-  }
-
-  // Resume speaking
-  void resumeSpeaking() {
-    log("Before Resume - isSpeaking: $isSpeaking, isPaused: $isPaused");
-    if (!isSpeaking && isPaused) {
-      isSpeaking = true;
-      isPaused = false;
-      flutterTts.speak(lastSpokenAnswer ?? "");
-      log("Speech resumed - isSpeaking: $isSpeaking, isPaused: $isPaused");
-    }
-    notifyListeners();
-  }
-
-  // Search query using Google Generative AI
-  Future<void> searchYourQuery() async {
-    responses.clear();
-    final model = GenerativeModel(
-      model: 'gemini-1.5-pro',
-      apiKey: apiKey,
-    );
-
-    final prompt = searchFieldController.text.trim();
-    if (prompt.isEmpty) return;
-
-    history.add(prompt);
-    _saveHistory();
-
-    isLoading = true;
-    notifyListeners();
-
-    try {
-      final response = await model.generateContent([Content.text(prompt)]);
-      log('AI Response: ${response.text}');
-      if (response.text != null) {
-        responses.add({
-          "question": prompt,
-          "answer": response.text,
-        });
-        await readOrPromptResponse();
-      } else {
-        log('No response text received from AI');
-      }
-    } catch (e) {
-      log("Error during query search: $e");
-    }
-  }
-
-  // Manage favorites
-  void addToFavorites(String response) {
-    if (!_favoritesList.contains(response)) {
-      _favoritesList.add(response);
-      _saveFavorites();
-      notifyListeners();
-    }
-  }
-
-  void removeFromFavorites(String response) {
-    _favoritesList.remove(response);
-    _saveFavorites();
-    notifyListeners();
-  }
-
-  // Share and copy responses
-  void shareResponse({required String response}) =>
-      Share.share(response, subject: "Check out this response!");
-
-  void copyToClipboard({required String text, required BuildContext context}) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Copied to clipboard!")),
-    );
-  }
-
-  // Navigation methods
-  void openChatSection() => _navigateTo(
-        const ChatSectionPage(),
-      );
-  void openUserSettings() => _navigateTo(
-        const UserSettingsPage(),
-      );
-  void openConnectionRequestPage() =>
-      _navigateTo(const ConnectionRequestPage());
-  void openPastResponses() => _navigateTo(
-        const PastResponsesPage(),
-      );
-  void openFavoriteResponses() => _navigateTo(
-        const FavouriteResponsesPage(),
-      );
-  void openHowToUsePage() => _navigateTo(
-        const HowToUsePage(),
-      );
-  void openVoiceModelPage() => _navigateTo(
-        const VoiceModificationPage(),
-      );
-
-  void _navigateTo(Widget page) {
-    Flexify.go(
-      page,
-      animation: FlexifyRouteAnimations.blur,
-      animationDuration: Durations.medium1,
-    );
+    _speak(responseMessage);
   }
 
   @override
   void dispose() {
-    searchFieldController.dispose();
+    _searchFieldController.dispose();
+    _listeningTimer?.cancel();
+    _porcupineManager?.stop();
     flutterTts.stop();
-
     super.dispose();
   }
 }
