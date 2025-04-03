@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:audio_session/audio_session.dart';
 import 'package:flexify/flexify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class VoiceToTextController extends ChangeNotifier {
   static const int dailySearchLimit = 3;
 
   // Speech services
-  late stt.SpeechToText speechToText;
+  final stt.SpeechToText speechToText = stt.SpeechToText();
   final FlutterTts flutterTts = FlutterTts();
   PorcupineManager? _porcupineManager;
 
@@ -86,7 +87,6 @@ class VoiceToTextController extends ChangeNotifier {
     _loadPreferences();
     _setupListeners();
     _initializeWakeWord();
-    speechToText = stt.SpeechToText();
   }
 
   Future<void> _initializeServices() async {
@@ -168,19 +168,53 @@ class VoiceToTextController extends ChangeNotifier {
   }
 
   // ========== Speech-to-Text Methods ==========
+  bool _isSpeechInitialized = false;
+
   Future<void> _initializeSpeechToText() async {
-    if (!speechToText.isAvailable) {
-      await speechToText.initialize(
-        onError: (error) => log('SpeechToText Error: $error'),
-        onStatus: (status) => log('SpeechToText Status: $status'),
-      );
+    if (_isSpeechInitialized) return;
+
+    try {
+      bool available = await speechToText.initialize();
+      _isSpeechInitialized = available;
+      if (!available) {
+        _text = "Speech recognition unavailable";
+        notifyListeners();
+      }
+    } catch (e) {
+      _text = "Failed to initialize speech recognition";
+      notifyListeners();
     }
   }
 
+  Future<void> _configureAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      avAudioSessionRouteSharingPolicy:
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+      androidAudioAttributes: AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        flags: AndroidAudioFlags.none,
+        usage: AndroidAudioUsage.voiceCommunication,
+      ),
+      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      androidWillPauseWhenDucked: true,
+    ));
+  }
+
+  bool _isRequestingPermission = false;
+
   Future<void> requestMicrophonePermission() async {
+    if (_isRequestingPermission) return;
+    _isRequestingPermission = true;
+
     final status = await Permission.microphone.status;
 
-    if (status.isDenied || status.isRestricted) {
+    if (status.isGranted) {
+      log('Microphone permission already granted.');
+    } else {
       final result = await Permission.microphone.request();
 
       if (result.isGranted) {
@@ -193,57 +227,134 @@ class VoiceToTextController extends ChangeNotifier {
         );
         openAppSettings();
       }
-    } else if (status.isGranted) {
-      log('Microphone permission already granted.');
     }
+
+    _isRequestingPermission = false;
   }
 
   Future<void> startListening() async {
-    if (!await Permission.microphone.isGranted) {
-      await requestMicrophonePermission();
-      return;
+    // Check microphone permission first
+    final micStatus = await Permission.microphone.status;
+    if (!micStatus.isGranted) {
+      final result = await Permission.microphone.request();
+      if (!result.isGranted) {
+        _text = "Microphone permission required";
+        notifyListeners();
+        return;
+      }
     }
 
-    if (!await speechToText.initialize()) {
-      _text = "Speech recognition is not available.";
-      notifyListeners();
-      return;
+    // Initialize speech recognition if not already available
+    if (!speechToText.isAvailable) {
+      bool initialized = await speechToText.initialize(
+        onError: (error) => log('SpeechToText Error: $error'),
+        onStatus: (status) => log('SpeechToText Status: $status'),
+      );
+
+      if (!initialized) {
+        _text = "Speech recognition not available";
+        notifyListeners();
+        return;
+      }
     }
 
+    // Rest of your listening code...
     _isListening = true;
     notifyListeners();
 
-    // Set timer for automatic stop
     _listeningTimer?.cancel();
-    _listeningTimer = Timer(Duration(seconds: _micDuration), () {
-      if (_isListening) {
-        stopListening();
-      }
-    });
+    _listeningTimer = Timer(Duration(seconds: _micDuration), stopListening);
 
     speechToText.listen(
       onResult: (result) {
         _text = result.recognizedWords;
         notifyListeners();
-
         if (result.finalResult) {
-          handleVoiceCommands(_text);
+          handleVoiceCommands(_text.trim());
         }
       },
-      listenFor: const Duration(seconds: 35),
-      pauseFor: const Duration(seconds: 5),
+      listenFor: const Duration(seconds: 30),
+      pauseFor: const Duration(seconds: 3),
     );
   }
 
-  void stopListening() {
+  void _updateStatus(String message) {
+    _text = message;
+    notifyListeners();
+  }
+
+  Future<bool> checkMicrophoneAccess() async {
+    final status = await Permission.microphone.status;
+    if (!status.isGranted) {
+      final result = await Permission.microphone.request();
+      if (!result.isGranted) {
+        log("Microphone permission denied");
+        return false;
+      }
+    }
+    log("Microphone permission granted");
+    return true;
+  }
+
+  Future<bool> initSpeechToText() async {
+    try {
+      bool success = await speechToText.initialize(
+        onError: (error) => log("Speech Error: $error"),
+        onStatus: (status) => log("Speech Status: $status"),
+      );
+      log("Initialization success: $success");
+      return success;
+    } catch (e) {
+      log("Initialization failed: $e");
+      return false;
+    }
+  }
+
+  Future<void> testListening() async {
+    final stt.SpeechToText speech = stt.SpeechToText();
+
+    bool initialized = await speech.initialize();
+    if (!initialized) {
+      log("Failed to initialize");
+      return;
+    }
+
+    log("Starting to listen...");
+    speech.listen(
+      onResult: (result) {
+        log("Heard: ${result.recognizedWords}");
+      },
+      listenFor: const Duration(seconds: 5),
+      pauseFor: const Duration(seconds: 1),
+    );
+  }
+
+  void _handleSpeechError(String error) {
+    log('Speech Error: $error');
+    _updateStatus("Error: $error");
     _isListening = false;
+    notifyListeners();
+  }
+
+  Future<bool> checkSpeechRecognitionAvailable() async {
+    try {
+      bool available = await speechToText.initialize();
+      if (!available) {
+        _updateStatus("Speech recognition not available");
+        return false;
+      }
+      return true;
+    } catch (e) {
+      _updateStatus("Speech recognition error");
+      return false;
+    }
+  }
+
+  void stopListening() {
     _listeningTimer?.cancel();
+    _isListening = false;
     speechToText.stop();
     notifyListeners();
-
-    if (_text.trim().isNotEmpty) {
-      handleVoiceCommands(_text.trim());
-    }
   }
 
   void toggleListening() {
@@ -564,8 +675,7 @@ class VoiceToTextController extends ChangeNotifier {
         responseMessage = "Searching for: $query";
       }
     } else if (lowerCommand.contains("remaining searches")) {
-      responseMessage =
-          "You have ${remainingSearchesToday} searches left today.";
+      responseMessage = "You have $remainingSearchesToday searches left today.";
     }
 
     _speak(responseMessage);
@@ -577,6 +687,7 @@ class VoiceToTextController extends ChangeNotifier {
     _listeningTimer?.cancel();
     _porcupineManager?.stop();
     flutterTts.stop();
+    speechToText.stop();
     super.dispose();
   }
 }

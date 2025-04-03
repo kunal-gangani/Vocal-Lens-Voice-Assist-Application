@@ -43,6 +43,7 @@ dependencies:
   youtube_explode_dart: ^2.3.10
   path_provider: ^2.0.5
   just_audio:
+  audio_session: ^0.1.6
 
 
 dev_dependencies:

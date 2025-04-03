@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vocal_lens/Controllers/voice_to_text.dart';
 import 'package:vocal_lens/Controllers/position_controller.dart';
 
 PreferredSizeWidget appBar({required BuildContext context}) {
@@ -19,8 +18,8 @@ PreferredSizeWidget appBar({required BuildContext context}) {
     backgroundColor: Colors.black,
     actions: [
       IconButton(
-        icon: const Icon(
-          Icons.refresh,
+        icon: const FaIcon(
+          FontAwesomeIcons.locationCrosshairs,
         ),
         onPressed: () {
           Provider.of<PositionController>(
